@@ -1,0 +1,336 @@
+<!-- templates/store/order_success.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Order Success - Delight Care Plus</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Poppins:wght@200;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{% static 'store/lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'store/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'store/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="container-fluid sticky-top">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light p-0">
+                <a href="/" class="navbar-brand"><h2 class="text-white">Delight Care Plus</h2></a>
+                <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto">
+                        <a href="/" class="nav-item nav-link">Home</a>
+                        <a href="{% url 'my_orders' %}" class="nav-item nav-link">📦 My Orders</a>
+                        <a href="/cart/" class="nav-item nav-link">🛒 View Cart</a>
+                        {% if user.is_authenticated %}
+                            <span class="nav-item nav-link text-white-50">Welcome, {{ user.username }}</span>
+                            <a href="{% url 'logout' %}" class="nav-item nav-link text-danger">Logout</a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
+                            <a href="{% url 'signup' %}" class="nav-item nav-link">Signup</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Hero Header -->
+    <div class="container-fluid bg-success hero-header mb-5">
+        <div class="container text-center">
+            <h1 class="display-4 text-white mb-3 animated slideInDown">Order Success! 🎉</h1>
+            <p class="text-white animated slideInDown">Thank you for shopping with Delight Care Plus</p>
+        </div>
+    </div>
+
+    <!-- Success Content -->
+    <div class="container-fluid py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 wow fadeIn" data-wow-delay="0.1s">
+                    <div class="bg-white border rounded p-5 shadow-sm text-center">
+                        
+                        <!-- Success Icon -->
+                        <div class="mb-4">
+                            <div class="success-icon-wrapper">
+                                <i class="fas fa-check-circle text-success" style="font-size: 100px;"></i>
+                            </div>
+                        </div>
+
+                        <!-- Success Message -->
+                        <h2 class="text-success mb-3">🎉 Order Placed Successfully!</h2>
+                        <p class="text-muted mb-4">Thank you for shopping with us 😊</p>
+
+                        <!-- Order Details (if available) -->
+                        {% if order %}
+                            <div class="bg-light p-4 rounded mb-4">
+                                <h6 class="mb-3">Order Details</h6>
+                                <div class="row">
+                                    <div class="col-md-6 text-start">
+                                        <p><strong>Order Number:</strong> #{{ order.id }}</p>
+                                        <p><strong>Date:</strong> {{ order.created_at|date:"F d, Y" }}</p>
+                                    </div>
+                                    <div class="col-md-6 text-start">
+                                        <p><strong>Total Amount:</strong> KES {{ order.grand_total|floatformat:2 }}</p>
+                                        <p><strong>Status:</strong> <span class="badge bg-success">Confirmed</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Next Steps -->
+                        <div class="alert alert-info text-start">
+                            <h6><i class="fas fa-info-circle"></i> What's Next?</h6>
+                            <ul class="mb-0">
+                                <li>You will receive a confirmation email shortly.</li>
+                                <li>We will process your order within 24 hours.</li>
+                                <li>You will receive shipping confirmation once your order is dispatched.</li>
+                                <li>You can track your order in <a href="{% url 'my_orders' %}" class="text-primary">My Orders</a>.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="row g-3 justify-content-center mt-4">
+                            <div class="col-md-4">
+                                <a href="{% url 'my_orders' %}" class="btn btn-primary w-100 rounded-pill py-3 fw-bold">
+                                    <i class="fas fa-list"></i> My Orders
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="/" class="btn btn-success w-100 rounded-pill py-3 fw-bold">
+                                    <i class="fas fa-home"></i> Continue Shopping
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <button onclick="window.print()" class="btn btn-outline-primary w-100 rounded-pill py-3 fw-bold">
+                                    <i class="fas fa-print"></i> Print Receipt
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Divider -->
+                        <hr class="my-4">
+
+                        <!-- Social Share -->
+                        <div class="text-center">
+                            <p class="text-muted mb-3">Share your purchase</p>
+                            <div class="d-flex justify-content-center gap-3">
+                                <a href="#" class="btn btn-outline-primary rounded-circle" style="width: 50px; height: 50px;">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="btn btn-outline-info rounded-circle" style="width: 50px; height: 50px;">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="btn btn-outline-danger rounded-circle" style="width: 50px; height: 50px;">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="btn btn-outline-success rounded-circle" style="width: 50px; height: 50px;">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Continue Shopping Message -->
+                        <div class="mt-4">
+                            <p class="text-muted small">
+                                <i class="fas fa-heart text-danger"></i>
+                                We hope you enjoy your purchase! Come back soon.
+                            </p>
+                        </div>
+
+                        <!-- Confetti Animation -->
+                        <div id="confetti-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="container-fluid bg-white footer">
+        <div class="container py-5 text-center">
+            <p class="mb-0">&copy; <a class="border-bottom" href="#">Delight Care Plus</a>, All Rights Reserved.</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'store/lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'store/lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'store/lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'store/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'store/js/main.js' %}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Confetti Animation
+            function createConfetti() {
+                const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3'];
+                const container = document.getElementById('confetti-container');
+                
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti-piece';
+                    confetti.style.cssText = `
+                        position: absolute;
+                        width: 10px;
+                        height: 10px;
+                        background: ${colors[Math.floor(Math.random() * colors.length)]};
+                        top: -10px;
+                        left: ${Math.random() * 100}%;
+                        opacity: ${Math.random() + 0.5};
+                        transform: rotate(${Math.random() * 360}deg);
+                        animation: confetti-fall ${2 + Math.random() * 3}s linear;
+                        animation-delay: ${Math.random() * 2}s;
+                    `;
+                    container.appendChild(confetti);
+                }
+            }
+
+            // Add confetti styles
+            const style = document.createElement('style');
+            style.textContent = `
+                #confetti-container {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                    overflow: hidden;
+                }
+                .confetti-piece {
+                    position: absolute;
+                    border-radius: 2px;
+                    animation: confetti-fall linear forwards;
+                }
+                @keyframes confetti-fall {
+                    0% {
+                        transform: translateY(0) rotate(0deg) scale(1);
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translateY(500px) rotate(720deg) scale(0);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Trigger confetti
+            createConfetti();
+
+            // Auto-close alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.transition = 'opacity 0.5s';
+                    alert.style.opacity = '0';
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 500);
+                }, 5000);
+            });
+        });
+    </script>
+
+    <style>
+        .bg-light {
+            background-color: #f8f9fa !important;
+        }
+        .border {
+            border: 1px solid #e9ecef !important;
+        }
+        .rounded-pill {
+            border-radius: 50px !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #0d6efd, #0a58ca);
+            border: none;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0a58ca, #084298);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #198754, #157347);
+            border: none;
+            transition: all 0.3s;
+        }
+        .btn-success:hover {
+            background: linear-gradient(135deg, #157347, #0e5d3e);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
+        }
+        .btn-outline-primary {
+            transition: all 0.3s;
+        }
+        .btn-outline-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2);
+        }
+        .success-icon-wrapper {
+            animation: success-bounce 1s ease-in-out;
+        }
+        @keyframes success-bounce {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .bg-success {
+            background: linear-gradient(135deg, #198754, #0e5d3e) !important;
+        }
+        .footer {
+            margin-top: auto;
+        }
+        .badge {
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: 500;
+        }
+        .badge.bg-success {
+            background-color: #198754 !important;
+        }
+        .alert {
+            border-radius: 30px;
+        }
+        .btn-outline-primary {
+            border-radius: 50% !important;
+        }
+        .btn-outline-info {
+            border-radius: 50% !important;
+        }
+        .btn-outline-danger {
+            border-radius: 50% !important;
+        }
+        .btn-outline-success {
+            border-radius: 50% !important;
+        }
+    </style>
+</body>
+</html>

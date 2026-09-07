@@ -1,0 +1,1306 @@
+<!-- templates/store/home.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Delight Care Plus - Natural Products</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <link href="{% static 'store/lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'store/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'store/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
+
+    <style>
+        /* ============================================ */
+        /* YOUR COLOR: #90bc79 */
+        /* FULL PAGE BACKGROUND WITH BLUR & DARK OVERLAY */
+        /* ============================================ */
+        
+        /* --- FULL PAGE BACKGROUND --- */
+        body {
+            font-family: 'Poppins', 'Open Sans', sans-serif;
+            min-height: 100vh;
+            background: #f5f8f4;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Background image that covers the entire page */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("{% static 'store/img/IMG_0385.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            z-index: -2;
+        }
+
+        /* Dark overlay layer with blur */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: -1;
+        }
+
+        /* ============================================ */
+        /* ✅ TRANSPARENT NAVBAR */
+        /* ============================================ */
+        .sticky-top {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 9999 !important;
+            background: transparent !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .sticky-top::before {
+            display: none;
+        }
+
+        .sticky-top .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand img {
+            height: 50px;
+            width: auto;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(144, 188, 121, 0.3);
+        }
+
+        /* ============================================ */
+        /* ✅ ANIMATED BRAND TEXT */
+        /* ============================================ */
+        .animated-brand {
+            background: linear-gradient(
+                90deg,
+                #ffffff 0%,
+                #e8f5e9 25%,
+                #90bc79 50%,
+                #e8f5e9 75%,
+                #ffffff 100%
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 3s linear infinite;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
+            display: inline-block;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes gradient-shift {
+            0% {
+                background-position: 0% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        .animated-brand:hover {
+            animation: gradient-shift 1s linear infinite;
+            cursor: pointer;
+        }
+
+        /* ============================================ */
+        /* ✅ NAV LINKS - WHITE TEXT FOR DARK BACKGROUND */
+        /* ============================================ */
+        .navbar-nav .nav-link {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 8px 18px !important;
+            transition: all 0.3s ease;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+            position: relative;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #90bc79;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .navbar-nav .nav-link:hover::after,
+        .navbar-nav .nav-link.active::after {
+            width: 60%;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #ffffff !important;
+            background: rgba(144, 188, 121, 0.2);
+        }
+
+        .navbar-nav .nav-link.active {
+            color: #ffffff !important;
+            font-weight: 600;
+            background: rgba(144, 188, 121, 0.25);
+        }
+
+        /* ============================================ */
+        /* ✅ CART ICON WITH IMAGE */
+        /* ============================================ */
+        .cart-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 18px !important;
+        }
+
+        .cart-icon-img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            filter: brightness(0) invert(1);
+        }
+
+        .cart-link:hover .cart-icon-img {
+            transform: scale(1.15);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -2px;
+            right: 2px;
+            background: #ff6b6b;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar-nav .text-white-50 {
+            color: rgba(255, 255, 255, 0.7) !important;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-nav .nav-link.text-danger {
+            color: #ff6b6b !important;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-nav .nav-link.text-danger:hover {
+            color: #ff4444 !important;
+            background: rgba(220, 53, 69, 0.2);
+        }
+
+        /* ============================================ */
+        /* All content sits above the background */
+        /* ============================================ */
+        .container-fluid:not(.sticky-top),
+        .container,
+        .footer,
+        .hero-header,
+        .card,
+        .bg-light,
+        .bg-white,
+        .whatsapp-float,
+        .back-to-top {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============================================ */
+        /* WHATSAPP FLOATING BUTTON */
+        /* ============================================ */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .whatsapp-float .whatsapp-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: #25d366;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 2.2rem;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            animation: pulse-green 2s infinite;
+        }
+
+        .whatsapp-float .whatsapp-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
+        }
+
+        .whatsapp-float .whatsapp-btn .tooltip {
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .whatsapp-float .whatsapp-btn:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+            left: 75px;
+        }
+
+        .whatsapp-float .whatsapp-btn .tooltip::before {
+            content: '';
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 6px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .whatsapp-float .whatsapp-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #25d366;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .whatsapp-float .whatsapp-btn .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(37, 211, 102, 0.3);
+            animation: ripple 1.5s ease-out infinite;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .whatsapp-float .whatsapp-btn .ripple:nth-child(1) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% {
+                box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 30px rgba(37, 211, 102, 0.7);
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.8);
+                opacity: 0;
+            }
+        }
+
+        /* ============================================ */
+        /* CARDS WITH GLASS EFFECT */
+        /* ============================================ */
+        .card,
+        .bg-light,
+        .bg-white {
+            background: rgba(255, 255, 255, 0.92) !important;
+            backdrop-filter: blur(8px);
+        }
+
+        .footer {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+
+        /* ============================================ */
+        /* HERO HEADER - now transparent to show background */
+        /* ============================================ */
+        .hero-header {
+            background: transparent !important;
+            padding: 120px 20px 60px !important;
+            position: relative;
+            margin-top: -60px;
+        }
+        .hero-header::before {
+            display: none;
+        }
+        .hero-header .container {
+            position: relative;
+            z-index: 2;
+        }
+        .hero-header h1 {
+            color: #ffffff !important;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+        }
+        .hero-header p {
+            color: rgba(255, 255, 255, 0.95) !important;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
+        }
+        .hero-header .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.85) !important;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+        }
+        .hero-header .breadcrumb-item.active {
+            color: #ffffff !important;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+        }
+        .hero-header .breadcrumb-item a:hover {
+            color: #ffffff !important;
+        }
+
+        /* ============================================ */
+        /* PRODUCT ITEMS - CARD STYLES */
+        /* ============================================ */
+        .product-item {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border-radius: 20px !important;
+            overflow: hidden;
+        }
+        .product-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(144, 188, 121, 0.2) !important;
+            background: rgba(255, 255, 255, 1) !important;
+        }
+
+        /* ============================================ */
+        /* ADD TO CART + BUY NOW BUTTONS */
+        /* ============================================ */
+        .product-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .product-actions form {
+            flex: 1;
+        }
+
+        .btn-add-to-cart {
+            background: #90bc79 !important;
+            border: none !important;
+            color: #ffffff !important;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            border-radius: 50px;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: inline-block;
+            font-weight: 600;
+            width: 100%;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-add-to-cart:hover {
+            background: #7dab66 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
+            color: #ffffff !important;
+        }
+
+        .btn-add-to-cart:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(144, 188, 121, 0.3);
+        }
+
+        .btn-add-to-cart i {
+            font-size: 0.9rem;
+        }
+
+        /* Buy Now Button */
+        .btn-buy-now {
+            background: linear-gradient(135deg, #28a745, #20c997) !important;
+            border: none !important;
+            color: #ffffff !important;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            border-radius: 50px;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: inline-block;
+            font-weight: 600;
+            width: 100%;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-buy-now:hover {
+            background: linear-gradient(135deg, #20c997, #1aa179) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+            color: #ffffff !important;
+        }
+
+        .btn-buy-now:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-buy-now i {
+            font-size: 0.9rem;
+        }
+
+        /* Success toast notification */
+        .add-to-cart-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ============================================ */
+        /* SIDEBAR CATEGORIES */
+        /* ============================================ */
+        .sidebar-wrapper {
+            position: sticky;
+            top: 90px;
+            align-self: flex-start;
+        }
+
+        .sidebar-categories {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 22px 18px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .sidebar-categories .category-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(233, 236, 239, 0.5);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+        .sidebar-categories .category-item:last-child {
+            border-bottom: none;
+        }
+        .sidebar-categories .category-item:hover {
+            background: #90bc79;
+            color: #ffffff !important;
+            transform: translateX(4px);
+        }
+        .sidebar-categories .category-item:hover a {
+            color: #ffffff !important;
+        }
+        .sidebar-categories .category-item a {
+            color: #1e2a1c;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-categories .category-item .badge {
+            background: #90bc79;
+            color: white;
+            border-radius: 50px;
+            padding: 2px 12px;
+            font-size: 0.7rem;
+        }
+        .sidebar-categories .category-item:hover .badge {
+            background: #ffffff;
+            color: #90bc79;
+        }
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2d3e2a;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #90bc79;
+            margin-bottom: 15px;
+        }
+        .sidebar-title i {
+            margin-right: 10px;
+            color: #90bc79;
+        }
+
+        .sidebar-featured {
+            margin-top: 20px;
+        }
+        .sidebar-featured .category-item {
+            padding: 10px 12px;
+        }
+        .sidebar-featured .category-item img {
+            width: 42px;
+            height: 42px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #f2f7ef;
+        }
+        .sidebar-featured .product-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .sidebar-featured .product-price {
+            font-size: 0.75rem;
+            color: #90bc79;
+            font-weight: 600;
+        }
+
+        /* ============================================ */
+        /* PAGINATION */
+        /* ============================================ */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 5px;
+        }
+        .pagination-container .step-links {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .pagination-container .step-links a,
+        .pagination-container .step-links span {
+            padding: 8px 18px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .pagination-container .step-links a {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1f2a1c;
+            border: 1px solid #e9ecef;
+        }
+        .pagination-container .step-links a:hover {
+            background: #90bc79;
+            color: #ffffff;
+            border-color: #90bc79;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(144, 188, 121, 0.3);
+        }
+        .pagination-container .step-links .current {
+            background: #90bc79;
+            color: #ffffff;
+            border: 1px solid #90bc79;
+        }
+        .pagination-container .step-links .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            color: #6c757d;
+            background: #e9ecef;
+        }
+        .pagination-container .step-links .page-info {
+            padding: 8px 16px;
+            color: #6c757d;
+            font-weight: 400;
+        }
+
+        .beauty-badge {
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(10px);
+            border: 2px solid #90bc79;
+            padding: 15px 35px;
+            border-radius: 50px;
+            display: inline-block;
+            box-shadow: 0 4px 20px rgba(144, 188, 121, 0.15);
+        }
+        .beauty-badge i {
+            color: #90bc79;
+            margin-right: 10px;
+        }
+        .beauty-badge span {
+            color: #90bc79;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* ============================================ */
+        /* BUTTONS - YOUR COLOR */
+        /* ============================================ */
+        .bg-primary {
+            background: #90bc79 !important;
+        }
+        .text-primary {
+            color: #90bc79 !important;
+        }
+        .btn-primary {
+            background: #90bc79;
+            border: none;
+            transition: all 0.3s;
+            color: #ffffff !important;
+        }
+        .btn-primary:hover {
+            background: #7dab66 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
+            color: #ffffff !important;
+        }
+        .btn-outline-primary {
+            color: #90bc79 !important;
+            border-color: #90bc79 !important;
+        }
+        .btn-outline-primary:hover {
+            background: #90bc79 !important;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.3);
+        }
+        .btn-outline-danger:hover {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-outline-success:hover {
+            background: #198754;
+            color: white;
+        }
+        .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: white;
+        }
+        .rounded-pill {
+            border-radius: 50px !important;
+        }
+        .shadow-sm {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+        }
+        .border-top {
+            border-top: 1px solid rgba(233, 236, 239, 0.5) !important;
+        }
+        .badge {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .card {
+            transition: all 0.3s ease;
+            border-radius: 12px !important;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+        }
+        .btn-link {
+            color: #6c757d !important;
+            text-decoration: none !important;
+        }
+        .btn-link:hover {
+            color: #90bc79 !important;
+        }
+
+        .fa-star.text-primary {
+            color: #90bc79 !important;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 998;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #90bc79 !important;
+            color: #ffffff !important;
+            border: none !important;
+            transition: all 0.3s;
+        }
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
+            color: #ffffff !important;
+        }
+
+        /* Product card image container */
+        .product-img-wrapper {
+            background: #f8fbf7;
+            border-radius: 16px 16px 0 0;
+            padding: 15px;
+            text-align: center;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-img-wrapper img {
+            max-height: 160px;
+            width: 100%;
+            object-fit: contain;
+        }
+
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(10px);
+                border-radius: 0 0 15px 15px;
+                padding: 10px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+            
+            .navbar-nav .nav-link {
+                text-align: center;
+                padding: 10px 15px !important;
+                color: #ffffff !important;
+            }
+            
+            .navbar-nav .nav-link::after {
+                display: none;
+            }
+            
+            .navbar-toggler {
+                border-color: rgba(255, 255, 255, 0.5) !important;
+            }
+            
+            .navbar-toggler-icon {
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+            }
+            
+            .whatsapp-float {
+                bottom: 20px;
+                left: 20px;
+            }
+            .whatsapp-float .whatsapp-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.8rem;
+            }
+            .sidebar-wrapper {
+                position: relative;
+                top: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .btn-add-to-cart,
+            .btn-buy-now {
+                font-size: 0.75rem;
+                padding: 8px 10px;
+            }
+            .product-actions {
+                flex-direction: column;
+            }
+            .product-actions form {
+                width: 100%;
+            }
+            .animated-brand {
+                font-size: 1.3rem;
+            }
+            .cart-icon-img {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ============================================ -->
+<!-- ✅ TRANSPARENT NAVBAR WITH GIF LOGO -->
+<!-- ============================================ -->
+<div class="container-fluid sticky-top">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light p-0">
+            <a href="/" class="navbar-brand d-flex align-items-center">
+                <!-- GIF Logo -->
+                <img src="{% static 'store/img/DELIGHT.gif' %}" 
+                     alt="Delight Care Plus" 
+                     style="height: 50px; width: auto; border-radius: 8px;">
+                <!-- Animated Text Logo -->
+                <span class="d-none d-md-inline ms-2 animated-brand">
+                    Delight Care Plus
+                </span>
+            </a>
+            <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto">
+                    <a href="/" class="nav-item nav-link active">Home</a>
+                    <a href="{% url 'my_orders' %}" class="nav-item nav-link">My Orders</a>
+                    <a href="/cart/" class="nav-item nav-link cart-link">
+                        <img src="{% static 'store/icons/shopping-cart.png' %}" 
+                             alt="Cart" 
+                             class="cart-icon-img">
+                        <span class="cart-badge" id="cartCount">0</span>
+                    </a>
+                    <a href="{% url 'blog_list' %}" class="nav-item nav-link">Blog</a>
+                    
+                    {% if user.is_authenticated %}
+                        <span class="nav-item nav-link text-white-50">Welcome, {{ user.username }}</span>
+                        <a href="{% url 'logout' %}" class="nav-item nav-link text-danger">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
+                        <a href="{% url 'signup' %}" class="nav-item nav-link">Signup</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- WHATSAPP FLOATING BUTTON -->
+<!-- ============================================ -->
+<div class="whatsapp-float">
+    <a href="https://wa.me/254795180079?text=Hello%20Delight%20Care%2C%20I%20would%20like%20to%20know%20more%20about%20your%20products"
+    class="whatsapp-btn"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Contact us on WhatsApp">
+    <span class="ripple"></span>
+    <span class="ripple"></span>
+    <i class="fab fa-whatsapp"></i>
+    <span class="tooltip">Chat with us on WhatsApp</span>
+</a>
+<span class="whatsapp-label">Chat 💬</span>
+</div>
+
+<!-- ============================================ -->
+<!-- HERO HEADER - TRANSPARENT -->
+<!-- ============================================ -->
+<div class="container-fluid hero-header mb-5">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4 text-white mb-3 animated slideInDown">Our Products</h1>
+            <p class="text-white animated slideInDown">Discover our premium range of organic supplements</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center mb-0 animated slideInDown">
+                    <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page">Shop</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- MESSAGES -->
+<!-- ============================================ -->
+{% if messages %}
+<div class="container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- ============================================ -->
+<!-- MAIN CONTENT -->
+<!-- ============================================ -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row">
+
+            <!-- ============================================ -->
+            <!-- SIDEBAR - CATEGORIES -->
+            <!-- ============================================ -->
+            <div class="col-lg-3 wow fadeIn" data-wow-delay="0.1s">
+                <div class="sidebar-wrapper">
+
+                    <!-- Shop by Category -->
+                    <div class="sidebar-categories">
+                        <h5 class="sidebar-title">
+                            <i class="fas fa-th-list"></i> Shop by Category
+                        </h5>
+
+                        <div class="category-item">
+                            <a href="{% url 'home' %}">
+                                <i class="fas fa-th-large"></i> All Products
+                                <span class="badge ms-auto">{{ products_count|default:products.count }}</span>
+                            </a>
+                        </div>
+
+                        {% for category in categories %}
+                        <div class="category-item">
+                            <a href="{% url 'category_products' category.slug %}">
+                                <i class="{{ category.icon|default:'fas fa-pills' }}"></i>
+                                {{ category.name }}
+                                <span class="badge ms-auto">{{ category.products.count }}</span>
+                            </a>
+                        </div>
+                        {% empty %}
+                        <div class="category-item">
+                            <a href="#">
+                                <i class="fas fa-pills"></i> No Categories
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Featured Products -->
+                    <div class="sidebar-categories sidebar-featured">
+                        <h5 class="sidebar-title">
+                            <i class="fas fa-star"></i> Featured Products
+                        </h5>
+                        {% for product in featured_products|default:products|slice:":3" %}
+                        <div class="category-item">
+                            <a href="{% url 'product_detail' product.id %}">
+                                <div class="d-flex align-items-center">
+                                    {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                    {% else %}
+                                    <i class="fas fa-box" style="font-size: 1.5rem; color: #90bc79; width: 40px; text-align: center;"></i>
+                                    {% endif %}
+                                    <div class="ms-2">
+                                        <div class="product-name">{{ product.name|truncatechars:20 }}</div>
+                                        <div class="product-price">KES {{ product.price|floatformat:2 }}</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% empty %}
+                        <div class="category-item">
+                            <a href="#">
+                                <i class="fas fa-box"></i> No featured products
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- PRODUCTS CONTENT -->
+            <!-- ============================================ -->
+            <div class="col-lg-9">
+
+                <!-- Search Bar -->
+                <div class="mx-auto text-center wow fadeIn" data-wow-delay="0.1s" style="max-width: 100%;">
+                    <h1 class="text-primary mb-3"><span class="fw-light text-white">Our Natural</span> Supplement Products</h1>
+                    <p class="mb-4 text-white" style="text-shadow: 0 1px 8px rgba(0,0,0,0.3);">Discover our premium range of organic supplements formulated to revitalize, nourish, and protect your health.</p>
+
+                    <form action="" method="GET" class="mb-5 mx-auto" style="max-width: 500px;">
+                        <div class="input-group border rounded-pill overflow-hidden p-1 bg-white shadow-sm">
+                            <input type="search" id="searchInput" name="q" placeholder="Search for products..." value="{{ request.GET.q|default:'' }}" class="form-control bg-none border-0 px-4 py-2 shadow-none" aria-label="Search products">
+                            <button type="submit" id="searchButton" class="btn btn-primary rounded-pill px-4">
+                                <i class="fa fa-search me-2"></i>Search
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Results count -->
+                    <p class="text-white-50" style="text-shadow: 0 1px 6px rgba(0,0,0,0.3);">
+                        Showing {{ page_obj.start_index }} - {{ page_obj.end_index }} of {{ page_obj.paginator.count }} products
+                    </p>
+
+                    <!-- Products Grid -->
+                    <div class="all-products-section">
+                        <div class="row g-4" id="productGrid">
+                            {% for product in page_obj %}
+                            <div class="col-md-6 col-lg-4 wow fadeIn product-item-wrapper" data-wow-delay="0.1s" data-product-name="{{ product.name|lower }}">
+                                {% include "store/_product_card.html" with product=product %}
+                            </div>
+                            {% empty %}
+                            <div class="col-12 text-center py-5">
+                                <div class="mb-4">
+                                    <i class="bi bi-box-seam text-muted display-1"></i>
+                                </div>
+                                <h3 class="text-muted fw-light" style="color: #ffffff !important; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);">No products found.</h3>
+                                <p class="text-secondary mb-4" style="color: rgba(255, 255, 255, 0.9) !important;">Check back soon for new products.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- PAGINATION -->
+                        {% if page_obj.has_other_pages %}
+                        <div class="pagination-container">
+                            <div class="step-links">
+                                {% if page_obj.has_previous %}
+                                <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo; First</a>
+                                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+                                {% else %}
+                                <span class="disabled">&laquo; First</span>
+                                <span class="disabled">Previous</span>
+                                {% endif %}
+
+                                <span class="current">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                                </span>
+
+                                {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+                                <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Last &raquo;</a>
+                                {% else %}
+                                <span class="disabled">Next</span>
+                                <span class="disabled">Last &raquo;</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    <!-- Beauty Badge -->
+                    <div class="text-center mt-5">
+                        <div class="beauty-badge">
+                            <i class="fas fa-sparkles"></i>
+                            <span>BEAUTY STARTS FROM WITHIN</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- FOOTER -->
+<!-- ============================================ -->
+<div class="container-fluid bg-white footer">
+    <div class="container py-5 text-center">
+        <p class="mb-0">&copy; <a class="border-bottom" href="#" style="color: #90bc79 !important;">Delight Care Plus</a>, All Rights Reserved.</p>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- BACK TO TOP -->
+<!-- ============================================ -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+<!-- ============================================ -->
+<!-- SCRIPTS -->
+<!-- ============================================ -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="{% static 'lib/wow/wow.min.js' %}"></script>
+<script src="{% static 'lib/easing/easing.min.js' %}"></script>
+<script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+<script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+<script src="{% static 'js/main.js' %}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update cart badge count
+        function updateCartBadge() {
+            fetch('/cart/count/')
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.getElementById('cartCount');
+                    if (badge && data.count !== undefined) {
+                        badge.textContent = data.count;
+                        badge.style.display = data.count > 0 ? 'flex' : 'none';
+                    }
+                })
+                .catch(error => console.error('Error fetching cart count:', error));
+        }
+
+        updateCartBadge();
+
+        const searchInput = document.getElementById('searchInput');
+        const productItems = document.querySelectorAll('.product-item-wrapper');
+
+        function searchProducts() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+
+            productItems.forEach(item => {
+                const productName = item.dataset.productName || '';
+                if (searchTerm === '' || productName.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
+
+        // Show toast if there's a success message
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('added') === 'true') {
+            showToast('Product added to cart! 🛒');
+            // Clean URL without reload
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'add-to-cart-toast';
+            toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + message;
+            document.body.appendChild(toast);
+            
+            setTimeout(function() {
+                toast.style.transition = 'opacity 0.5s';
+                toast.style.opacity = '0';
+                setTimeout(function() {
+                    toast.remove();
+                }, 500);
+            }, 3000);
+        }
+
+        // NOTE: No button disabling here - let forms submit naturally!
+
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.remove();
+                }, 500);
+            }, 5000);
+        });
+
+        // WhatsApp button pulse animation
+        const whatsappBtn = document.querySelector('.whatsapp-btn');
+        if (whatsappBtn) {
+            whatsappBtn.addEventListener('mouseenter', function() {
+                this.style.animation = 'none';
+            });
+            whatsappBtn.addEventListener('mouseleave', function() {
+                this.style.animation = 'pulse-green 2s infinite';
+            });
+        }
+
+        // Cart icon hover animation
+        const cartLink = document.querySelector('.cart-link');
+        if (cartLink) {
+            cartLink.addEventListener('mouseenter', function() {
+                const icon = this.querySelector('.cart-icon-img');
+                if (icon) icon.style.transform = 'scale(1.2)';
+            });
+            cartLink.addEventListener('mouseleave', function() {
+                const icon = this.querySelector('.cart-icon-img');
+                if (icon) icon.style.transform = 'scale(1)';
+            });
+        }
+    });
+</script>
+
+</body>
+
+</html>

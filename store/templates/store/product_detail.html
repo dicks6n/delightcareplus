@@ -1,0 +1,1328 @@
+<!-- templates/store/product_detail.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>{{ product.name }} - Delight Care Plus</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <link href="{% static 'store/lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'store/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'store/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
+
+    <style>
+        /* ============================================ */
+        /* YOUR COLOR: #90bc79 */
+        /* FULL PAGE BACKGROUND WITH BLUR & DARK OVERLAY */
+        /* ============================================ */
+        
+        /* --- FULL PAGE BACKGROUND --- */
+        body {
+            font-family: 'Poppins', 'Open Sans', sans-serif;
+            min-height: 100vh;
+            background: #f5f8f4;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Background image that covers the entire page */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("{% static 'store/img/IMG_0385.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            z-index: -2;
+        }
+
+        /* Dark overlay layer with blur */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: -1;
+        }
+
+        /* ============================================ */
+        /* ✅ WHITE NAVBAR - MATCHES LOGO */
+        /* ============================================ */
+        .sticky-top {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 9999 !important;
+            background: #ffffff !important;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            padding: 8px 0;
+            border-bottom: 2px solid rgba(144, 188, 121, 0.2);
+        }
+
+        .sticky-top::before {
+            display: none;
+        }
+
+        .sticky-top .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand img {
+            height: 50px;
+            width: auto;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(144, 188, 121, 0.3);
+        }
+
+        .navbar-brand h2,
+        .navbar-brand .brand-text {
+            color: #90bc79 !important;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
+            margin: 0;
+            text-shadow: none;
+        }
+
+        .navbar-nav .nav-link {
+            color: #1e2a1c !important;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 8px 18px !important;
+            transition: all 0.3s ease;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+            position: relative;
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #90bc79;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .navbar-nav .nav-link:hover::after,
+        .navbar-nav .nav-link.active::after {
+            width: 60%;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #90bc79 !important;
+            background: rgba(144, 188, 121, 0.1);
+        }
+
+        .navbar-nav .nav-link.active {
+            color: #90bc79 !important;
+            font-weight: 600;
+            background: rgba(144, 188, 121, 0.12);
+        }
+
+        .cart-link {
+            position: relative;
+            padding: 8px 18px !important;
+        }
+
+        .cart-link .cart-badge {
+            position: absolute;
+            top: -2px;
+            right: 2px;
+            background: #ff6b6b;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+
+        .cart-link i {
+            font-size: 1.2rem;
+            color: #1e2a1c;
+        }
+
+        .navbar-nav .text-white-50 {
+            color: #6c757d !important;
+        }
+
+        .navbar-nav .nav-link.text-danger {
+            color: #dc3545 !important;
+        }
+
+        .navbar-nav .nav-link.text-danger:hover {
+            color: #bb2d3b !important;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        /* ============================================ */
+        /* All content sits above the background */
+        /* ============================================ */
+        .container-fluid:not(.sticky-top),
+        .container,
+        .footer,
+        .hero-header,
+        .card,
+        .bg-light,
+        .bg-white,
+        .whatsapp-float,
+        .back-to-top {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============================================ */
+        /* WHATSAPP FLOATING BUTTON */
+        /* ============================================ */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .whatsapp-float .whatsapp-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: #25d366;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 2.2rem;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            animation: pulse-green 2s infinite;
+        }
+
+        .whatsapp-float .whatsapp-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
+        }
+
+        .whatsapp-float .whatsapp-btn .tooltip {
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .whatsapp-float .whatsapp-btn:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+            left: 75px;
+        }
+
+        .whatsapp-float .whatsapp-btn .tooltip::before {
+            content: '';
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 6px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .whatsapp-float .whatsapp-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #25d366;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .whatsapp-float .whatsapp-btn .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(37, 211, 102, 0.3);
+            animation: ripple 1.5s ease-out infinite;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .whatsapp-float .whatsapp-btn .ripple:nth-child(1) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% {
+                box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 30px rgba(37, 211, 102, 0.7);
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.8);
+                opacity: 0;
+            }
+        }
+
+        /* ============================================ */
+        /* CARDS WITH GLASS EFFECT */
+        /* ============================================ */
+        .card,
+        .bg-light,
+        .bg-white {
+            background: rgba(255, 255, 255, 0.92) !important;
+            backdrop-filter: blur(8px);
+        }
+
+        .footer {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+
+        /* ============================================ */
+        /* HERO HEADER - now transparent to show background */
+        /* ============================================ */
+        .hero-header {
+            background: transparent !important;
+            padding: 80px 20px !important;
+            position: relative;
+        }
+        .hero-header::before {
+            display: none;
+        }
+        .hero-header .container {
+            position: relative;
+            z-index: 2;
+        }
+        .hero-header h1 {
+            color: #ffffff !important;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+        .hero-header p {
+            color: rgba(255, 255, 255, 0.95) !important;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+        }
+        .hero-header .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.85) !important;
+        }
+        .hero-header .breadcrumb-item.active {
+            color: #ffffff !important;
+        }
+        .hero-header .breadcrumb-item a:hover {
+            color: #ffffff !important;
+        }
+
+        /* ============================================ */
+        /* BUTTONS - YOUR COLOR */
+        /* ============================================ */
+        .bg-primary {
+            background: #90bc79 !important;
+        }
+        .text-primary {
+            color: #90bc79 !important;
+        }
+        .btn-primary {
+            background: #90bc79;
+            border: none;
+            transition: all 0.3s;
+            color: #ffffff !important;
+        }
+        .btn-primary:hover {
+            background: #7dab66 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
+            color: #ffffff !important;
+        }
+        .btn-outline-primary {
+            color: #90bc79 !important;
+            border-color: #90bc79 !important;
+        }
+        .btn-outline-primary:hover {
+            background: #90bc79 !important;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.3);
+        }
+        .btn-outline-danger:hover {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-outline-success:hover {
+            background: #198754;
+            color: white;
+        }
+        .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: white;
+        }
+        .rounded-pill {
+            border-radius: 50px !important;
+        }
+        .shadow-sm {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+        }
+        .border-top {
+            border-top: 1px solid rgba(233, 236, 239, 0.5) !important;
+        }
+        .badge {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .card {
+            transition: all 0.3s ease;
+            border-radius: 12px !important;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+        }
+        .btn-link {
+            color: #6c757d !important;
+            text-decoration: none !important;
+        }
+        .btn-link:hover {
+            color: #90bc79 !important;
+        }
+
+        .fa-star.text-primary {
+            color: #90bc79 !important;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 998;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #90bc79 !important;
+            color: #ffffff !important;
+            border: none !important;
+            transition: all 0.3s;
+        }
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
+            color: #ffffff !important;
+        }
+
+        /* ============================================ */
+/* YOUR COLOR: #90bc79 */
+/* FULL PAGE BACKGROUND WITH BLUR & DARK OVERLAY */
+/* ============================================ */
+
+/* --- FULL PAGE BACKGROUND --- */
+body {
+    font-family: 'Poppins', 'Open Sans', sans-serif;
+    min-height: 100vh;
+    background: #f5f8f4;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+/* Background image that covers the entire page */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("{% static 'store/img/IMG_0385.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    z-index: -2;
+}
+
+/* Dark overlay layer with blur */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: -1;
+}
+
+/* ============================================ */
+/* ✅ TRANSPARENT NAVBAR */
+/* ============================================ */
+.sticky-top {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 9999 !important;
+    background: transparent !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.sticky-top::before {
+    display: none;
+}
+
+.sticky-top .container {
+    position: relative;
+    z-index: 1;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand img {
+    height: 50px;
+    width: auto;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.navbar-brand img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(144, 188, 121, 0.3);
+}
+
+/* ============================================ */
+/* ✅ ANIMATED BRAND TEXT */
+/* ============================================ */
+.animated-brand {
+    background: linear-gradient(
+        90deg,
+        #ffffff 0%,
+        #e8f5e9 25%,
+        #90bc79 50%,
+        #e8f5e9 75%,
+        #ffffff 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 3s linear infinite;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: -0.5px;
+    display: inline-block;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+.animated-brand:hover {
+    animation: gradient-shift 1s linear infinite;
+    cursor: pointer;
+}
+
+/* ============================================ */
+/* ✅ NAV LINKS - WHITE TEXT FOR DARK BACKGROUND */
+/* ============================================ */
+.navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 8px 18px !important;
+    transition: all 0.3s ease;
+    border-radius: 30px;
+    letter-spacing: 0.3px;
+    position: relative;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: #90bc79;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+    width: 60%;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffffff !important;
+    background: rgba(144, 188, 121, 0.2);
+}
+
+.navbar-nav .nav-link.active {
+    color: #ffffff !important;
+    font-weight: 600;
+    background: rgba(144, 188, 121, 0.25);
+}
+
+/* ============================================ */
+/* ✅ CART ICON WITH IMAGE */
+/* ============================================ */
+.cart-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 18px !important;
+}
+
+.cart-icon-img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    filter: brightness(0) invert(1);
+}
+
+.cart-link:hover .cart-icon-img {
+    transform: scale(1.15);
+}
+
+.cart-badge {
+    position: absolute;
+    top: -2px;
+    right: 2px;
+    background: #ff6b6b;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-nav .text-white-50 {
+    color: rgba(255, 255, 255, 0.7) !important;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-nav .nav-link.text-danger {
+    color: #ff6b6b !important;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-nav .nav-link.text-danger:hover {
+    color: #ff4444 !important;
+    background: rgba(220, 53, 69, 0.2);
+}
+
+/* ============================================ */
+/* All content sits above the background */
+/* ============================================ */
+.container-fluid:not(.sticky-top),
+.container,
+.footer,
+.hero-header,
+.card,
+.bg-light,
+.bg-white,
+.whatsapp-float,
+.back-to-top {
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================ */
+/* WHATSAPP FLOATING BUTTON */
+/* ============================================ */
+.whatsapp-float {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.whatsapp-float .whatsapp-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: #25d366;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 2.2rem;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    position: relative;
+    animation: pulse-green 2s infinite;
+}
+
+.whatsapp-float .whatsapp-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
+}
+
+.whatsapp-float .whatsapp-btn .tooltip {
+    position: absolute;
+    left: 70px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.whatsapp-float .whatsapp-btn:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    left: 75px;
+}
+
+.whatsapp-float .whatsapp-btn .tooltip::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: rgba(0, 0, 0, 0.8);
+}
+
+.whatsapp-float .whatsapp-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #25d366;
+    background: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.whatsapp-float .whatsapp-btn .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(37, 211, 102, 0.3);
+    animation: ripple 1.5s ease-out infinite;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.whatsapp-float .whatsapp-btn .ripple:nth-child(1) {
+    animation-delay: 0.5s;
+}
+
+@keyframes pulse-green {
+    0%, 100% {
+        box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 30px rgba(37, 211, 102, 0.7);
+    }
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+}
+
+/* ============================================ */
+/* CARDS WITH GLASS EFFECT */
+/* ============================================ */
+.card,
+.bg-light,
+.bg-white {
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(8px);
+}
+
+.footer {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+}
+
+/* ============================================ */
+/* HERO HEADER - now transparent to show background */
+/* ============================================ */
+.hero-header {
+    background: transparent !important;
+    padding: 120px 20px 60px !important;
+    position: relative;
+    margin-top: -60px;
+}
+.hero-header::before {
+    display: none;
+}
+.hero-header .container {
+    position: relative;
+    z-index: 2;
+}
+.hero-header h1 {
+    color: #ffffff !important;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+.hero-header p {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
+}
+.hero-header .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.85) !important;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+}
+.hero-header .breadcrumb-item.active {
+    color: #ffffff !important;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+}
+.hero-header .breadcrumb-item a:hover {
+    color: #ffffff !important;
+}
+
+/* ============================================ */
+/* BUTTONS - YOUR COLOR */
+/* ============================================ */
+.bg-primary {
+    background: #90bc79 !important;
+}
+.text-primary {
+    color: #90bc79 !important;
+}
+.btn-primary {
+    background: #90bc79;
+    border: none;
+    transition: all 0.3s;
+    color: #ffffff !important;
+}
+.btn-primary:hover {
+    background: #7dab66 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
+    color: #ffffff !important;
+}
+.btn-outline-primary {
+    color: #90bc79 !important;
+    border-color: #90bc79 !important;
+}
+.btn-outline-primary:hover {
+    background: #90bc79 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(144, 188, 121, 0.3);
+}
+.btn-outline-danger:hover {
+    background: #dc3545;
+    color: white;
+}
+.btn-outline-success:hover {
+    background: #198754;
+    color: white;
+}
+.btn-outline-secondary:hover {
+    background: #6c757d;
+    color: white;
+}
+.rounded-pill {
+    border-radius: 50px !important;
+}
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+.border-top {
+    border-top: 1px solid rgba(233, 236, 239, 0.5) !important;
+}
+.badge {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.card {
+    transition: all 0.3s ease;
+    border-radius: 12px !important;
+}
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+.btn-link {
+    color: #6c757d !important;
+    text-decoration: none !important;
+}
+.btn-link:hover {
+    color: #90bc79 !important;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+}
+
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 998;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #90bc79 !important;
+    color: #ffffff !important;
+    border: none !important;
+    transition: all 0.3s;
+}
+.back-to-top:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
+    color: #ffffff !important;
+}
+
+/* ============================================ */
+/* TOAST NOTIFICATION */
+/* ============================================ */
+.add-to-cart-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: #28a745;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ============================================ */
+/* MOBILE RESPONSIVE */
+/* ============================================ */
+@media (max-width: 991px) {
+    .navbar-collapse {
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(10px);
+        border-radius: 0 0 15px 15px;
+        padding: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .navbar-nav .nav-link {
+        text-align: center;
+        padding: 10px 15px !important;
+        color: #ffffff !important;
+    }
+    
+    .navbar-nav .nav-link::after {
+        display: none;
+    }
+    
+    .navbar-toggler {
+        border-color: rgba(255, 255, 255, 0.5) !important;
+    }
+    
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+    }
+    
+    .whatsapp-float {
+        bottom: 20px;
+        left: 20px;
+    }
+    .whatsapp-float .whatsapp-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .animated-brand {
+        font-size: 1.3rem;
+    }
+    .cart-icon-img {
+        width: 20px;
+        height: 20px;
+    }
+}
+            
+            .whatsapp-float {
+                bottom: 20px;
+                left: 20px;
+            }
+            .whatsapp-float .whatsapp-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+
+    <script>
+        function updatePrice() {
+            var select = document.getElementById("variantSelect");
+            var price = select.options[select.selectedIndex].getAttribute("data-price");
+            document.getElementById("priceDisplay").innerText = "KES " + parseFloat(price).toFixed(2);
+        }
+    </script>
+</head>
+
+<body>
+   
+    <!-- ============================================ -->
+    <!-- ✅ WHITE NAVBAR WITH GIF LOGO -->
+    <!-- ============================================ -->
+    <div class="container-fluid sticky-top">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light p-0">
+                <a href="/" class="navbar-brand d-flex align-items-center">
+                    <!-- GIF Logo -->
+                    <img src="{% static 'store/img/DELIGHT.gif' %}" 
+                         alt="Delight Care Plus" 
+                         style="height: 50px; width: auto; border-radius: 8px;">
+                    <!-- Text Logo (visible on desktop) -->
+                    <span class="d-none d-md-inline ms-2 brand-text" 
+                          style="color: #90bc79 !important; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.6rem; letter-spacing: -0.5px;">
+                    </span>
+                </a>
+                <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto">
+                        <a href="/" class="nav-item nav-link">Home</a>
+                        <a href="{% url 'my_orders' %}" class="nav-item nav-link">📦 My Orders</a>
+                        <a href="/cart/" class="nav-item nav-link cart-link">
+                            <i class="fa fa-shopping-bag"></i>
+                            <span class="cart-badge" id="cartCount">0</span>
+                        </a>
+                        <a href="{% url 'blog_list' %}" class="nav-item nav-link">Blog</a>
+                        
+                        {% if user.is_authenticated %}
+                            <span class="nav-item nav-link text-white-50">Welcome, {{ user.username }}</span>
+                            <a href="{% url 'logout' %}" class="nav-item nav-link text-danger">Logout</a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
+                            <a href="{% url 'signup' %}" class="nav-item nav-link">Signup</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- WHATSAPP FLOATING BUTTON -->
+    <!-- ============================================ -->
+    <div class="whatsapp-float">
+        <a href="https://wa.me/254795180079?text=Hello%20Delight%20Care%2C%20I%20would%20like%20to%20know%20more%20about%20your%20products"
+        class="whatsapp-btn"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Contact us on WhatsApp">
+        <span class="ripple"></span>
+        <span class="ripple"></span>
+        <i class="fab fa-whatsapp"></i>
+        <span class="tooltip">Chat with us on WhatsApp</span>
+    </a>
+    <span class="whatsapp-label">Chat 💬</span>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- HERO HEADER - TRANSPARENT -->
+    <!-- ============================================ -->
+    <div class="container-fluid hero-header mb-5">
+        <div class="container text-center">
+            <h1 class="display-4 text-white mb-3 animated slideInDown">Product Details</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center mb-0 animated slideInDown">
+                    <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page">{{ product.name }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container-fluid py-5">
+        <div class="container">
+            <div class="row g-5 align-items-center">
+                
+                <div class="col-lg-5 text-center wow fadeIn" data-wow-delay="0.1s">
+                    <div class="border rounded p-4 bg-white shadow-sm">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}" style="max-height: 400px; object-fit: contain;">
+                        {% else %}
+                            <img src="{% static 'img/product-1.png' %}" class="img-fluid rounded" alt="Fallback Image">
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-lg-7 wow fadeIn" data-wow-delay="0.3s">
+                    <h1 class="text-primary mb-2 fw-bold">{{ product.name }}</h1>
+                    
+                    <div class="mb-3">
+                        <small class="fa fa-star text-primary"></small>
+                        <small class="fa fa-star text-primary"></small>
+                        <small class="fa fa-star text-primary"></small>
+                        <small class="fa fa-star text-primary"></small>
+                        <small class="fa fa-star text-primary"></small>
+                        <small class="text-muted ms-2" style="color: rgba(255, 255, 255, 0.9) !important;">(Customer Reviews)</small>
+                    </div>
+
+                    <div class="bg-light d-inline-block rounded px-4 py-2 mb-4">
+                        <h3 class="text-primary m-0" id="priceDisplay">KES {{ product.variants.first.price|floatformat:2 }}</h3>
+                    </div>
+
+                    <h5 class="text-dark fw-bold mb-2" style="color: #ffffff !important; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);">Description</h5>
+                    <p class="mb-4 text-muted" style="line-height: 1.7; color: rgba(255, 255, 255, 0.9) !important; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);">{{ product.description }}</p>
+
+                    <form method="post" action="{% url 'add_to_cart' product.id %}" class="bg-light p-4 rounded shadow-sm">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            
+                            <div class="col-md-6">
+                                <label for="variantSelect" class="form-label text-muted fw-bold">Select Size:</label>
+                                <select name="variant_id" id="variantSelect" onchange="updatePrice()" class="form-select bg-white border-0 py-3 px-3 shadow-none" required>
+                                    {% for variant in product.variants.all %}
+                                        <option value="{{ variant.id }}" data-price="{{ variant.price }}">
+                                            {{ variant.get_size_display }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label text-muted fw-bold">Quantity:</label>
+                                <input type="number" name="quantity" value="1" min="1" class="form-control bg-white border-0 py-3 px-3 shadow-none">
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-primary w-100 rounded-pill py-3 fw-bold shadow">
+                                    <i class="fa fa-shopping-cart me-2"></i> Add to Shopping Cart
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- FOOTER -->
+    <!-- ============================================ -->
+    <div class="container-fluid bg-white footer">
+        <div class="container py-5 text-center">
+            <p class="mb-0">&copy; <a class="border-bottom" href="#" style="color: #90bc79 !important;">Delight Care Plus</a>, All Rights Reserved.</p>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- BACK TO TOP BUTTON -->
+    <!-- ============================================ -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- ============================================ -->
+    <!-- SCRIPTS -->
+    <!-- ============================================ -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-close alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.transition = 'opacity 0.5s';
+                    alert.style.opacity = '0';
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 500);
+                }, 5000);
+            });
+
+            // WhatsApp button pulse animation
+            const whatsappBtn = document.querySelector('.whatsapp-btn');
+            if (whatsappBtn) {
+                whatsappBtn.addEventListener('mouseenter', function() {
+                    this.style.animation = 'none';
+                });
+                whatsappBtn.addEventListener('mouseleave', function() {
+                    this.style.animation = 'pulse-green 2s infinite';
+                });
+            }
+
+            // Update cart badge
+            function updateCartBadge() {
+                fetch('/cart/count/')
+                    .then(response => response.json())
+                    .then(data => {
+                        const badge = document.getElementById('cartCount');
+                        if (badge && data.count !== undefined) {
+                            badge.textContent = data.count;
+                            badge.style.display = data.count > 0 ? 'flex' : 'none';
+                        }
+                    })
+                    .catch(error => console.error('Error fetching cart count:', error));
+            }
+            updateCartBadge();
+        });
+    </script>
+
+</body>
+
+</html>
