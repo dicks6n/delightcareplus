@@ -10,7 +10,6 @@
 /* PRODUCT DETAIL — GREEN GLOW DARK THEME       */
 /* ============================================ */
 
-/* Page background override */
 body {
     background: #0f0f14 !important;
 }
@@ -26,7 +25,7 @@ body::after {
 }
 
 /* ============================================ */
-/* HERO HEADER — Green Gradient + Glow           */
+/* HERO HEADER                                   */
 /* ============================================ */
 .hero-header {
     padding: 140px 20px 20px !important;
@@ -80,7 +79,7 @@ body::after {
 }
 
 /* ============================================ */
-/* MAIN CONTAINER                               */
+/* MAIN CONTAINER                                */
 /* ============================================ */
 .crazy-detail-container {
     max-width: 1280px;
@@ -89,7 +88,7 @@ body::after {
 }
 
 /* ============================================ */
-/* IMAGE PANEL — Dark Glass with Green Glow      */
+/* IMAGE PANEL                                   */
 /* ============================================ */
 .crazy-image-panel {
     background: rgba(255, 255, 255, 0.04);
@@ -113,15 +112,12 @@ body::after {
 .crazy-image-panel::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 2px;
     background: linear-gradient(90deg, transparent, #a8d990, #90bc79, transparent);
     box-shadow: 0 0 20px rgba(144, 188, 121, 0.8);
 }
 
-/* Ambient radial glow behind image */
 .crazy-image-panel::after {
     content: '';
     position: absolute;
@@ -165,7 +161,7 @@ body::after {
 }
 
 /* ============================================ */
-/* INFO PANEL — Dark Glass                      */
+/* INFO PANEL                                    */
 /* ============================================ */
 .crazy-info-panel {
     background: rgba(255, 255, 255, 0.04);
@@ -184,16 +180,14 @@ body::after {
 .crazy-info-panel::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 2px;
     background: linear-gradient(90deg, transparent, #a8d990, #90bc79, transparent);
     box-shadow: 0 0 20px rgba(144, 188, 121, 0.8);
 }
 
 /* ============================================ */
-/* PRODUCT TITLE                                */
+/* PRODUCT TITLE                                 */
 /* ============================================ */
 .crazy-detail-title {
     font-size: 2rem;
@@ -206,7 +200,7 @@ body::after {
 }
 
 /* ============================================ */
-/* RATING ROW                                   */
+/* RATING ROW                                    */
 /* ============================================ */
 .crazy-rating-row {
     display: flex;
@@ -229,7 +223,7 @@ body::after {
 }
 
 /* ============================================ */
-/* PRICE BADGE                                  */
+/* PRICE BADGE                                   */
 /* ============================================ */
 .crazy-price-badge {
     display: inline-flex;
@@ -280,7 +274,7 @@ body::after {
 }
 
 /* ============================================ */
-/* SECTION HEADING                              */
+/* SECTION HEADING                               */
 /* ============================================ */
 .crazy-section-heading {
     color: #ffffff;
@@ -307,7 +301,7 @@ body::after {
 }
 
 /* ============================================ */
-/* DESCRIPTION                                  */
+/* DESCRIPTION                                   */
 /* ============================================ */
 .crazy-description {
     color: rgba(255, 255, 255, 0.72);
@@ -317,7 +311,7 @@ body::after {
 }
 
 /* ============================================ */
-/* ORDER FORM PANEL                             */
+/* ORDER FORM PANEL                              */
 /* ============================================ */
 .crazy-order-form {
     background: rgba(255, 255, 255, 0.02);
@@ -346,7 +340,7 @@ body::after {
 /* Select input */
 .crazy-select {
     width: 100%;
-    padding: 13px 16px;
+    padding: 13px 42px 13px 16px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.04);
@@ -360,7 +354,6 @@ body::after {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a8d990' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 14px center;
-    padding-right: 42px;
 }
 
 .crazy-select option {
@@ -375,31 +368,8 @@ body::after {
                 0 0 30px rgba(144, 188, 121, 0.35);
 }
 
-/* Number input */
-.crazy-number-input {
-    width: 100%;
-    padding: 13px 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.04);
-    color: #ffffff;
-    font-size: 0.92rem;
-    font-family: inherit;
-    transition: all 0.25s ease;
-    outline: none;
-    text-align: center;
-    font-weight: 600;
-}
-
-.crazy-number-input:focus {
-    border-color: rgba(144, 188, 121, 0.5);
-    background: rgba(255, 255, 255, 0.06);
-    box-shadow: 0 0 0 4px rgba(144, 188, 121, 0.1),
-                0 0 30px rgba(144, 188, 121, 0.35);
-}
-
 /* ============================================ */
-/* QUANTITY CONTROL — Custom +/-                */
+/* QUANTITY CONTROL                              */
 /* ============================================ */
 .crazy-qty-group {
     display: flex;
@@ -457,7 +427,7 @@ body::after {
 }
 
 /* ============================================ */
-/* ADD TO CART BUTTON — Big Green Glow          */
+/* ADD TO CART BUTTON                            */
 /* ============================================ */
 .crazy-add-to-cart-btn {
     display: flex;
@@ -515,8 +485,39 @@ body::after {
     transform: translateY(-1px);
 }
 
+.crazy-add-to-cart-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
 /* ============================================ */
-/* TRUST BADGES ROW                             */
+/* NO VARIANTS WARNING                           */
+/* ============================================ */
+.crazy-no-variants {
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.25);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 16px;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.crazy-no-variants i {
+    color: #fbbf24;
+    font-size: 1rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.7));
+}
+
+/* ============================================ */
+/* TRUST BADGES ROW                              */
 /* ============================================ */
 .crazy-trust-row {
     display: flex;
@@ -552,7 +553,7 @@ body::after {
 }
 
 /* ============================================ */
-/* MOBILE                                       */
+/* MOBILE                                        */
 /* ============================================ */
 @media (max-width: 991px) {
     .hero-header {
@@ -708,7 +709,11 @@ body::after {
                     <div class="crazy-price-badge">
                         <i class="fas fa-tag"></i>
                         <span class="price-text" id="priceDisplay">
-                            KES {{ product.variants.first.price|floatformat:2 }}
+                            {% if product.variants.first %}
+                                KES {{ product.variants.first.price|floatformat:2 }}
+                            {% else %}
+                                KES {{ product.price|floatformat:2 }}
+                            {% endif %}
                         </span>
                     </div>
 
@@ -718,19 +723,29 @@ body::after {
                     </h6>
                     <p class="crazy-description">{{ product.description }}</p>
 
-                    <!-- Order Form -->
+                    <!-- Order Section -->
                     <h6 class="crazy-section-heading">
                         <i class="fas fa-shopping-bag"></i> Order Now
                     </h6>
 
+                    <!-- No variants warning -->
+                    {% if not product.variants.exists %}
+                    <div class="crazy-no-variants">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>This product has no variants yet. It will be added to your cart with the base price shown above.</span>
+                    </div>
+                    {% endif %}
+
                     <form method="post"
-                          action="{% url 'add_to_cart' product.id %}"
-                          class="crazy-order-form">
+                          action="{% url 'add_to_cart_ajax' product.id %}"
+                          class="crazy-order-form js-add-to-cart-form"
+                          id="productDetailForm">
                         {% csrf_token %}
 
                         <div class="row g-3">
 
-                            <!-- Size Selector -->
+                            <!-- Size Selector (only if variants exist) -->
+                            {% if product.variants.exists %}
                             <div class="col-md-6">
                                 <label for="variantSelect" class="crazy-form-label">
                                     <i class="fas fa-cube"></i> Select Size
@@ -744,14 +759,15 @@ body::after {
                                         <option value="{{ variant.id }}"
                                                 data-price="{{ variant.price }}"
                                                 {% if forloop.first %}selected{% endif %}>
-                                            {{ variant.get_size_display }}
+                                            {{ variant.size }}
                                         </option>
                                     {% endfor %}
                                 </select>
                             </div>
+                            {% endif %}
 
                             <!-- Quantity -->
-                            <div class="col-md-6">
+                            <div class="{% if product.variants.exists %}col-md-6{% else %}col-12{% endif %}">
                                 <label class="crazy-form-label">
                                     <i class="fas fa-sort-numeric-up"></i> Quantity
                                 </label>
@@ -765,7 +781,8 @@ body::after {
                                            value="1"
                                            min="1"
                                            max="99"
-                                           class="crazy-qty-input">
+                                           class="crazy-qty-input"
+                                           readonly>
                                     <button type="button" class="crazy-qty-btn" onclick="changeQty(1)">
                                         <i class="fas fa-plus"></i>
                                     </button>
@@ -774,7 +791,7 @@ body::after {
 
                             <!-- Add to Cart -->
                             <div class="col-12">
-                                <button type="submit" class="crazy-add-to-cart-btn">
+                                <button type="submit" class="crazy-add-to-cart-btn" id="addToCartBtn">
                                     <i class="fas fa-shopping-cart"></i>
                                     Add to Shopping Cart
                                 </button>
@@ -818,9 +835,11 @@ body::after {
     // ============================================
     function updatePrice() {
         const select = document.getElementById('variantSelect');
+        if (!select) return;
+
         const price = select.options[select.selectedIndex].getAttribute('data-price');
         const display = document.getElementById('priceDisplay');
-        if (display) {
+        if (display && price) {
             display.textContent = 'KES ' + parseFloat(price).toFixed(2);
         }
     }
@@ -840,7 +859,7 @@ body::after {
 
         input.value = newVal;
 
-        // Small pulse animation on value
+        // Pulse animation on the value
         input.style.transform = 'scale(1.15)';
         input.style.transition = 'transform 0.15s ease';
         setTimeout(() => {
@@ -849,13 +868,12 @@ body::after {
     }
 
     // ============================================
-    // VALIDATE QUANTITY INPUT (only digits)
+    // VALIDATE QUANTITY INPUT
     // ============================================
     document.addEventListener('DOMContentLoaded', function() {
         const qtyInput = document.getElementById('quantityInput');
         if (qtyInput) {
             qtyInput.addEventListener('input', function() {
-                // Strip non-digits
                 this.value = this.value.replace(/[^0-9]/g, '');
                 if (this.value === '' || parseInt(this.value) < 1) {
                     this.value = 1;

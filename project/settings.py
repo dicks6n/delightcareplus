@@ -10,39 +10,37 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-from pathlib import Path
-
 import os
 from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-STATIC_URL = '/static/'
-
-# Add this block completely:
-STATICFILES_DIRS = [
-    BASE_DIR / "store" / "static",
-]
-
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
+# =============================================
+# SECURITY
+# =============================================
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# ⚠️ Generate a new secret key for production:
+# python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 SECRET_KEY = 'django-insecure-ahw@(v2zyav9rjx$yqhgjer+qfa$xiv7k1d37!q$0w8ylwba3k'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# ⚠️ Set to False in production
 DEBUG = True
 
-ALLOWED_HOSTS = ['*' , '192.168.100.74']
+# ⚠️ Restrict to your actual domains in production
+ALLOWED_HOSTS = [
+    '*',                      # ⚠️ Remove this in production!
+    '192.168.100.74',
+    '127.0.0.1',
+    'localhost',
+    'www.delightcareplus.com',
+]
 
 
-# Application definition
+# =============================================
+# APPLICATIONS
+# =============================================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -54,6 +52,11 @@ INSTALLED_APPS = [
     'store.apps.StoreConfig',
 ]
 
+
+# =============================================
+# MIDDLEWARE
+# =============================================
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -63,6 +66,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+# =============================================
+# URLS & TEMPLATES
+# =============================================
 
 ROOT_URLCONF = 'project.urls'
 
@@ -84,8 +92,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+# =============================================
+# DATABASE
+# =============================================
 
 DATABASES = {
     'default': {
@@ -95,8 +104,9 @@ DATABASES = {
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
+# =============================================
+# PASSWORD VALIDATION
+# =============================================
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -114,38 +124,53 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
+# =============================================
+# INTERNATIONALIZATION
+# =============================================
 
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+TIME_ZONE = 'Africa/Nairobi'   # ⭐ Changed from UTC to Kenya time
 USE_I18N = True
-
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
+# =============================================
+# STATIC & MEDIA FILES
+# =============================================
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "store" / "static",
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-MPESA_CONSUMER_KEY = 'YbrMXJmgE5sAo9eqmVBRb6F0FdJGmYh2'
-MPESA_CONSUMER_SECRET = 'W4IA8k6MdddtAKpA'
+
+# =============================================
+# DEFAULT AUTO FIELD
+# =============================================
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# M-Pesa API Credentials
-MPESA_CONSUMER_KEY = 'YbrMXJmgE5sAo9eqmVBRb6F0FdJGmYh2'  # ⚠️ REPLACE WITH YOUR ACTUAL KEY
-MPESA_CONSUMER_SECRET = 'W4IA8k6MdddtAKpA'  # ⚠️ REPLACE WITH YOUR ACTUAL SECRET
-MPESA_PASSKEY = 'your_passkey_here'  # ⚠️ GET THIS FROM SAFARICOM DEVELOPER PORTAL
-MPESA_SHORTCODE = '174379'  # Default test shortcode
+# =============================================
+# M-PESA CONFIGURATION — PRODUCTION
+# =============================================
 
-# Environment (sandbox or production)
-MPESA_ENVIRONMENT = 'sandbox'  # Change to 'production' for live
+# Production Credentials (from Safaricom developer portal)
+# ⚠️ REPLACE THESE with your actual Production values!
+MPESA_CONSUMER_KEY = 'yKjRtGlHpISwYuLq4f9OBVImkmAmEOP69RFjqA8pqjPMKo93'
+MPESA_CONSUMER_SECRET = 'lGeHAzeNSuzfCuTtoQWiUkTBQ1Z22Se7qEsodV6NLfah4UCgJT8g7vSeDN0Anvek'
+
+# Your real shortcode and passkey
+MPESA_SHORTCODE = '4701129'
+MPESA_PASSKEY = '1d2873038e18958d0b4fbe4693a56798c5d1a4fe6a3419612094409e48c38a42'
+
+# Environment
+MPESA_ENVIRONMENT = 'production'
 
 # Base URLs
 if MPESA_ENVIRONMENT == 'production':
@@ -153,56 +178,54 @@ if MPESA_ENVIRONMENT == 'production':
 else:
     MPESA_BASE_URL = 'https://sandbox.safaricom.co.ke'
 
-# Callback URL - You need a public URL for this
-# For local testing, use: ngrok http 8000
-MPESA_CALLBACK_URL = 'https://your-domain.com/mpesa/callback/'
+# Callback URL — must be HTTPS and publicly accessible
+# ⚠️ CHANGE this to your actual live domain
+MPESA_CALLBACK_URL = 'https://delightcareplus.com/mpesa/callback/'
+
 
 # =============================================
-# END OF M-PESA CONFIGURATION
+# LOGGING — For M-Pesa debugging
 # =============================================
 
-# Logging for debugging M-Pesa
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] {levelname} {name}: {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
         'file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': 'mpesa_debug.log',
+            'filename': BASE_DIR / 'mpesa_debug.log',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
         'store': {
             'handlers': ['console', 'file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
     },
 }
-# settings.py
+
 
 # =============================================
-# M-PESA CONFIGURATION
+# SECURITY SETTINGS FOR PRODUCTION
 # =============================================
+# Uncomment these AFTER your site is fully HTTPS
 
-# Your M-Pesa Credentials - UPDATE THESE!
-MPESA_CONSUMER_KEY = 'LFuAPkR8BWp3uQ4NAUdtRPi0umQVYT5sS8XTEbWOgNsgept2'  # Your Consumer Key
-MPESA_CONSUMER_SECRET = 'UCf5kdz3nAe6Gakk2IJb69gBznmX6knNe1eA7MeQD1pzgmoI7PxaxXGWNLiLawtN'  # Your Consumer Secret
-MPESA_PASSKEY = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'
-MPESA_SHORTCODE = '174379'  # Default test shortcode
-
-# Environment
-MPESA_ENVIRONMENT = 'sandbox'  # Use 'sandbox' for testing
-
-# Base URLs
-if MPESA_ENVIRONMENT == 'production':
-    MPESA_BASE_URL = 'https://api.safaricom.co.ke'
-else:
-    MPESA_BASE_URL = 'https://sandbox.safaricom.co.ke'
-
-# Callback URL - Use ngrok for local testing
-MPESA_CALLBACK_URL = 'https://your-domain.com/mpesa/callback/'
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# SECURE_SSL_REDIRECT = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
