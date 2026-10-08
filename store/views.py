@@ -8,17 +8,16 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.utils import timezone
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from decimal import Decimal
 import json
 import logging
 import requests
 import base64
 from datetime import datetime
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-# ✅ ALL MODELS
 from .models import Product, ProductVariant, Order, OrderItem, Category, BlogPost
 
 logger = logging.getLogger(__name__)
@@ -100,21 +99,6 @@ def product_detail(request, product_id):
 # CART VIEWS
 # =============================================
 
-# store/views.py
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-from django.contrib import messages
-from decimal import Decimal
-import logging
-
-logger = logging.getLogger(__name__)
-
-
-# =============================================
-# CART VIEWS
-# =============================================
-
 def add_to_cart(request, product_id):
     """Standard (non-AJAX) add to cart — fallback"""
     variant_id = request.POST.get("variant_id")
@@ -149,19 +133,31 @@ def add_to_cart_ajax(request, product_id):
         return JsonResponse({"success": False, "error": "Invalid method"}, status=405)
 
     try:
-        variant_id = request.POST.get("variant_id") or product_id
+        variant_id = request.POST.get("variant_id")
         quantity = int(request.POST.get("quantity", 1))
 
-        variant = get_object_or_404(ProductVariant, id=variant_id)
+        # ⭐ Fallback: if no variant_id, use first variant or auto-create one
+        if not variant_id:
+            product = get_object_or_404(Product, id=product_id)
+            variant = product.variants.first()
+            if not variant:
+                variant = ProductVariant.objects.create(
+                    product=product,
+                    size="Standard",
+                    price=product.price,
+                    stock=product.stock or 50,
+                )
+        else:
+            variant = get_object_or_404(ProductVariant, id=variant_id)
 
         cart = request.session.get("cart", {})
-        key = str(variant_id)
+        key = str(variant.id)
 
         if key in cart:
             cart[key]["quantity"] += quantity
         else:
             cart[key] = {
-                "variant_id": variant_id,
+                "variant_id": variant.id,
                 "quantity": quantity,
             }
 
@@ -177,8 +173,6 @@ def add_to_cart_ajax(request, product_id):
             "cart_count": cart_count,
         })
 
-    except ProductVariant.DoesNotExist:
-        return JsonResponse({"success": False, "error": "Product variant not found"}, status=404)
     except Exception as e:
         logger.error(f"AJAX add to cart error: {str(e)}")
         return JsonResponse({"success": False, "error": str(e)}, status=500)
@@ -190,19 +184,30 @@ def buy_now_ajax(request, product_id):
         return JsonResponse({"success": False, "error": "Invalid method"}, status=405)
 
     try:
-        variant_id = request.POST.get("variant_id") or product_id
+        variant_id = request.POST.get("variant_id")
         quantity = int(request.POST.get("quantity", 1))
 
-        variant = get_object_or_404(ProductVariant, id=variant_id)
+        if not variant_id:
+            product = get_object_or_404(Product, id=product_id)
+            variant = product.variants.first()
+            if not variant:
+                variant = ProductVariant.objects.create(
+                    product=product,
+                    size="Standard",
+                    price=product.price,
+                    stock=product.stock or 50,
+                )
+        else:
+            variant = get_object_or_404(ProductVariant, id=variant_id)
 
         cart = request.session.get("cart", {})
-        key = str(variant_id)
+        key = str(variant.id)
 
         if key in cart:
             cart[key]["quantity"] += quantity
         else:
             cart[key] = {
-                "variant_id": variant_id,
+                "variant_id": variant.id,
                 "quantity": quantity,
             }
 
@@ -220,8 +225,6 @@ def buy_now_ajax(request, product_id):
             "redirect_url": redirect_url,
         })
 
-    except ProductVariant.DoesNotExist:
-        return JsonResponse({"success": False, "error": "Product variant not found"}, status=404)
     except Exception as e:
         logger.error(f"AJAX buy now error: {str(e)}")
         return JsonResponse({"success": False, "error": str(e)}, status=500)
@@ -238,7 +241,6 @@ def clear_cart(request):
     """DEBUG endpoint: clear the cart"""
     request.session["cart"] = {}
     request.session.modified = True
-    messages.success(request, "Cart cleared!")
     return JsonResponse({"success": True, "message": "Cart cleared", "count": 0})
 
 
@@ -265,7 +267,7 @@ def cart(request):
         cart_items.append({
             "key": key,
             "product": variant.product,
-            "size": variant.size,    # ⭐ FIX: use .size not .get_size_display()
+            "size": variant.size,
             "price": variant.price,
             "quantity": quantity,
             "item_total": item_total,
@@ -280,12 +282,6 @@ def cart(request):
         "gst": gst,
         "grand_total": grand_total,
     })
-
-def cart_count(request):
-    """Return the number of items in the cart as JSON"""
-    cart = request.session.get("cart", {})
-    count = sum(item.get("quantity", 1) for item in cart.values())
-    return JsonResponse({"count": count})
 
 
 def remove_from_cart(request, key):
@@ -349,7 +345,17 @@ def buy_now(request, product_id):
         quantity = int(request.POST.get('quantity', 1))
 
         if not variant_id:
-            variant_id = product_id
+            variant = product.variants.first()
+            if variant:
+                variant_id = variant.id
+            else:
+                variant = ProductVariant.objects.create(
+                    product=product,
+                    size="Standard",
+                    price=product.price,
+                    stock=product.stock or 50,
+                )
+                variant_id = variant.id
 
         cart = request.session.get('cart', {})
         item_key = str(variant_id)
@@ -384,7 +390,7 @@ def checkout(request):
         messages.error(request, "Your cart is empty")
         return redirect("cart")
 
-    total_price = 0
+    total_price = Decimal("0")
     cart_items = []
 
     for item in cart.values():
@@ -399,7 +405,7 @@ def checkout(request):
                 "quantity": quantity,
                 "item_total": item_total,
             })
-        except:
+        except ProductVariant.DoesNotExist:
             continue
 
     gst = total_price * Decimal("0.18")
@@ -433,7 +439,7 @@ def payment(request):
         messages.error(request, "Cart is empty")
         return redirect("cart")
 
-    total_price = 0
+    total_price = Decimal("0")
     cart_items = []
 
     for item in cart.values():
@@ -1017,11 +1023,12 @@ def admin_product_form(request, product_id):
 
         if not name or not price:
             messages.error(request, "Name and price are required.")
-            return render(request, "store/admin/product_form.html", {
+            return render(request, "store/admin_create_product.html", {
                 "product": product,
                 "categories": categories
             })
 
+        # Save product
         if product:
             product.name = name
             product.description = description
@@ -1050,6 +1057,42 @@ def admin_product_form(request, product_id):
                 image=image
             )
             messages.success(request, f"Product '{name}' created successfully!")
+
+        # Save variants
+        variant_sizes = request.POST.getlist("variant_size[]")
+        variant_prices = request.POST.getlist("variant_price[]")
+        variant_stocks = request.POST.getlist("variant_stock[]")
+
+        # On edit: clear old variants and replace with new ones
+        if product_id > 0 and variant_sizes:
+            product.variants.all().delete()
+
+        variants_saved = 0
+        for i, size in enumerate(variant_sizes):
+            size = (size or "").strip()
+            if not size:
+                continue
+
+            try:
+                price_val = variant_prices[i] if i < len(variant_prices) else product.price
+                stock_val = variant_stocks[i] if i < len(variant_stocks) else 0
+
+                price_val = price_val if price_val else product.price
+                stock_val = stock_val if stock_val else 0
+
+                ProductVariant.objects.create(
+                    product=product,
+                    size=size,
+                    price=price_val,
+                    stock=stock_val,
+                )
+                variants_saved += 1
+            except (IndexError, ValueError) as e:
+                logger.error(f"Error creating variant: {e}")
+                continue
+
+        if variants_saved > 0:
+            messages.success(request, f"✅ {variants_saved} variant(s) saved successfully.")
 
         return redirect('admin_product_list')
 
@@ -1157,6 +1200,7 @@ def format_phone_number(phone):
 
 
 def initiate_mpesa_payment(phone, amount, order_id):
+    """Initiate M-Pesa STK Push (works for both sandbox and production)"""
     try:
         phone = format_phone_number(phone)
 
@@ -1166,6 +1210,7 @@ def initiate_mpesa_payment(phone, amount, order_id):
         shortcode = settings.MPESA_SHORTCODE
         base_url = settings.MPESA_BASE_URL
 
+        # 1. Get OAuth token
         auth_string = f"{consumer_key}:{consumer_secret}"
         auth_encoded = base64.b64encode(auth_string.encode()).decode()
 
@@ -1173,13 +1218,14 @@ def initiate_mpesa_payment(phone, amount, order_id):
 
         headers = {
             "Authorization": f"Basic {auth_encoded}",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "User-Agent": "Mozilla/5.0",
             "Accept": "application/json",
         }
 
         response = requests.get(auth_url, headers=headers, timeout=30)
 
         if response.status_code != 200:
+            logger.error(f"M-Pesa auth failed: {response.text}")
             return {
                 'success': False,
                 'error': f'Authentication failed: {response.text[:200]}'
@@ -1190,6 +1236,7 @@ def initiate_mpesa_payment(phone, amount, order_id):
         if not access_token:
             return {'success': False, 'error': 'No access token received'}
 
+        # 2. Build STK Push request
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         password_string = f"{shortcode}{passkey}{timestamp}"
         password = base64.b64encode(password_string.encode()).decode()
@@ -1245,6 +1292,7 @@ def initiate_mpesa_payment(phone, amount, order_id):
 
 
 def query_mpesa_status(checkout_request_id):
+    """Query M-Pesa STK Push status"""
     try:
         consumer_key = settings.MPESA_CONSUMER_KEY
         consumer_secret = settings.MPESA_CONSUMER_SECRET
@@ -1258,7 +1306,7 @@ def query_mpesa_status(checkout_request_id):
         auth_url = f"{base_url}/oauth/v1/generate?grant_type=client_credentials"
         headers = {
             "Authorization": f"Basic {auth_encoded}",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "User-Agent": "Mozilla/5.0",
             "Accept": "application/json",
         }
 
@@ -1322,7 +1370,7 @@ def query_mpesa_status(checkout_request_id):
 
 
 # =============================================
-# MPESA CALLBACK
+# MPESA CALLBACK — PRODUCTION READY
 # =============================================
 @csrf_exempt
 def mpesa_callback(request):
@@ -1331,16 +1379,23 @@ def mpesa_callback(request):
 
     try:
         data = json.loads(request.body)
-        logger.info(f"M-Pesa Callback received")
+        logger.info(f"✅ M-Pesa Callback received: {json.dumps(data, indent=2)}")
 
         stk_callback = data.get('Body', {}).get('stkCallback', {})
         result_code = stk_callback.get('ResultCode')
         result_desc = stk_callback.get('ResultDesc')
         checkout_request_id = stk_callback.get('CheckoutRequestID')
 
-        try:
-            order = Order.objects.get(checkout_request_id=checkout_request_id)
-        except Order.DoesNotExist:
+        if not checkout_request_id:
+            logger.error("No CheckoutRequestID in callback")
+            return JsonResponse({"ResultCode": 1, "ResultDesc": "Missing CheckoutRequestID"})
+
+        # ⭐ Use .filter().first() — handles duplicate CheckoutRequestIDs gracefully
+        order = Order.objects.filter(
+            checkout_request_id=checkout_request_id
+        ).order_by('-created_at').first()
+
+        if not order:
             logger.error(f"Order not found for CheckoutRequestID: {checkout_request_id}")
             return JsonResponse({"ResultCode": 1, "ResultDesc": "Order not found"})
 
@@ -1359,7 +1414,7 @@ def mpesa_callback(request):
             order.status = "PAID"
             order.save()
 
-            logger.info(f"✅ Order #{order.id} updated to PAID")
+            logger.info(f"✅ Order #{order.id} updated to PAID — Receipt: {mpesa_receipt}")
 
         else:
             order.status = "FAILED"
@@ -1367,7 +1422,7 @@ def mpesa_callback(request):
             order.mpesa_result_desc = result_desc
             order.save()
 
-            logger.error(f"❌ Order #{order.id} updated to FAILED")
+            logger.error(f"❌ Order #{order.id} updated to FAILED — {result_desc}")
 
         return JsonResponse({"ResultCode": 0, "ResultDesc": "Success"})
 
@@ -1386,4 +1441,3 @@ def initiate_stk_push(request):
             "amount": amount
         })
     return redirect("payment")
-

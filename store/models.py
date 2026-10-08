@@ -49,7 +49,7 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
-    is_best_seller = models.BooleanField(default=False)   # ⭐ NEW FIELD
+    is_best_seller = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -70,9 +70,9 @@ class ProductVariant(models.Model):
         related_name="variants",
         on_delete=models.CASCADE
     )
-    size = models.CharField(max_length=50)   # ⭐ Free text — any size like "500mg", "100g", "1kg"
+    size = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    stock = models.PositiveIntegerField(default=0)   # ⭐ NEW: stock per variant
+    stock = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.product.name} - {self.size}"
@@ -112,7 +112,10 @@ class Order(models.Model):
     payment_screenshot = models.ImageField(upload_to='payment_proofs/', blank=True, null=True)
 
     # M-PESA FIELDS
-    checkout_request_id = models.CharField(max_length=100, blank=True, null=True)
+    # ⭐ unique=True prevents duplicate orders from the same callback
+    checkout_request_id = models.CharField(
+        max_length=100, blank=True, null=True, unique=True
+    )
     merchant_request_id = models.CharField(max_length=100, blank=True, null=True)
     mpesa_receipt_number = models.CharField(max_length=50, blank=True, null=True)
     mpesa_result_code = models.CharField(max_length=10, blank=True, null=True)
