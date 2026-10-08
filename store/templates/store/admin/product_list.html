@@ -1,0 +1,960 @@
+<!-- templates/store/admin/product_list.html -->
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block title %}Manage Products - Delight Care Plus Admin{% endblock %}
+
+{% block extra_styles %}
+
+/* ============================================ */
+/* ADMIN PRODUCT LIST — GREEN GLOW DARK THEME   */
+/* ============================================ */
+
+body {
+    background: #0f0f14 !important;
+}
+
+body::after {
+    background:
+        radial-gradient(circle at top left, rgba(144, 188, 121, 0.28), transparent 45%),
+        radial-gradient(circle at bottom right, rgba(45, 80, 22, 0.35), transparent 45%),
+        radial-gradient(circle at center, rgba(168, 217, 144, 0.1), transparent 60%),
+        rgba(0, 0, 0, 0.55) !important;
+    backdrop-filter: blur(3px) !important;
+    -webkit-backdrop-filter: blur(3px) !important;
+}
+
+/* ============================================ */
+/* HERO HEADER                                  */
+/* ============================================ */
+.hero-header {
+    padding: 140px 20px 20px !important;
+    margin-bottom: 0 !important;
+}
+
+.hero-header h1 {
+    font-size: 3rem;
+    font-weight: 800 !important;
+    letter-spacing: -1.2px;
+    background: linear-gradient(135deg, #ffffff 0%, #a8d990 50%, #90bc79 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none !important;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 30px rgba(144, 188, 121, 0.5))
+            drop-shadow(0 0 60px rgba(168, 217, 144, 0.3));
+}
+
+.hero-header p {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-size: 1rem;
+    font-weight: 300;
+    text-shadow: 0 0 20px rgba(144, 188, 121, 0.35);
+}
+
+.hero-header .breadcrumb {
+    font-size: 0.85rem;
+    opacity: 0.75;
+}
+
+.hero-header .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.6) !important;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.hero-header .breadcrumb-item a:hover {
+    color: #a8d990 !important;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.9);
+}
+
+.hero-header .breadcrumb-item.active {
+    color: #a8d990 !important;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.7);
+}
+
+.hero-header .breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================ */
+/* MAIN CONTAINER                               */
+/* ============================================ */
+.crazy-products-container {
+    max-width: 1280px;
+    margin: 0 auto 80px;
+    padding: 0 20px;
+}
+
+/* ============================================ */
+/* TOP ACTION BAR                               */
+/* ============================================ */
+.crazy-action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+
+.crazy-page-title {
+    color: #ffffff;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.3px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+}
+
+.crazy-page-subtitle {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    margin: 4px 0 0 0;
+}
+
+.crazy-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff !important;
+    border: none;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(144, 188, 121, 0.5),
+                0 0 40px rgba(168, 217, 144, 0.3);
+    cursor: pointer;
+}
+
+.crazy-add-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transition: left 0.6s ease;
+}
+
+.crazy-add-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(144, 188, 121, 0.7),
+                0 0 60px rgba(168, 217, 144, 0.5);
+    color: #ffffff !important;
+}
+
+.crazy-add-btn:hover::before {
+    left: 100%;
+}
+
+/* ============================================ */
+/* SEARCH BAR                                   */
+/* ============================================ */
+.crazy-search-bar {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50px;
+    overflow: hidden;
+    padding: 5px;
+    backdrop-filter: blur(20px);
+    transition: all 0.25s ease;
+    margin-bottom: 28px;
+    max-width: 500px;
+}
+
+.crazy-search-bar:focus-within {
+    border-color: rgba(144, 188, 121, 0.5);
+    box-shadow: 0 0 0 4px rgba(144, 188, 121, 0.1),
+                0 0 30px rgba(144, 188, 121, 0.4),
+                0 0 60px rgba(168, 217, 144, 0.25);
+}
+
+.crazy-search-bar i {
+    color: rgba(255, 255, 255, 0.4);
+    margin-left: 18px;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.crazy-search-bar:focus-within i {
+    color: #a8d990;
+    filter: drop-shadow(0 0 8px rgba(144, 188, 121, 0.8));
+}
+
+.crazy-search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 12px 18px;
+    font-size: 0.9rem;
+    background: transparent;
+    color: #ffffff;
+    font-family: inherit;
+}
+
+.crazy-search-bar input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================ */
+/* PRODUCTS TABLE PANEL                         */
+/* ============================================ */
+.crazy-table-panel {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(144, 188, 121, 0.15);
+    border-radius: 24px;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 60px rgba(144, 188, 121, 0.12);
+    position: relative;
+}
+
+.crazy-table-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #a8d990, #90bc79, transparent);
+    box-shadow: 0 0 20px rgba(144, 188, 121, 0.8);
+}
+
+/* Table */
+.crazy-products-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: #ffffff;
+}
+
+.crazy-products-table thead th {
+    padding: 18px 20px;
+    background: rgba(144, 188, 121, 0.06);
+    border-bottom: 1px solid rgba(144, 188, 121, 0.15);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.crazy-products-table thead th:first-child {
+    padding-left: 28px;
+}
+
+.crazy-products-table thead th:last-child {
+    text-align: right;
+    padding-right: 28px;
+}
+
+.crazy-products-table tbody tr {
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+    transition: all 0.25s ease;
+}
+
+.crazy-products-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.crazy-products-table tbody tr:hover {
+    background: rgba(144, 188, 121, 0.05);
+}
+
+.crazy-products-table tbody td {
+    padding: 18px 20px;
+    vertical-align: middle;
+    font-size: 0.88rem;
+}
+
+.crazy-products-table tbody td:first-child {
+    padding-left: 28px;
+}
+
+.crazy-products-table tbody td:last-child {
+    text-align: right;
+    padding-right: 28px;
+}
+
+/* Product cell */
+.crazy-product-cell {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 260px;
+}
+
+.crazy-product-thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: radial-gradient(circle at center, rgba(144, 188, 121, 0.1), rgba(31, 31, 40, 0.8));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    flex-shrink: 0;
+    border: 1px solid rgba(144, 188, 121, 0.2);
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(144, 188, 121, 0.1);
+}
+
+.crazy-product-thumb img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+.crazy-product-thumb i {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 1.5rem;
+}
+
+.crazy-product-info {
+    min-width: 0;
+}
+
+.crazy-product-name {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.92rem;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.crazy-product-meta {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.75rem;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.crazy-product-meta .variant-count {
+    color: #a8d990;
+    font-weight: 600;
+}
+
+/* Category badge */
+.crazy-category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: rgba(144, 188, 121, 0.12);
+    color: #a8d990;
+    border: 1px solid rgba(144, 188, 121, 0.25);
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.crazy-category-badge.empty {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Price */
+.crazy-price {
+    font-weight: 700;
+    background: linear-gradient(135deg, #a8d990, #90bc79);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1rem;
+    filter: drop-shadow(0 0 10px rgba(144, 188, 121, 0.4));
+    white-space: nowrap;
+}
+
+.crazy-compare-price {
+    color: rgba(255, 255, 255, 0.35);
+    text-decoration: line-through;
+    font-size: 0.78rem;
+    margin-left: 6px;
+}
+
+/* Stock badge */
+.crazy-stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.crazy-stock-badge.in-stock {
+    background: rgba(144, 188, 121, 0.12);
+    color: #a8d990;
+    border: 1px solid rgba(144, 188, 121, 0.25);
+}
+
+.crazy-stock-badge.low-stock {
+    background: rgba(251, 191, 36, 0.12);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
+.crazy-stock-badge.out-of-stock {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* Status badges */
+.crazy-status-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.crazy-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 50px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.crazy-status-badge.active {
+    background: rgba(144, 188, 121, 0.15);
+    color: #a8d990;
+    border: 1px solid rgba(144, 188, 121, 0.3);
+}
+
+.crazy-status-badge.inactive {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.crazy-status-badge.featured {
+    background: rgba(167, 139, 250, 0.15);
+    color: #a78bfa;
+    border: 1px solid rgba(167, 139, 250, 0.3);
+}
+
+.crazy-status-badge.best-seller {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+/* Action buttons */
+.crazy-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.crazy-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.7);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-size: 0.85rem;
+}
+
+.crazy-icon-btn:hover {
+    transform: translateY(-2px);
+}
+
+.crazy-icon-btn.edit:hover {
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(144, 188, 121, 0.5),
+                0 0 30px rgba(144, 188, 121, 0.3);
+}
+
+.crazy-icon-btn.delete {
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+.crazy-icon-btn.delete:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.5),
+                0 0 30px rgba(239, 68, 68, 0.3);
+}
+
+.crazy-icon-btn.view {
+    border-color: rgba(96, 165, 250, 0.3);
+    color: #60a5fa;
+}
+
+.crazy-icon-btn.view:hover {
+    background: #60a5fa;
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(96, 165, 250, 0.5),
+                0 0 30px rgba(96, 165, 250, 0.3);
+}
+
+/* ============================================ */
+/* EMPTY STATE                                  */
+/* ============================================ */
+.crazy-empty-state {
+    text-align: center;
+    padding: 80px 40px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 24px;
+    border: 1px solid rgba(144, 188, 121, 0.15);
+    backdrop-filter: blur(20px);
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 60px rgba(144, 188, 121, 0.15);
+}
+
+.crazy-empty-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(144, 188, 121, 0.15), rgba(90, 138, 74, 0.15));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    border: 1px solid rgba(144, 188, 121, 0.3);
+    animation: emptyPulse 2.5s ease-in-out infinite;
+}
+
+.crazy-empty-icon i {
+    font-size: 3rem;
+    background: linear-gradient(135deg, #a8d990, #90bc79);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(144, 188, 121, 0.7));
+}
+
+@keyframes emptyPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(144, 188, 121, 0.4),
+                    0 0 30px rgba(144, 188, 121, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 20px rgba(144, 188, 121, 0),
+                    0 0 50px rgba(144, 188, 121, 0.5);
+    }
+}
+
+.crazy-empty-state h3 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    text-shadow: 0 0 20px rgba(144, 188, 121, 0.3);
+}
+
+.crazy-empty-state p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+    line-height: 1.6;
+}
+
+.crazy-empty-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff !important;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(144, 188, 121, 0.5),
+                0 0 40px rgba(168, 217, 144, 0.3);
+}
+
+.crazy-empty-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(144, 188, 121, 0.7),
+                0 0 60px rgba(168, 217, 144, 0.5);
+    color: #ffffff !important;
+}
+
+/* ============================================ */
+/* MOBILE — CARD VIEW                           */
+/* ============================================ */
+@media (max-width: 991px) {
+    .hero-header {
+        padding: 120px 16px 20px !important;
+    }
+
+    .hero-header h1 {
+        font-size: 2.25rem;
+    }
+
+    /* Hide table header */
+    .crazy-products-table thead {
+        display: none;
+    }
+
+    /* Convert rows to cards */
+    .crazy-products-table tbody tr {
+        display: block;
+        margin-bottom: 16px;
+        border-radius: 16px;
+        border: 1px solid rgba(144, 188, 121, 0.15);
+        background: rgba(255, 255, 255, 0.03);
+        padding: 16px;
+    }
+
+    .crazy-products-table tbody td {
+        display: block;
+        padding: 8px 0;
+        text-align: left !important;
+        border: none;
+    }
+
+    .crazy-products-table tbody td:first-child,
+    .crazy-products-table tbody td:last-child {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .crazy-product-cell {
+        min-width: unset;
+    }
+
+    .crazy-actions {
+        justify-content: flex-start;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-header {
+        padding: 100px 14px 16px !important;
+    }
+
+    .hero-header h1 {
+        font-size: 1.85rem;
+    }
+
+    .crazy-action-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .crazy-add-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .crazy-search-bar {
+        max-width: 100%;
+    }
+}
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO HEADER -->
+<div class="container-fluid hero-header mb-4">
+    <div class="container text-center">
+        <h1 class="mb-3 animated slideInDown">Manage Products 📦</h1>
+        <p class="animated slideInDown mb-3">View, edit, and manage all products in your store</p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center mb-0 animated slideInDown">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Products</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- PRODUCTS LIST CONTENT -->
+<div class="container-fluid">
+    <div class="crazy-products-container">
+
+        <!-- Action Bar -->
+        <div class="crazy-action-bar wow fadeIn">
+            <div>
+                <h2 class="crazy-page-title">Products</h2>
+                <p class="crazy-page-subtitle">
+                    {{ products|length }} product{{ products|length|pluralize }} in your store
+                </p>
+            </div>
+
+            <a href="{% url 'admin_product_add' %}" class="crazy-add-btn">
+                <i class="fas fa-plus"></i> Add Product
+            </a>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+            <div style="
+                border-radius: 14px;
+                padding: 16px 20px;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                background: {% if message.tags == 'error' %}rgba(239, 68, 68, 0.1){% else %}rgba(144, 188, 121, 0.1){% endif %};
+                border: 1px solid {% if message.tags == 'error' %}rgba(239, 68, 68, 0.3){% else %}rgba(144, 188, 121, 0.3){% endif %};
+                box-shadow: 0 0 30px {% if message.tags == 'error' %}rgba(239, 68, 68, 0.2){% else %}rgba(144, 188, 121, 0.2){% endif %};
+            ">
+                <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"
+                   style="color: {% if message.tags == 'error' %}#ef4444{% else %}#a8d990{% endif %}; font-size: 1.1rem; margin-top: 2px;"></i>
+                <span style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; line-height: 1.6;">
+                    {{ message }}
+                </span>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Search Bar -->
+        <div class="crazy-search-bar wow fadeIn">
+            <i class="fas fa-search"></i>
+            <input type="text" id="productSearch" placeholder="Search products by name or category...">
+        </div>
+
+        {% if products %}
+        <!-- Products Table -->
+        <div class="crazy-table-panel wow fadeIn">
+            <div class="table-responsive">
+                <table class="crazy-products-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr class="product-row">
+                            <!-- Product cell -->
+                            <td>
+                                <div class="crazy-product-cell">
+                                    <div class="crazy-product-thumb">
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                        {% else %}
+                                            <i class="fas fa-box"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="crazy-product-info">
+                                        <div class="crazy-product-name">{{ product.name }}</div>
+                                        <div class="crazy-product-meta">
+                                            <span>#{{ product.id }}</span>
+                                            {% if product.variants.exists %}
+                                                <span class="variant-count">
+                                                    <i class="fas fa-layer-group"></i>
+                                                    {{ product.variants.count }} variant{{ product.variants.count|pluralize }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Category -->
+                            <td>
+                                {% if product.category %}
+                                    <span class="crazy-category-badge">
+                                        <i class="{{ product.category.icon|default:'fas fa-pills' }}"></i>
+                                        {{ product.category.name }}
+                                    </span>
+                                {% else %}
+                                    <span class="crazy-category-badge empty">
+                                        <i class="fas fa-question-circle"></i>
+                                        No category
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Price -->
+                            <td>
+                                <span class="crazy-price">KES {{ product.price|floatformat:0 }}</span>
+                                {% if product.compare_price %}
+                                    <span class="crazy-compare-price">KES {{ product.compare_price|floatformat:0 }}</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Stock -->
+                            <td>
+                                {% if product.stock > 10 %}
+                                    <span class="crazy-stock-badge in-stock">
+                                        <i class="fas fa-check-circle"></i>
+                                        {{ product.stock }} in stock
+                                    </span>
+                                {% elif product.stock > 0 %}
+                                    <span class="crazy-stock-badge low-stock">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ product.stock }} left
+                                    </span>
+                                {% else %}
+                                    <span class="crazy-stock-badge out-of-stock">
+                                        <i class="fas fa-times-circle"></i>
+                                        Out of stock
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Status -->
+                            <td>
+                                <div class="crazy-status-badges">
+                                    {% if product.is_active %}
+                                        <span class="crazy-status-badge active">
+                                            <i class="fas fa-eye"></i> Active
+                                        </span>
+                                    {% else %}
+                                        <span class="crazy-status-badge inactive">
+                                            <i class="fas fa-eye-slash"></i> Inactive
+                                        </span>
+                                    {% endif %}
+
+                                    {% if product.is_featured %}
+                                        <span class="crazy-status-badge featured">
+                                            <i class="fas fa-star"></i> Featured
+                                        </span>
+                                    {% endif %}
+
+                                    {% if product.is_best_seller %}
+                                        <span class="crazy-status-badge best-seller">
+                                            <i class="fas fa-fire"></i> Best Seller
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </td>
+
+                            <!-- Actions -->
+                            <td>
+                                <div class="crazy-actions">
+                                    <a href="{% url 'product_detail' product.id %}"
+                                       class="crazy-icon-btn view"
+                                       title="View product">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'admin_product_form' product.id %}"
+                                       class="crazy-icon-btn edit"
+                                       title="Edit product">
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+                                    <a href="{% url 'admin_product_delete' product.id %}"
+                                       class="crazy-icon-btn delete"
+                                       title="Delete product"
+                                       onclick="return confirm('⚠️ Delete product: {{ product.name }}? This cannot be undone.');">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="crazy-empty-state wow fadeIn">
+            <div class="crazy-empty-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h3>No Products Yet</h3>
+            <p>Start building your store by adding your first product.<br>You can add images, variants, prices, and more.</p>
+            <a href="{% url 'admin_product_add' %}" class="crazy-empty-btn">
+                <i class="fas fa-plus"></i> Add First Product
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // ============================================
+        // SEARCH FILTER
+        // ============================================
+        const searchInput = document.getElementById('productSearch');
+        const productRows = document.querySelectorAll('.product-row');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const term = this.value.toLowerCase().trim();
+                productRows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = (term === '' || text.includes(term)) ? '' : 'none';
+                });
+            });
+        }
+
+        // ============================================
+        // AUTO-CLOSE MESSAGES
+        // ============================================
+        document.querySelectorAll('.alert').forEach(function(alert) {
+            setTimeout(function() {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        });
+
+    });
+</script>
+{% endblock %}

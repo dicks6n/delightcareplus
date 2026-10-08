@@ -1,1552 +1,1128 @@
 <!-- templates/store/cart.html -->
+{% extends 'base_dashboard.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <title>Delight Care Plus - Your Cart</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <link href="{% static 'img/favicon.ico' %}" rel="icon">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
-    <link href="{% static 'store/lib/animate/animate.min.css' %}" rel="stylesheet">
-    <link href="{% static 'store/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
-
-    <link href="{% static 'store/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
-
-    <style>
-        /* ============================================ */
-        /* YOUR COLOR: #90bc79 */
-        /* FULL PAGE BACKGROUND WITH BLUR & DARK OVERLAY */
-        /* ============================================ */
-        
-        /* --- FULL PAGE BACKGROUND --- */
-        body {
-            font-family: 'Poppins', 'Open Sans', sans-serif;
-            min-height: 100vh;
-            background: #f5f8f4;
-            position: relative;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Background image that covers the entire page */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("{% static 'store/img/IMG_0385.jpg' %}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            z-index: -2;
-        }
-
-        /* Dark overlay layer with blur */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            z-index: -1;
-        }
-
-        /* ============================================ */
-        /* ✅ TRANSPARENT NAVBAR */
-        /* ============================================ */
-        .sticky-top {
-            position: sticky !important;
-            top: 0 !important;
-            z-index: 9999 !important;
-            background: transparent !important;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .sticky-top::before {
-            display: none;
-        }
-
-        .sticky-top .container {
-            position: relative;
-            z-index: 1;
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar-brand img {
-            height: 50px;
-            width: auto;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-brand img:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(144, 188, 121, 0.3);
-        }
-
-        /* ============================================ */
-        /* ✅ ANIMATED BRAND TEXT */
-        /* ============================================ */
-        .animated-brand {
-            background: linear-gradient(
-                90deg,
-                #ffffff 0%,
-                #e8f5e9 25%,
-                #90bc79 50%,
-                #e8f5e9 75%,
-                #ffffff 100%
-            );
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradient-shift 3s linear infinite;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 1.6rem;
-            letter-spacing: -0.5px;
-            display: inline-block;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        @keyframes gradient-shift {
-            0% {
-                background-position: 0% center;
-            }
-            100% {
-                background-position: 200% center;
-            }
-        }
-
-        .animated-brand:hover {
-            animation: gradient-shift 1s linear infinite;
-            cursor: pointer;
-        }
-        /* ============================================ */
-        /* ✅ WHITE NAVBAR - MATCHES LOGO */
-        /* ============================================ */
-     
-        .sticky-top::before {
-            display: none;
-        }
-
-        .sticky-top .container {
-            position: relative;
-            z-index: 1;
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar-brand img {
-            height: 50px;
-            width: auto;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-brand img:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(144, 188, 121, 0.3);
-        }
-
-        .navbar-brand h2,
-        .navbar-brand .brand-text {
-            color: #90bc79 !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 1.6rem;
-            letter-spacing: -0.5px;
-            margin: 0;
-            text-shadow: none;
-        }
-
-        .navbar-nav .nav-link {
-            color: #1e2a1c !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            font-size: 0.95rem;
-            padding: 8px 18px !important;
-            transition: all 0.3s ease;
-            border-radius: 30px;
-            letter-spacing: 0.3px;
-            position: relative;
-        }
-
-        .navbar-nav .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: #90bc79;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-
-        .navbar-nav .nav-link:hover::after,
-        .navbar-nav .nav-link.active::after {
-            width: 60%;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #90bc79 !important;
-            background: rgba(144, 188, 121, 0.1);
-        }
-
-        .navbar-nav .nav-link.active {
-            color: #90bc79 !important;
-            font-weight: 600;
-            background: rgba(144, 188, 121, 0.12);
-        }
-
-        .cart-link {
-            position: relative;
-            padding: 8px 18px !important;
-        }
-
-        .cart-link .cart-badge {
-            position: absolute;
-            top: -2px;
-            right: 2px;
-            background: #ff6b6b;
-            color: white;
-            font-size: 0.6rem;
-            font-weight: 700;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #ffffff;
-        }
-
-        .cart-link i {
-            font-size: 1.2rem;
-            color: #1e2a1c;
-        }
-
-        .navbar-nav .text-white-50 {
-            color: #6c757d !important;
-        }
-
-        .navbar-nav .nav-link.text-danger {
-            color: #dc3545 !important;
-        }
-
-        .navbar-nav .nav-link.text-danger:hover {
-            color: #bb2d3b !important;
-            background: rgba(220, 53, 69, 0.1);
-        }
-
-        /* ============================================ */
-        /* All content sits above the background */
-        /* ============================================ */
-        .container-fluid:not(.sticky-top),
-        .container,
-        .footer,
-        .hero-header,
-        .card,
-        .bg-light,
-        .bg-white,
-        .whatsapp-float,
-        .back-to-top {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ============================================ */
-        /* WHATSAPP FLOATING BUTTON */
-        /* ============================================ */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .whatsapp-float .whatsapp-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            background: #25d366;
-            border-radius: 50%;
-            color: #ffffff;
-            font-size: 2.2rem;
-            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            position: relative;
-            animation: pulse-green 2s infinite;
-        }
-
-        .whatsapp-float .whatsapp-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
-        }
-
-        .whatsapp-float .whatsapp-btn .tooltip {
-            position: absolute;
-            left: 70px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .whatsapp-float .whatsapp-btn:hover .tooltip {
-            opacity: 1;
-            visibility: visible;
-            left: 75px;
-        }
-
-        .whatsapp-float .whatsapp-btn .tooltip::before {
-            content: '';
-            position: absolute;
-            right: 100%;
-            top: 50%;
-            transform: translateY(-50%);
-            border: 6px solid transparent;
-            border-right-color: rgba(0, 0, 0, 0.8);
-        }
-
-        .whatsapp-float .whatsapp-label {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: #25d366;
-            background: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .whatsapp-float .whatsapp-btn .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(37, 211, 102, 0.3);
-            animation: ripple 1.5s ease-out infinite;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        .whatsapp-float .whatsapp-btn .ripple:nth-child(1) {
-            animation-delay: 0.5s;
-        }
-
-        @keyframes pulse-green {
-            0%, 100% {
-                box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
-            }
-            50% {
-                box-shadow: 0 4px 30px rgba(37, 211, 102, 0.7);
-            }
-        }
-
-        @keyframes ripple {
-            0% {
-                transform: scale(0.8);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1.8);
-                opacity: 0;
-            }
-        }
-
-        /* ============================================ */
-        /* CARDS WITH GLASS EFFECT */
-        /* ============================================ */
-        .card,
-        .bg-light,
-        .bg-white {
-            background: rgba(255, 255, 255, 0.92) !important;
-            backdrop-filter: blur(8px);
-        }
-
-        .footer {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-        }
-
-        /* ============================================ */
-        /* HERO HEADER - now transparent to show background */
-        /* ============================================ */
-        .hero-header {
-            background: transparent !important;
-            padding: 80px 20px !important;
-            position: relative;
-        }
-        .hero-header::before {
-            display: none;
-        }
-        .hero-header .container {
-            position: relative;
-            z-index: 2;
-        }
-        .hero-header h1 {
-            color: #ffffff !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-        }
-        .hero-header p {
-            color: rgba(255, 255, 255, 0.95) !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 300;
-            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
-        }
-        .hero-header .breadcrumb-item a {
-            color: rgba(255, 255, 255, 0.85) !important;
-        }
-        .hero-header .breadcrumb-item.active {
-            color: #ffffff !important;
-        }
-        .hero-header .breadcrumb-item a:hover {
-            color: #ffffff !important;
-        }
-
-        /* ============================================ */
-        /* BUTTONS - YOUR COLOR */
-        /* ============================================ */
-        .bg-primary {
-            background: #90bc79 !important;
-        }
-        .text-primary {
-            color: #90bc79 !important;
-        }
-        .btn-primary {
-            background: #90bc79;
-            border: none;
-            transition: all 0.3s;
-            color: #ffffff !important;
-        }
-        .btn-primary:hover {
-            background: #7dab66 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
-            color: #ffffff !important;
-        }
-        .btn-outline-primary {
-            color: #90bc79 !important;
-            border-color: #90bc79 !important;
-        }
-        .btn-outline-primary:hover {
-            background: #90bc79 !important;
-            color: #ffffff !important;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.3);
-        }
-        .btn-outline-danger:hover {
-            background: #dc3545;
-            color: white;
-        }
-        .btn-outline-success:hover {
-            background: #198754;
-            color: white;
-        }
-        .btn-outline-secondary:hover {
-            background: #6c757d;
-            color: white;
-        }
-        .rounded-pill {
-            border-radius: 50px !important;
-        }
-        .shadow-sm {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
-        }
-        .border-top {
-            border-top: 1px solid rgba(233, 236, 239, 0.5) !important;
-        }
-        .badge {
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        .card {
-            transition: all 0.3s ease;
-            border-radius: 12px !important;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
-        }
-        .btn-link {
-            color: #6c757d !important;
-            text-decoration: none !important;
-        }
-        .btn-link:hover {
-            color: #90bc79 !important;
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-        }
-
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 998;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #90bc79 !important;
-            color: #ffffff !important;
-            border: none !important;
-            transition: all 0.3s;
-        }
-        .back-to-top:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
-            color: #ffffff !important;
-        }
-
-        /* ============================================ */
-        /* CART SPECIFIC STYLES */
-        /* ============================================ */
-        .cart-table-wrapper {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .cart-table {
-            margin-bottom: 0;
-        }
-
-        .cart-table thead th {
-            background: #90bc79;
-            color: white;
-            border: none;
-            padding: 20px 15px;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-
-        .cart-table tbody tr {
-            border-bottom: 1px solid #e9ecef;
-            transition: all 0.2s ease;
-        }
-
-        .cart-table tbody tr:last-child {
-            border-bottom: none;
-        }
-
-        .cart-table tbody tr:hover {
-            background: rgba(144, 188, 121, 0.05);
-        }
-
-        .cart-table tbody td {
-            padding: 20px 15px;
-            vertical-align: middle;
-        }
-
-        .cart-product {
-            display: flex;
-            align-items: center;
-        }
-
-        .cart-product-img {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-right: 15px;
-            background: #f8f9fa;
-            padding: 5px;
-        }
-
-        .cart-product-info h6 {
-            font-weight: 600;
-            color: #2d3e2a;
-            margin-bottom: 3px;
-        }
-
-        .cart-product-info .variant {
-            color: #6c757d;
-            font-size: 0.85rem;
-        }
-
-        .cart-price {
-            font-weight: 600;
-            color: #2d3e2a;
-            font-size: 1rem;
-        }
-
-        .cart-quantity {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .qty-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid #e9ecef;
-            background: white;
-            color: #2d3e2a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.8rem;
-        }
-
-        .qty-btn:hover {
-            background: #90bc79;
-            border-color: #90bc79;
-            color: white;
-        }
-
-        .qty-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            background: white;
-            border-color: #e9ecef;
-            color: #2d3e2a;
-        }
-
-        .qty-input {
-            width: 50px;
-            text-align: center;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            padding: 5px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            background: #f8f9fa;
-        }
-
-        .cart-total {
-            font-weight: 700;
-            color: #90bc79;
-            font-size: 1.1rem;
-        }
-
-        .cart-remove {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-
-        .cart-remove:hover {
-            background: #dc3545;
-            color: white;
-            transform: scale(1.1);
-        }
-
-        /* Order Summary Card */
-        .order-summary-card {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(144, 188, 121, 0.2);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .order-summary-card .card-header {
-            background: #90bc79;
-            color: white;
-            padding: 20px 25px;
-            border: none;
-        }
-
-        .order-summary-card .card-header h4 {
-            margin: 0;
-            font-weight: 600;
-        }
-
-        .order-summary-card .card-body {
-            padding: 25px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .summary-row:last-child {
-            border-bottom: none;
-        }
-
-        .summary-row .label {
-            color: #6c757d;
-            font-weight: 500;
-        }
-
-        .summary-row .value {
-            font-weight: 600;
-            color: #2d3e2a;
-        }
-
-        .summary-total {
-            background: rgba(144, 188, 121, 0.1);
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .summary-total .label {
-            font-weight: 700;
-            color: #2d3e2a;
-            font-size: 1.2rem;
-        }
-
-        .summary-total .value {
-            font-weight: 800;
-            color: #90bc79;
-            font-size: 1.4rem;
-        }
-
-        .secure-payment {
-            background: rgba(144, 188, 121, 0.1);
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .secure-payment i {
-            color: #90bc79;
-            font-size: 1.5rem;
-            margin-right: 15px;
-        }
-
-        .secure-payment p {
-            margin: 0;
-            color: #2d3e2a;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .empty-cart {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 60px;
-            text-align: center;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .empty-cart-icon {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: rgba(144, 188, 121, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-        }
-
-        .empty-cart-icon i {
-            font-size: 3rem;
-            color: #90bc79;
-        }
-
-        .continue-shopping-btn {
-            background: #90bc79;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 12px 30px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .continue-shopping-btn:hover {
-            background: #7dab66;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.3);
-        }
-
-        /* Toast notification */
-        .cart-toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            background: #28a745;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            animation: slideInRight 0.3s ease;
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        /* ============================================ */
-        /* CUSTOM CONFIRMATION MODAL */
-        /* ============================================ */
-        .custom-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 10000;
-            backdrop-filter: blur(4px);
-        }
-
-        .custom-modal-overlay.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .custom-modal {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            animation: modalFadeIn 0.3s ease;
-        }
-
-        .custom-modal-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: rgba(220, 53, 69, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-        }
-
-        .custom-modal-icon i {
-            font-size: 2.5rem;
-            color: #dc3545;
-        }
-
-        .custom-modal h4 {
-            font-weight: 600;
-            color: #2d3e2a;
-            margin-bottom: 10px;
-        }
-
-        .custom-modal p {
-            color: #6c757d;
-            margin-bottom: 25px;
-        }
-
-        .custom-modal .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .custom-modal .modal-btn {
-            padding: 10px 25px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .custom-modal .modal-btn.cancel-btn {
-            background: #e9ecef;
-            color: #2d3e2a;
-        }
-
-        .custom-modal .modal-btn.cancel-btn:hover {
-            background: #dee2e6;
-        }
-
-        .custom-modal .modal-btn.confirm-btn {
-            background: #dc3545;
-            color: white;
-        }
-
-        .custom-modal .modal-btn.confirm-btn:hover {
-            background: #bb2d3b;
-            transform: translateY(-2px);
-        }
-
-        @keyframes modalFadeIn {
-            from {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 991px) {
-            .navbar-collapse {
-                background: rgba(255, 255, 255, 0.98);
-                border-radius: 0 0 15px 15px;
-                padding: 10px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            }
-            
-            .navbar-nav .nav-link {
-                text-align: center;
-                padding: 10px 15px !important;
-                color: #1e2a1c !important;
-            }
-            
-            .navbar-nav .nav-link::after {
-                display: none;
-            }
-            
-            .navbar-toggler {
-                border-color: #90bc79 !important;
-            }
-            
-            .navbar-toggler-icon {
-                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(144, 188, 121, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
-            }
-            
-            .whatsapp-float {
-                bottom: 20px;
-                left: 20px;
-            }
-            .whatsapp-float .whatsapp-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 1.8rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .cart-table thead {
-                display: none;
-            }
-            
-            .cart-table tbody tr {
-                display: block;
-                margin-bottom: 15px;
-                border: 1px solid #e9ecef;
-                border-radius: 12px;
-                overflow: hidden;
-            }
-            
-            .cart-table tbody td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 10px 15px;
-                border-bottom: 1px solid #e9ecef;
-            }
-            
-            .cart-table tbody td:last-child {
-                border-bottom: none;
-            }
-            
-            .cart-table tbody td::before {
-                content: attr(data-label);
-                font-weight: 600;
-                color: #6c757d;
-                margin-right: 10px;
-            }
-            
-            .cart-quantity {
-                justify-content: flex-end;
-            }
-        }
-    </style>
-</head>
-
-<body>
-   
-    <!-- ============================================ -->
-    <!-- ✅ WHITE NAVBAR WITH GIF LOGO -->
-    <!-- ============================================ -->
-    <div class="container-fluid sticky-top">
-        <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-light p-0">
-                <a href="/" class="navbar-brand d-flex align-items-center">
-                    <!-- GIF Logo -->
-                    <img src="{% static 'store/img/DELIGHT.gif' %}" 
-                         alt="Delight Care Plus" 
-                         style="height: 50px; width: auto; border-radius: 8px;">
-                    <!-- Text Logo (visible on desktop) -->
-                    <span class="d-none d-md-inline ms-2 brand-text" 
-                          style="color: #90bc79 !important; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.6rem; letter-spacing: -0.5px;">
-                        Delight Care Plus
-                    </span>
+
+{% block title %}Your Cart - Delight Care Plus{% endblock %}
+
+{% block nav_cart %}active{% endblock %}
+
+{% block extra_styles %}
+
+/* ============================================ */
+/* CART — GREEN GLOW DARK THEME                 */
+/* ============================================ */
+
+/* Page background override */
+body {
+    background: #0f0f14 !important;
+}
+
+body::after {
+    background:
+        radial-gradient(circle at top left, rgba(144, 188, 121, 0.28), transparent 45%),
+        radial-gradient(circle at bottom right, rgba(45, 80, 22, 0.35), transparent 45%),
+        radial-gradient(circle at center, rgba(168, 217, 144, 0.1), transparent 60%),
+        rgba(0, 0, 0, 0.55) !important;
+    backdrop-filter: blur(3px) !important;
+    -webkit-backdrop-filter: blur(3px) !important;
+}
+
+/* ============================================ */
+/* HERO HEADER — Green Gradient + Glow          */
+/* ============================================ */
+.hero-header {
+    padding: 140px 20px 20px !important;
+}
+
+.hero-header h1 {
+    font-size: 3rem;
+    font-weight: 800 !important;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #ffffff 0%, #a8d990 50%, #90bc79 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none !important;
+    filter: drop-shadow(0 0 30px rgba(144, 188, 121, 0.5))
+            drop-shadow(0 0 60px rgba(168, 217, 144, 0.3));
+}
+
+.hero-header p {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-size: 1rem;
+    font-weight: 300;
+    text-shadow: 0 0 20px rgba(144, 188, 121, 0.35);
+}
+
+.hero-header .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.6) !important;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.hero-header .breadcrumb-item a:hover {
+    color: #a8d990 !important;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.9);
+}
+
+.hero-header .breadcrumb-item.active {
+    color: #a8d990 !important;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.7);
+}
+
+/* ============================================ */
+/* CART CONTAINER                               */
+/* ============================================ */
+.crazy-cart-container {
+    max-width: 1280px;
+    margin: 0 auto 80px;
+    padding: 0 20px;
+}
+
+/* ============================================ */
+/* CART ITEMS LIST — GREEN GLOW CARDS           */
+/* ============================================ */
+.crazy-cart-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.crazy-cart-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(144, 188, 121, 0.15);
+    border-radius: 20px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 90px 1fr auto auto auto;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    /* ✨ SUBTLE GREEN GLOW */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2),
+                0 0 20px rgba(144, 188, 121, 0.08);
+}
+
+.crazy-cart-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(144, 188, 121, 0.7), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.crazy-cart-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(144, 188, 121, 0.4);
+    transform: translateY(-2px);
+    /* ✨ GREEN GLOW */
+    box-shadow: 0 20px 40px rgba(144, 188, 121, 0.25),
+                0 0 40px rgba(144, 188, 121, 0.3);
+}
+
+.crazy-cart-item:hover::before {
+    opacity: 1;
+}
+
+/* Product image */
+.crazy-item-image {
+    width: 90px;
+    height: 90px;
+    border-radius: 16px;
+    background: radial-gradient(circle at center, rgba(144, 188, 121, 0.15), rgba(31, 31, 40, 0.8));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid rgba(144, 188, 121, 0.2);
+    /* ✨ GREEN GLOW */
+    box-shadow: 0 0 20px rgba(144, 188, 121, 0.15);
+}
+
+.crazy-item-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3))
+            drop-shadow(0 0 15px rgba(144, 188, 121, 0.3));
+}
+
+/* Product info */
+.crazy-item-info {
+    min-width: 0;
+}
+
+.crazy-item-name {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 6px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.crazy-item-variant {
+    display: inline-block;
+    padding: 3px 10px;
+    background: rgba(144, 188, 121, 0.15);
+    color: #a8d990;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    border: 1px solid rgba(144, 188, 121, 0.25);
+    /* ✨ GREEN GLOW */
+    box-shadow: 0 0 12px rgba(144, 188, 121, 0.25);
+}
+
+.crazy-item-unit-price {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+/* Quantity control — pill style */
+.crazy-qty-control {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(144, 188, 121, 0.2);
+    border-radius: 50px;
+    padding: 4px;
+    gap: 0;
+    /* ✨ SUBTLE GREEN GLOW */
+    box-shadow: 0 0 15px rgba(144, 188, 121, 0.15);
+}
+
+.crazy-qty-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+}
+
+.crazy-qty-btn:hover {
+    background: rgba(144, 188, 121, 0.25);
+    color: #ffffff;
+    /* ✨ GREEN GLOW */
+    box-shadow: 0 0 15px rgba(144, 188, 121, 0.5);
+}
+
+.crazy-qty-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.crazy-qty-value {
+    min-width: 36px;
+    text-align: center;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0 6px;
+}
+
+/* Item total */
+.crazy-item-total {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.05rem;
+    white-space: nowrap;
+    text-align: right;
+    min-width: 100px;
+    /* ✨ GREEN GLOW */
+    text-shadow: 0 0 15px rgba(144, 188, 121, 0.4);
+}
+
+.crazy-item-total .currency {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-right: 2px;
+}
+
+/* Remove button */
+.crazy-remove-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.crazy-remove-btn:hover {
+    background: #ef4444;
+    color: #ffffff;
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* ============================================ */
+/* ORDER SUMMARY — GREEN GLOW PANEL             */
+/* ============================================ */
+.crazy-summary-panel {
+    background: linear-gradient(135deg, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.95));
+    border: 1px solid rgba(144, 188, 121, 0.2);
+    border-radius: 24px;
+    padding: 32px;
+    position: sticky;
+    top: 100px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    overflow: hidden;
+    /* ✨ GREEN GLOW */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 60px rgba(144, 188, 121, 0.15);
+}
+
+.crazy-summary-panel::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(144, 188, 121, 0.08), transparent 40%);
+    pointer-events: none;
+}
+
+.crazy-summary-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(144, 188, 121, 0.15);
+    position: relative;
+    z-index: 1;
+}
+
+.crazy-summary-header .icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    /* ✨ GREEN GLOW */
+    box-shadow: 0 4px 15px rgba(144, 188, 121, 0.5),
+                0 0 25px rgba(168, 217, 144, 0.4);
+}
+
+.crazy-summary-header h4 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin: 0;
+    letter-spacing: -0.3px;
+    text-shadow: 0 0 15px rgba(144, 188, 121, 0.3);
+}
+
+/* Summary rows */
+.crazy-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+    position: relative;
+    z-index: 1;
+}
+
+.crazy-summary-row:last-of-type {
+    border-bottom: none;
+}
+
+.crazy-summary-row .label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.88rem;
+    font-weight: 400;
+}
+
+.crazy-summary-row .value {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.crazy-summary-row .value.free {
+    color: #a8d990;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    /* ✨ GREEN GLOW */
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.6);
+}
+
+/* Grand total — big, bold, green gradient */
+.crazy-grand-total {
+    background: linear-gradient(135deg, rgba(144, 188, 121, 0.15), rgba(90, 138, 74, 0.15));
+    border: 1px solid rgba(144, 188, 121, 0.35);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    /* ✨ GREEN GLOW */
+    box-shadow: 0 0 30px rgba(144, 188, 121, 0.25),
+                0 0 60px rgba(168, 217, 144, 0.15);
+}
+
+.crazy-grand-total .label {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.crazy-grand-total .value {
+    background: linear-gradient(135deg, #a8d990, #90bc79);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    /* ✨ GREEN GLOW */
+    filter: drop-shadow(0 0 15px rgba(144, 188, 121, 0.6));
+}
+
+/* Trust badges */
+.crazy-trust-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.crazy-trust-row i {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 1.5rem;
+    transition: all 0.25s ease;
+}
+
+.crazy-trust-row i:hover {
+    color: #a8d990;
+    text-shadow: 0 0 15px rgba(144, 188, 121, 0.8);
+}
+
+/* Secure badge */
+.crazy-secure-badge {
+    background: rgba(144, 188, 121, 0.08);
+    border: 1px solid rgba(144, 188, 121, 0.25);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    position: relative;
+    z-index: 1;
+    /* ✨ GREEN GLOW */
+    box-shadow: 0 0 20px rgba(144, 188, 121, 0.15);
+}
+
+.crazy-secure-badge i {
+    color: #a8d990;
+    font-size: 1rem;
+    filter: drop-shadow(0 0 8px rgba(144, 188, 121, 0.8));
+}
+
+.crazy-secure-badge span {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Checkout button — green gradient glow */
+.crazy-checkout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 18px 24px;
+    margin-top: 20px;
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff !important;
+    border: none;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    /* ✨ INTENSE GREEN GLOW */
+    box-shadow: 0 10px 30px rgba(144, 188, 121, 0.5),
+                0 0 40px rgba(168, 217, 144, 0.3);
+}
+
+.crazy-checkout-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transition: left 0.6s ease;
+}
+
+.crazy-checkout-btn:hover {
+    transform: translateY(-3px);
+    /* ✨ INTENSE GREEN GLOW */
+    box-shadow: 0 15px 40px rgba(144, 188, 121, 0.7),
+                0 0 60px rgba(168, 217, 144, 0.5);
+}
+
+.crazy-checkout-btn:hover::before {
+    left: 100%;
+}
+
+/* Continue shopping link */
+.crazy-continue-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    margin-top: 20px;
+}
+
+.crazy-continue-link:hover {
+    color: #a8d990;
+    gap: 12px;
+    /* ✨ GREEN GLOW */
+    text-shadow: 0 0 15px rgba(144, 188, 121, 0.7);
+}
+
+/* ============================================ */
+/* EMPTY STATE — Green Glow                     */
+/* ============================================ */
+.crazy-empty-state {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(144, 188, 121, 0.15);
+    border-radius: 24px;
+    padding: 80px 40px;
+    text-align: center;
+    backdrop-filter: blur(20px);
+    max-width: 600px;
+    margin: 0 auto;
+    /* ✨ GREEN GLOW */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 60px rgba(144, 188, 121, 0.15);
+}
+
+.crazy-empty-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(144, 188, 121, 0.15), rgba(90, 138, 74, 0.15));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    border: 1px solid rgba(144, 188, 121, 0.3);
+    animation: emptyPulse 2.5s ease-in-out infinite;
+}
+
+.crazy-empty-icon i {
+    font-size: 3rem;
+    background: linear-gradient(135deg, #a8d990, #90bc79);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(144, 188, 121, 0.7));
+}
+
+@keyframes emptyPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(144, 188, 121, 0.4),
+                    0 0 30px rgba(144, 188, 121, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 20px rgba(144, 188, 121, 0),
+                    0 0 50px rgba(144, 188, 121, 0.5);
+    }
+}
+
+.crazy-empty-state h3 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    text-shadow: 0 0 20px rgba(144, 188, 121, 0.3);
+}
+
+.crazy-empty-state p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+    line-height: 1.6;
+}
+
+.crazy-empty-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff !important;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    /* ✨ GREEN GLOW */
+    box-shadow: 0 10px 30px rgba(144, 188, 121, 0.5),
+                0 0 40px rgba(168, 217, 144, 0.3);
+}
+
+.crazy-empty-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(144, 188, 121, 0.7),
+                0 0 60px rgba(168, 217, 144, 0.5);
+    color: #ffffff !important;
+}
+
+/* ============================================ */
+/* REMOVE MODAL — Green Accent                  */
+/* ============================================ */
+.custom-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 10000;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.custom-modal-overlay.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-modal {
+    background: linear-gradient(135deg, #1f2937, #111827);
+    border: 1px solid rgba(144, 188, 121, 0.15);
+    border-radius: 24px;
+    padding: 36px 30px;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6),
+                0 0 60px rgba(144, 188, 121, 0.15);
+    text-align: center;
+    animation: modalFadeIn 0.3s ease;
+}
+
+.custom-modal-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+}
+
+.custom-modal-icon i {
+    font-size: 2rem;
+    color: #ef4444;
+    filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.8));
+}
+
+.custom-modal h4 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
+.custom-modal p {
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 28px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.custom-modal .modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.custom-modal .modal-btn {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: inherit;
+}
+
+.custom-modal .modal-btn.cancel-btn {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-modal .modal-btn.cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+}
+
+.custom-modal .modal-btn.confirm-btn {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4),
+                0 0 30px rgba(239, 68, 68, 0.3);
+}
+
+.custom-modal .modal-btn.confirm-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(239, 68, 68, 0.5),
+                0 0 50px rgba(239, 68, 68, 0.4);
+}
+
+@keyframes modalFadeIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* ============================================ */
+/* TOAST — Green Success                        */
+/* ============================================ */
+.cart-toast {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    z-index: 99999;
+    background: linear-gradient(135deg, #1f2937, #111827);
+    border: 1px solid rgba(144, 188, 121, 0.35);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 14px;
+    /* ✨ GREEN GLOW */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(144, 188, 121, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    animation: slideInRight 0.35s ease;
+}
+
+.cart-toast i {
+    color: #a8d990;
+    filter: drop-shadow(0 0 8px rgba(144, 188, 121, 0.8));
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(110%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* ============================================ */
+/* MOBILE                                       */
+/* ============================================ */
+@media (max-width: 991px) {
+    .hero-header {
+        padding: 120px 16px 20px !important;
+    }
+
+    .hero-header h1 {
+        font-size: 2.25rem;
+    }
+
+    .crazy-summary-panel {
+        position: relative;
+        top: 0;
+        margin-top: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .crazy-cart-item {
+        grid-template-columns: 70px 1fr auto;
+        grid-template-areas:
+            "image info remove"
+            "image qty total";
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .crazy-item-image { grid-area: image; width: 70px; height: 70px; }
+    .crazy-item-info { grid-area: info; }
+    .crazy-remove-btn { grid-area: remove; width: 32px; height: 32px; }
+    .crazy-qty-control { grid-area: qty; justify-self: start; }
+    .crazy-item-total { grid-area: total; justify-self: end; font-size: 1rem; }
+
+    .crazy-item-name {
+        font-size: 0.88rem;
+    }
+
+    .crazy-item-unit-price {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-header {
+        padding: 100px 14px 16px !important;
+    }
+
+    .hero-header h1 {
+        font-size: 1.85rem;
+    }
+
+    .crazy-summary-panel {
+        padding: 24px 20px;
+    }
+
+    .crazy-grand-total .value {
+        font-size: 1.35rem;
+    }
+}
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO HEADER -->
+<div class="container-fluid hero-header mb-4">
+    <div class="container text-center">
+        <h1 class="mb-3 animated slideInDown">Your Cart 🛒</h1>
+        <p class="animated slideInDown mb-3">Review your items before checkout</p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center mb-0 animated slideInDown">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Cart</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- CART CONTENT -->
+<div class="container-fluid">
+    <div class="crazy-cart-container">
+
+        {% if cart_items %}
+        <div class="row g-4">
+
+            <!-- LEFT: CART ITEMS -->
+            <div class="col-lg-8 wow fadeIn" data-wow-delay="0.1s">
+
+                <div class="crazy-cart-list">
+                    {% for item in cart_items %}
+                    <div class="crazy-cart-item" data-item-key="{{ item.key }}">
+
+                        <div class="crazy-item-image">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                                <img src="{% static 'store/img/product-placeholder.png' %}" alt="{{ item.product.name }}">
+                            {% endif %}
+                        </div>
+
+                        <div class="crazy-item-info">
+                            <div class="crazy-item-name">{{ item.product.name }}</div>
+                            {% if item.size %}
+                                <span class="crazy-item-variant">{{ item.size }}</span>
+                            {% endif %}
+                            <div class="crazy-item-unit-price">KES {{ item.price|floatformat:0 }} each</div>
+                        </div>
+
+                        <div class="crazy-qty-control">
+                            <button class="crazy-qty-btn" onclick="updateQuantity('{{ item.key }}', -1)" aria-label="Decrease">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="crazy-qty-value">{{ item.quantity }}</span>
+                            <button class="crazy-qty-btn" onclick="updateQuantity('{{ item.key }}', 1)" aria-label="Increase">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+
+                        <div class="crazy-item-total">
+                            <span class="currency">KES</span>{{ item.item_total|floatformat:0 }}
+                        </div>
+
+                        <a href="javascript:void(0)"
+                           class="crazy-remove-btn"
+                           onclick="openModal('{{ item.key }}', '{{ item.product.name }}')"
+                           aria-label="Remove item">
+                            <i class="fas fa-times"></i>
+                        </a>
+
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <a href="/" class="crazy-continue-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Continue Shopping
                 </a>
-                <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav ms-auto">
-                        <a href="/" class="nav-item nav-link">Home</a>
-                        <a href="{% url 'my_orders' %}" class="nav-item nav-link">My Orders</a>
-                        <a href="/cart/" class="nav-item nav-link cart-link active">
-                            <i class="fa fa-shopping-bag"></i>
-                            <span class="cart-badge" id="cartCount">0</span>
-                        </a>
-                        <a href="{% url 'blog_list' %}" class="nav-item nav-link">Blog</a>
-                        
-                        {% if user.is_authenticated %}
-                            <span class="nav-item nav-link text-white-50">Welcome, {{ user.username }}</span>
-                            <a href="{% url 'logout' %}" class="nav-item nav-link text-danger">Logout</a>
-                        {% else %}
-                            <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
-                            <a href="{% url 'signup' %}" class="nav-item nav-link">Signup</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </div>
-
-    <!-- ============================================ -->
-    <!-- WHATSAPP FLOATING BUTTON -->
-    <!-- ============================================ -->
-    <div class="whatsapp-float">
-        <a href="https://wa.me/254795180079?text=Hello%20Delight%20Care%2C%20I%20need%20help%20with%20my%20cart" 
-           class="whatsapp-btn" 
-           target="_blank" 
-           rel="noopener noreferrer"
-           aria-label="Contact us on WhatsApp">
-            <span class="ripple"></span>
-            <span class="ripple"></span>
-            <i class="fab fa-whatsapp"></i>
-            <span class="tooltip">Chat with us on WhatsApp</span>
-        </a>
-        <span class="whatsapp-label">Chat 💬</span>
-    </div>
-
-    <!-- ============================================ -->
-    <!-- HERO HEADER - TRANSPARENT -->
-    <!-- ============================================ -->
-    <div class="container-fluid hero-header mb-5">
-        <div class="container text-center">
-            <h1 class="display-4 text-white mb-3 animated slideInDown">Your Shopping Cart</h1>
-            <p class="text-white animated slideInDown">Review your items before checkout</p>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb justify-content-center mb-0 animated slideInDown">
-                    <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
-                    <li class="breadcrumb-item text-white active" aria-current="page">Cart</li>
-                </ol>
-            </nav>
-        </div>
-    </div>
-
-    <!-- ============================================ -->
-    <!-- MESSAGES -->
-    <!-- ============================================ -->
-    {% if messages %}
-    <div class="container mb-4">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                <i class="fas fa-info-circle me-2"></i>{{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <!-- ============================================ -->
-    <!-- CART CONTENT -->
-    <!-- ============================================ -->
-    <div class="container-fluid py-5">
-        <div class="container">
-            
-            {% if cart_items %}
-            <div class="row g-5">
-                <!-- ============================================ -->
-                <!-- CART ITEMS TABLE -->
-                <!-- ============================================ -->
-                <div class="col-lg-8 wow fadeIn" data-wow-delay="0.1s">
-                    <div class="cart-table-wrapper">
-                        <div class="table-responsive">
-                            <table class="table cart-table">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for item in cart_items %}
-                                    <tr data-item-key="{{ item.key }}">
-                                        <td data-label="Product">
-                                            <div class="cart-product">
-                                                {% if item.product.image %}
-                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-product-img">
-                                                {% else %}
-                                                <img src="{% static 'store/img/product-placeholder.png' %}" alt="{{ item.product.name }}" class="cart-product-img">
-                                                {% endif %}
-                                                <div class="cart-product-info">
-                                                    <h6 class="mb-1">{{ item.product.name }}</h6>
-                                                    <div class="variant">{{ item.size }}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td data-label="Price">
-                                            <span class="cart-price">KES {{ item.price|floatformat:2 }}</span>
-                                        </td>
-                                        <td data-label="Quantity">
-                                            <div class="cart-quantity">
-                                                <button class="qty-btn" onclick="updateQuantity('{{ item.key }}', -1)" title="Decrease quantity">
-                                                    <i class="fas fa-minus"></i>
-                                                </button>
-                                                <input type="number" class="qty-input" value="{{ item.quantity }}" min="1" readonly>
-                                                <button class="qty-btn" onclick="updateQuantity('{{ item.key }}', 1)" title="Increase quantity">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td data-label="Total">
-                                            <span class="cart-total">KES {{ item.item_total|floatformat:2 }}</span>
-                                        </td>
-                                        <td data-label="Action" class="text-center">
-                                            <a href="javascript:void(0)" 
-                                               class="cart-remove" 
-                                               onclick="openModal('{{ item.key }}', '{{ item.product.name }}')"
-                                               title="Remove item">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <!-- Continue Shopping Button -->
-                    <div class="mt-4">
-                        <a href="/" class="btn btn-outline-primary rounded-pill px-4 py-2">
-                            <i class="fas fa-arrow-left me-2"></i>Continue Shopping
-                        </a>
-                    </div>
-                </div>
-
-                <!-- ============================================ -->
-                <!-- ORDER SUMMARY -->
-                <!-- ============================================ -->
-                <div class="col-lg-4 wow fadeIn" data-wow-delay="0.2s">
-                    <div class="card order-summary-card">
-                        <div class="card-header">
-                            <h4><i class="fas fa-receipt"></i> Order Summary</h4>
-                        </div>
-                        <div class="card-body">
-                            
-                            <!-- Items Count -->
-                            <div class="summary-row">
-                                <span class="label">Items</span>
-                                <span class="value">{{ cart_items|length }}</span>
-                            </div>
-                            
-                            <!-- Subtotal -->
-                            <div class="summary-row" id="subtotal-row">
-                                <span class="label">Subtotal</span>
-                                <span class="value" id="subtotal-value">KES {{ total_price|floatformat:2 }}</span>
-                            </div>
-                            
-                            <!-- GST -->
-                            <div class="summary-row" id="gst-row">
-                                <span class="label">GST (18%)</span>
-                                <span class="value" id="gst-value">KES {{ gst|floatformat:2 }}</span>
-                            </div>
-                            
-                            <!-- Delivery -->
-                            <div class="summary-row">
-                                <span class="label">Delivery Fee</span>
-                                <span class="value text-success">FREE</span>
-                            </div>
-                            
-                            <!-- Grand Total -->
-                            <div class="summary-total">
-                                <span class="label">Grand Total</span>
-                                <span class="value" id="grand-total-value">KES {{ grand_total|floatformat:2 }}</span>
-                            </div>
-                            
-                            <!-- Secure Payment Notice -->
-                            <div class="secure-payment">
-                                <i class="fas fa-lock"></i>
-                                <p>Your payment is encrypted and secure</p>
-                            </div>
-                            
-                            <!-- Checkout Button -->
-                            <a href="{% url 'checkout' %}" class="btn btn-primary w-100 rounded-pill py-3 fw-bold mt-4" style="background: #90bc79 !important;">
-                                <i class="fas fa-arrow-right me-2"></i>Proceed to Checkout
-                            </a>
-                            
-                            <!-- Trust Badges -->
-                            <div class="d-flex justify-content-center gap-3 mt-4">
-                                <i class="fab fa-cc-visa fs-3 text-secondary"></i>
-                                <i class="fab fa-cc-mastercard fs-3 text-secondary"></i>
-                                <i class="fab fa-cc-amex fs-3 text-secondary"></i>
-                                <i class="fab fa-cc-paypal fs-3 text-secondary"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
             </div>
-            
-            {% else %}
-            <!-- ============================================ -->
-            <!-- EMPTY CART -->
-            <!-- ============================================ -->
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="empty-cart wow fadeIn" data-wow-delay="0.1s">
-                        <div class="empty-cart-icon">
-                            <i class="fas fa-shopping-cart"></i>
+
+            <!-- RIGHT: ORDER SUMMARY -->
+            <div class="col-lg-4 wow fadeIn" data-wow-delay="0.2s">
+                <div class="crazy-summary-panel">
+
+                    <div class="crazy-summary-header">
+                        <div class="icon-box">
+                            <i class="fas fa-receipt"></i>
                         </div>
-                        <h3 class="mb-3" style="color: #2d3e2a;">Your Cart is Empty</h3>
-                        <p class="text-muted mb-4">Looks like you haven't added any products yet. Explore our amazing collection!</p>
-                        <a href="/" class="continue-shopping-btn">
-                            <i class="fas fa-store me-2"></i>Start Shopping
-                        </a>
+                        <h4>Order Summary</h4>
                     </div>
+
+                    <div class="crazy-summary-row">
+                        <span class="label">Items</span>
+                        <span class="value">{{ cart_items|length }}</span>
+                    </div>
+
+                    <div class="crazy-summary-row">
+                        <span class="label">Subtotal</span>
+                        <span class="value" id="subtotal-value">KES {{ total_price|floatformat:2 }}</span>
+                    </div>
+
+                    <div class="crazy-summary-row">
+                        <span class="label">GST (18%)</span>
+                        <span class="value" id="gst-value">KES {{ gst|floatformat:2 }}</span>
+                    </div>
+
+                    <div class="crazy-summary-row">
+                        <span class="label">Delivery Fee</span>
+                        <span class="value free">Free</span>
+                    </div>
+
+                    <div class="crazy-grand-total">
+                        <span class="label">Total</span>
+                        <span class="value" id="grand-total-value">KES {{ grand_total|floatformat:2 }}</span>
+                    </div>
+
+                    <div class="crazy-secure-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Encrypted & secure checkout</span>
+                    </div>
+
+                    <a href="{% url 'checkout' %}" class="crazy-checkout-btn">
+                        <i class="fas fa-bolt"></i>
+                        Checkout Now
+                    </a>
+
+                    <div class="crazy-trust-row">
+                        <i class="fab fa-cc-visa"></i>
+                        <i class="fab fa-cc-mastercard"></i>
+                        <i class="fab fa-cc-amex"></i>
+                        <i class="fab fa-cc-paypal"></i>
+                    </div>
+
                 </div>
             </div>
-            {% endif %}
 
         </div>
-    </div>
 
-    <!-- ============================================ -->
-    <!-- FOOTER -->
-    <!-- ============================================ -->
-    <div class="container-fluid bg-white footer mt-5">
-        <div class="container py-5 text-center">
-            <p class="mb-0">&copy; <a class="border-bottom" href="#" style="color: #90bc79 !important;">Delight Care Plus</a>, All Rights Reserved.</p>
-        </div>
-    </div>
-
-    <!-- ============================================ -->
-    <!-- BACK TO TOP BUTTON -->
-    <!-- ============================================ -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-    <!-- ============================================ -->
-    <!-- CUSTOM CONFIRMATION MODAL -->
-    <!-- ============================================ -->
-    <div class="custom-modal-overlay" id="confirmModal">
-        <div class="custom-modal">
-            <div class="custom-modal-icon">
-                <i class="fas fa-trash-alt"></i>
+        {% else %}
+        <div class="crazy-empty-state wow fadeIn">
+            <div class="crazy-empty-icon">
+                <i class="fas fa-shopping-bag"></i>
             </div>
-            <h4>Remove Item?</h4>
-            <p id="modalMessage">Are you sure you want to remove this item from your cart?</p>
-            <div class="modal-actions">
-                <button class="modal-btn cancel-btn" onclick="closeModal()">
-                    <i class="fas fa-times me-1"></i>Cancel
-                </button>
-                <button class="modal-btn confirm-btn" onclick="confirmRemove()">
-                    <i class="fas fa-trash-alt me-1"></i>Remove
-                </button>
-            </div>
+            <h3>Your Cart is Empty</h3>
+            <p>Looks like you haven't added anything yet.<br>Discover our premium natural supplements and start your wellness journey.</p>
+            <a href="/" class="crazy-empty-btn">
+                <i class="fas fa-store"></i>
+                Start Shopping
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- REMOVE CONFIRMATION MODAL -->
+<div class="custom-modal-overlay" id="confirmModal">
+    <div class="custom-modal">
+        <div class="custom-modal-icon">
+            <i class="fas fa-trash-alt"></i>
+        </div>
+        <h4>Remove Item?</h4>
+        <p id="modalMessage">Are you sure you want to remove this item from your cart?</p>
+        <div class="modal-actions">
+            <button class="modal-btn cancel-btn" onclick="closeModal()">
+                <i class="fas fa-times me-1"></i> Cancel
+            </button>
+            <button class="modal-btn confirm-btn" onclick="confirmRemove()">
+                <i class="fas fa-trash-alt me-1"></i> Remove
+            </button>
         </div>
     </div>
+</div>
 
-    <!-- ============================================ -->
-    <!-- SCRIPTS -->
-    <!-- ============================================ -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
-    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
-    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
-    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-
-    <script src="{% static 'js/main.js' %}"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Update cart badge count
-            function updateCartBadge() {
-                fetch('/cart/count/')
-                    .then(response => response.json())
-                    .then(data => {
-                        const badge = document.getElementById('cartCount');
-                        if (badge && data.count !== undefined) {
-                            badge.textContent = data.count;
-                            badge.style.display = data.count > 0 ? 'flex' : 'none';
-                        }
-                    })
-                    .catch(error => console.error('Error fetching cart count:', error));
-            }
-
-            updateCartBadge();
-
-            // Auto-close alerts after 5 seconds
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                setTimeout(function() {
-                    alert.style.transition = 'opacity 0.5s';
-                    alert.style.opacity = '0';
-                    setTimeout(function() {
-                        alert.remove();
-                    }, 500);
-                }, 5000);
-            });
-
-            // WhatsApp button pulse animation
-            const whatsappBtn = document.querySelector('.whatsapp-btn');
-            if (whatsappBtn) {
-                whatsappBtn.addEventListener('mouseenter', function() {
-                    this.style.animation = 'none';
-                });
-                whatsappBtn.addEventListener('mouseleave', function() {
-                    this.style.animation = 'pulse-green 2s infinite';
-                });
-            }
-
-            // Close modal when clicking outside
-            const modal = document.getElementById('confirmModal');
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    closeModal();
-                }
-            });
-
-            // Close modal with Escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeModal();
-                }
-            });
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('confirmModal');
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeModal();
         });
 
-        // ============================================
-        // CUSTOM MODAL FUNCTIONS
-        // ============================================
-        let removeKey = null;
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+    });
 
-        function openModal(key, productName) {
-            removeKey = key;
-            const modal = document.getElementById('confirmModal');
-            const message = document.getElementById('modalMessage');
-            message.textContent = `Are you sure you want to remove "${productName}" from your cart?`;
-            modal.classList.add('active');
+    let removeKey = null;
+
+    function openModal(key, productName) {
+        removeKey = key;
+        const modal = document.getElementById('confirmModal');
+        const message = document.getElementById('modalMessage');
+        message.textContent = `Remove "${productName}" from your cart?`;
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('confirmModal');
+        modal.classList.remove('active');
+        removeKey = null;
+    }
+
+    function confirmRemove() {
+        if (removeKey) {
+            window.location.href = `/remove-from-cart/${removeKey}/`;
         }
+    }
 
-        function closeModal() {
-            const modal = document.getElementById('confirmModal');
-            modal.classList.remove('active');
-            removeKey = null;
-        }
+    function updateQuantity(key, delta) {
+        const row = document.querySelector(`.crazy-cart-item[data-item-key="${key}"]`);
+        if (!row) return;
 
-        function confirmRemove() {
-            if (removeKey) {
-                window.location.href = `/remove-from-cart/${removeKey}/`;
-            }
-        }
+        const qtyValue = row.querySelector('.crazy-qty-value');
+        let currentQty = parseInt(qtyValue.textContent);
+        let newQty = currentQty + delta;
 
-        // ============================================
-        // QUANTITY UPDATE FUNCTION
-        // ============================================
-        function updateQuantity(key, delta) {
-            // Get current quantity input
-            const row = document.querySelector(`tr[data-item-key="${key}"]`);
-            if (!row) return;
-            
-            const qtyInput = row.querySelector('.qty-input');
-            let currentQty = parseInt(qtyInput.value);
-            
-            // Calculate new quantity
-            let newQty = currentQty + delta;
-            
-            // Ensure quantity is at least 1
-            if (newQty < 1) {
-                newQty = 1;
-            }
-            
-            // Update input display
-            qtyInput.value = newQty;
-            
-            // Disable buttons while updating
-            const minusBtn = row.querySelector('.qty-btn:first-child');
-            const plusBtn = row.querySelector('.qty-btn:last-child');
-            minusBtn.disabled = true;
-            plusBtn.disabled = true;
-            
-            // Make AJAX call to update quantity
-            fetch(`/update-cart/${key}/${newQty}/`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Update item total
-                        const itemTotalCell = row.querySelector('.cart-total');
-                        itemTotalCell.textContent = 'KES ' + data.item_total.toFixed(2);
-                        
-                        // Update order summary
-                        updateSummary(data.total_price, data.gst, data.grand_total);
-                        
-                        // Show success message
-                        showToast('Quantity updated!');
-                    } else {
-                        // Revert on error
-                        qtyInput.value = currentQty;
-                        showToast('Error updating quantity', 'error');
-                    }
-                })
-                .catch(error => {
-                    // Revert on error
-                    qtyInput.value = currentQty;
+        if (newQty < 1) newQty = 1;
+
+        qtyValue.textContent = newQty;
+
+        const buttons = row.querySelectorAll('.crazy-qty-btn');
+        buttons.forEach(b => b.disabled = true);
+
+        fetch(`/update-cart/${key}/${newQty}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const itemTotal = row.querySelector('.crazy-item-total');
+                    itemTotal.innerHTML = `<span class="currency">KES</span>${Math.round(data.item_total)}`;
+
+                    updateSummary(data.total_price, data.gst, data.grand_total);
+                    showToast('Quantity updated');
+                } else {
+                    qtyValue.textContent = currentQty;
                     showToast('Error updating quantity', 'error');
-                })
-                .finally(() => {
-                    // Re-enable buttons
-                    minusBtn.disabled = false;
-                    plusBtn.disabled = false;
-                });
-        }
-
-        // ============================================
-        // UPDATE SUMMARY TOTALS
-        // ============================================
-        function updateSummary(totalPrice, gst, grandTotal) {
-            // Update Subtotal
-            const subtotalValue = document.getElementById('subtotal-value');
-            if (subtotalValue) subtotalValue.textContent = 'KES ' + totalPrice.toFixed(2);
-            
-            // Update GST
-            const gstValue = document.getElementById('gst-value');
-            if (gstValue) gstValue.textContent = 'KES ' + gst.toFixed(2);
-            
-            // Update Grand Total
-            const grandTotalValue = document.getElementById('grand-total-value');
-            if (grandTotalValue) grandTotalValue.textContent = 'KES ' + grandTotal.toFixed(2);
-        }
-
-        // ============================================
-        // TOAST NOTIFICATION
-        // ============================================
-        function showToast(message, type = 'success') {
-            // Remove existing toasts
-            document.querySelectorAll('.cart-toast').forEach(function(toast) {
-                toast.remove();
+                }
+            })
+            .catch(err => {
+                qtyValue.textContent = currentQty;
+                showToast('Error updating quantity', 'error');
+            })
+            .finally(() => {
+                buttons.forEach(b => b.disabled = false);
             });
-            
-            const toast = document.createElement('div');
-            toast.className = 'cart-toast';
-            toast.innerHTML = `
-                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
-                <span>${message}</span>
-            `;
-            toast.style.background = type === 'success' ? '#28a745' : '#dc3545';
-            document.body.appendChild(toast);
-            
-            setTimeout(function() {
-                toast.style.transition = 'opacity 0.5s';
-                toast.style.opacity = '0';
-                setTimeout(function() {
-                    toast.remove();
-                }, 500);
-            }, 3000);
+    }
+
+    function updateSummary(totalPrice, gst, grandTotal) {
+        const subtotalValue = document.getElementById('subtotal-value');
+        if (subtotalValue) subtotalValue.textContent = 'KES ' + totalPrice.toFixed(2);
+
+        const gstValue = document.getElementById('gst-value');
+        if (gstValue) gstValue.textContent = 'KES ' + gst.toFixed(2);
+
+        const grandTotalValue = document.getElementById('grand-total-value');
+        if (grandTotalValue) grandTotalValue.textContent = 'KES ' + grandTotal.toFixed(2);
+    }
+
+    function showToast(message, type = 'success') {
+        document.querySelectorAll('.cart-toast').forEach(t => t.remove());
+
+        const toast = document.createElement('div');
+        toast.className = 'cart-toast';
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+        if (type === 'error') {
+            toast.style.borderColor = 'rgba(239, 68, 68, 0.35)';
         }
-    </script>
+        document.body.appendChild(toast);
 
-</body>
-
-</html>
+        setTimeout(() => {
+            toast.style.transition = 'opacity 0.4s, transform 0.4s';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => toast.remove(), 400);
+        }, 2500);
+    }
+</script>
+{% endblock %}

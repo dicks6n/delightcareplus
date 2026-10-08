@@ -1,1174 +1,960 @@
 <!-- templates/store/checkout.html -->
+{% extends 'base_dashboard.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <title>Checkout - Delight Care Plus</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <link href="{% static 'img/favicon.ico' %}" rel="icon">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
-    <link href="{% static 'store/lib/animate/animate.min.css' %}" rel="stylesheet">
-    <link href="{% static 'store/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
-
-    <link href="{% static 'store/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
-
-    <style>
-        /* ============================================ */
-        /* YOUR COLOR: #90bc79 */
-        /* FULL PAGE BACKGROUND WITH BLUR & DARK OVERLAY */
-        /* ============================================ */
-        
-        /* --- FULL PAGE BACKGROUND --- */
-        body {
-            font-family: 'Poppins', 'Open Sans', sans-serif;
-            min-height: 100vh;
-            background: #f5f8f4;
-            position: relative;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Background image that covers the entire page */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("{% static 'store/img/IMG_0385.jpg' %}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            z-index: -2;
-        }
-
-        /* Dark overlay layer with blur */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            z-index: -1;
-        }
-
-        /* ============================================ */
-        /* ✅ TRANSPARENT NAVBAR */
-        /* ============================================ */
-        .sticky-top {
-            position: sticky !important;
-            top: 0 !important;
-            z-index: 9999 !important;
-            background: transparent !important;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .sticky-top::before {
-            display: none;
-        }
-
-        .sticky-top .container {
-            position: relative;
-            z-index: 1;
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar-brand img {
-            height: 50px;
-            width: auto;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-brand img:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(144, 188, 121, 0.3);
-        }
-
-        /* ============================================ */
-        /* ✅ ANIMATED BRAND TEXT */
-        /* ============================================ */
-        .animated-brand {
-            background: linear-gradient(
-                90deg,
-                #ffffff 0%,
-                #e8f5e9 25%,
-                #90bc79 50%,
-                #e8f5e9 75%,
-                #ffffff 100%
-            );
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradient-shift 3s linear infinite;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 1.6rem;
-            letter-spacing: -0.5px;
-            display: inline-block;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        @keyframes gradient-shift {
-            0% {
-                background-position: 0% center;
-            }
-            100% {
-                background-position: 200% center;
-            }
-        }
-
-        .animated-brand:hover {
-            animation: gradient-shift 1s linear infinite;
-            cursor: pointer;
-        }
-
-        /* ============================================ */
-        /* ✅ NAV LINKS - WHITE TEXT FOR DARK BACKGROUND */
-        /* ============================================ */
-        .navbar-nav .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            font-size: 0.95rem;
-            padding: 8px 18px !important;
-            transition: all 0.3s ease;
-            border-radius: 30px;
-            letter-spacing: 0.3px;
-            position: relative;
-            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .navbar-nav .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: #90bc79;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-
-        .navbar-nav .nav-link:hover::after,
-        .navbar-nav .nav-link.active::after {
-            width: 60%;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #ffffff !important;
-            background: rgba(144, 188, 121, 0.2);
-        }
-
-        .navbar-nav .nav-link.active {
-            color: #ffffff !important;
-            font-weight: 600;
-            background: rgba(144, 188, 121, 0.25);
-        }
-
-        /* ============================================ */
-        /* ✅ CART ICON WITH IMAGE */
-        /* ============================================ */
-        .cart-link {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 18px !important;
-        }
-
-        .cart-icon-img {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-            transition: transform 0.3s ease;
-            filter: brightness(0) invert(1);
-        }
-
-        .cart-link:hover .cart-icon-img {
-            transform: scale(1.15);
-        }
-
-        .cart-badge {
-            position: absolute;
-            top: -2px;
-            right: 2px;
-            background: #ff6b6b;
-            color: white;
-            font-size: 0.6rem;
-            font-weight: 700;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .navbar-nav .text-white-50 {
-            color: rgba(255, 255, 255, 0.7) !important;
-            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .navbar-nav .nav-link.text-danger {
-            color: #ff6b6b !important;
-            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .navbar-nav .nav-link.text-danger:hover {
-            color: #ff4444 !important;
-            background: rgba(220, 53, 69, 0.2);
-        }
-
-        /* ============================================ */
-        /* All content sits above the background */
-        /* ============================================ */
-        .container-fluid:not(.sticky-top),
-        .container,
-        .footer,
-        .hero-header,
-        .card,
-        .bg-light,
-        .bg-white,
-        .whatsapp-float,
-        .back-to-top {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ============================================ */
-        /* WHATSAPP FLOATING BUTTON */
-        /* ============================================ */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .whatsapp-float .whatsapp-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            background: #25d366;
-            border-radius: 50%;
-            color: #ffffff;
-            font-size: 2.2rem;
-            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            position: relative;
-            animation: pulse-green 2s infinite;
-        }
-
-        .whatsapp-float .whatsapp-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
-        }
-
-        .whatsapp-float .whatsapp-btn .tooltip {
-            position: absolute;
-            left: 70px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .whatsapp-float .whatsapp-btn:hover .tooltip {
-            opacity: 1;
-            visibility: visible;
-            left: 75px;
-        }
-
-        .whatsapp-float .whatsapp-btn .tooltip::before {
-            content: '';
-            position: absolute;
-            right: 100%;
-            top: 50%;
-            transform: translateY(-50%);
-            border: 6px solid transparent;
-            border-right-color: rgba(0, 0, 0, 0.8);
-        }
-
-        .whatsapp-float .whatsapp-label {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: #25d366;
-            background: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .whatsapp-float .whatsapp-btn .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(37, 211, 102, 0.3);
-            animation: ripple 1.5s ease-out infinite;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        .whatsapp-float .whatsapp-btn .ripple:nth-child(1) {
-            animation-delay: 0.5s;
-        }
-
-        @keyframes pulse-green {
-            0%, 100% {
-                box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
-            }
-            50% {
-                box-shadow: 0 4px 30px rgba(37, 211, 102, 0.7);
-            }
-        }
-
-        @keyframes ripple {
-            0% {
-                transform: scale(0.8);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1.8);
-                opacity: 0;
-            }
-        }
-
-        /* ============================================ */
-        /* CARDS WITH GLASS EFFECT */
-        /* ============================================ */
-        .card,
-        .bg-light,
-        .bg-white {
-            background: rgba(255, 255, 255, 0.92) !important;
-            backdrop-filter: blur(8px);
-        }
-
-        .footer {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-        }
-
-        /* ============================================ */
-        /* HERO HEADER - now transparent to show background */
-        /* ============================================ */
-        .hero-header {
-            background: transparent !important;
-            padding: 120px 20px 60px !important;
-            position: relative;
-            margin-top: -60px;
-        }
-        .hero-header::before {
-            display: none;
-        }
-        .hero-header .container {
-            position: relative;
-            z-index: 2;
-        }
-        .hero-header h1 {
-            color: #ffffff !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
-        }
-        .hero-header p {
-            color: rgba(255, 255, 255, 0.95) !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 300;
-            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
-        }
-        .hero-header .breadcrumb-item a {
-            color: rgba(255, 255, 255, 0.85) !important;
-            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
-        }
-        .hero-header .breadcrumb-item.active {
-            color: #ffffff !important;
-            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
-        }
-        .hero-header .breadcrumb-item a:hover {
-            color: #ffffff !important;
-        }
-
-        /* ============================================ */
-        /* ✅ CHECKOUT SPECIFIC STYLES */
-        /* ============================================ */
-        .checkout-card {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(144, 188, 121, 0.2);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .checkout-card .card-header {
-            background: #90bc79;
-            color: white;
-            border-radius: 20px 20px 0 0;
-            padding: 25px;
-            border: none;
-        }
-
-        .checkout-card .card-header h3 {
-            margin: 0;
-            font-weight: 600;
-        }
-
-        .checkout-card .card-header i {
-            margin-right: 10px;
-        }
-
-        .checkout-card .card-body {
-            padding: 30px;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: #2d3e2a;
-            margin-bottom: 8px;
-        }
-
-        .form-control {
-            border-radius: 12px;
-            padding: 12px 16px;
-            border: 2px solid #e9ecef;
-            background: #f8f9fa;
-            transition: all 0.3s;
-        }
-
-        .form-control:focus {
-            border-color: #90bc79;
-            box-shadow: 0 0 0 0.25rem rgba(144, 188, 121, 0.15);
-            background: white;
-        }
-
-        .form-control::placeholder {
-            color: #adb5bd;
-        }
-
-        .order-summary-card {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(144, 188, 121, 0.2);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .order-summary-card .card-header {
-            background: #90bc79;
-            color: white;
-            padding: 20px 25px;
-            border: none;
-        }
-
-        .order-summary-card .card-header h3 {
-            margin: 0;
-            font-weight: 600;
-        }
-
-        .order-summary-card .card-body {
-            padding: 25px;
-        }
-
-        .order-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .order-item:last-child {
-            border-bottom: none;
-        }
-
-        .order-item img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-right: 15px;
-            background: #f8f9fa;
-        }
-
-        .order-item-info {
-            flex: 1;
-        }
-
-        .order-item-name {
-            font-weight: 600;
-            color: #2d3e2a;
-            margin-bottom: 3px;
-        }
-
-        .order-item-qty {
-            color: #6c757d;
-            font-size: 0.85rem;
-        }
-
-        .order-item-price {
-            font-weight: 600;
-            color: #90bc79;
-            font-size: 1.1rem;
-        }
-
-        .summary-totals {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .summary-row:last-child {
-            border-bottom: none;
-        }
-
-        .summary-row .label {
-            color: #6c757d;
-            font-weight: 500;
-        }
-
-        .summary-row .value {
-            font-weight: 600;
-            color: #2d3e2a;
-        }
-
-        .summary-total {
-            background: rgba(144, 188, 121, 0.1);
-            border-radius: 12px;
-            padding: 15px;
-            margin-top: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .summary-total .label {
-            font-weight: 600;
-            color: #2d3e2a;
-            font-size: 1.1rem;
-        }
-
-        .summary-total .value {
-            font-weight: 700;
-            color: #90bc79;
-            font-size: 1.3rem;
-        }
-
-        .secure-payment {
-            background: rgba(144, 188, 121, 0.1);
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .secure-payment i {
-            color: #90bc79;
-            font-size: 1.5rem;
-            margin-right: 15px;
-        }
-
-        .secure-payment p {
-            margin: 0;
-            color: #2d3e2a;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .place-order-btn {
-            background: #90bc79;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 15px 30px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            width: 100%;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.3);
-        }
-
-        .place-order-btn:hover {
-            background: #7dab66;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(144, 188, 121, 0.4);
-        }
-
-        .place-order-btn:active {
-            transform: translateY(0);
-        }
-
-        .place-order-btn i {
-            margin-right: 10px;
-        }
-
-        .back-link {
-            color: #6c757d;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .back-link:hover {
-            color: #90bc79;
-        }
-
-        /* ============================================ */
-        /* STEP INDICATOR */
-        /* ============================================ */
-        .step-indicator {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 40px;
-            gap: 0;
-        }
-
-        .step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            flex: 1;
-        }
-
-        .step-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: white;
-            border: 3px solid #e9ecef;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: #6c757d;
-            transition: all 0.3s;
-            z-index: 2;
-        }
-
-        .step.active .step-circle {
-            background: #90bc79;
-            border-color: #90bc79;
-            color: white;
-        }
-
-        .step.completed .step-circle {
-            background: #28a745;
-            border-color: #28a745;
-            color: white;
-        }
-
-        .step-label {
-            margin-top: 10px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #6c757d;
-        }
-
-        .step.active .step-label {
-            color: #90bc79;
-            font-weight: 600;
-        }
-
-        .step.completed .step-label {
-            color: #28a745;
-        }
-
-        .step-line {
-            position: absolute;
-            top: 25px;
-            left: 50%;
-            width: 100%;
-            height: 3px;
-            background: #e9ecef;
-        }
-
-        .step.active .step-line,
-        .step.completed .step-line {
-            background: #90bc79;
-        }
-
-        /* ============================================ */
-        /* MOBILE RESPONSIVE */
-        /* ============================================ */
-        @media (max-width: 991px) {
-            .navbar-collapse {
-                background: rgba(0, 0, 0, 0.85);
-                backdrop-filter: blur(10px);
-                border-radius: 0 0 15px 15px;
-                padding: 10px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            }
-            
-            .navbar-nav .nav-link {
-                text-align: center;
-                padding: 10px 15px !important;
-                color: #ffffff !important;
-            }
-            
-            .navbar-nav .nav-link::after {
-                display: none;
-            }
-            
-            .navbar-toggler {
-                border-color: rgba(255, 255, 255, 0.5) !important;
-            }
-            
-            .navbar-toggler-icon {
-                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
-            }
-            
-            .whatsapp-float {
-                bottom: 20px;
-                left: 20px;
-            }
-            .whatsapp-float .whatsapp-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 1.8rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .animated-brand {
-                font-size: 1.3rem;
-            }
-            .cart-icon-img {
-                width: 20px;
-                height: 20px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-   
-    <!-- ============================================ -->
-    <!-- ✅ TRANSPARENT NAVBAR WITH GIF LOGO -->
-    <!-- ============================================ -->
-    <div class="container-fluid sticky-top">
-        <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-light p-0">
-                <a href="/" class="navbar-brand d-flex align-items-center">
-                    <!-- GIF Logo -->
-                    <img src="{% static 'store/img/DELIGHT.gif' %}" 
-                         alt="Delight Care Plus" 
-                         style="height: 50px; width: auto; border-radius: 8px;">
-                    <!-- Animated Text Logo -->
-                    <span class="d-none d-md-inline ms-2 animated-brand">
-                        Delight Care Plus
-                    </span>
-                </a>
-                <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav ms-auto">
-                        <a href="/" class="nav-item nav-link">Home</a>
-                        <a href="{% url 'my_orders' %}" class="nav-item nav-link">My Orders</a>
-                        <a href="/cart/" class="nav-item nav-link cart-link">
-                            <img src="{% static 'store/icons/shopping-cart.png' %}" 
-                                 alt="Cart" 
-                                 class="cart-icon-img">
-                            <span class="cart-badge" id="cartCount">0</span>
-                        </a>
-                        <a href="{% url 'blog_list' %}" class="nav-item nav-link">Blog</a>
-                        
-                        {% if user.is_authenticated %}
-                            <span class="nav-item nav-link text-white-50">Welcome, {{ user.username }}</span>
-                            <a href="{% url 'logout' %}" class="nav-item nav-link text-danger">Logout</a>
-                        {% else %}
-                            <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
-                            <a href="{% url 'signup' %}" class="nav-item nav-link">Signup</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </nav>
+
+{% block title %}Checkout - Delight Care Plus{% endblock %}
+
+{% block extra_styles %}
+
+/* ============================================ */
+/* CHECKOUT — "CRAZY" GREEN GLOW THEME          */
+/* ============================================ */
+
+/* Page background override */
+body {
+    background: #0f0f14 !important;
+}
+
+body::after {
+    background:
+        radial-gradient(circle at top left, rgba(144, 188, 121, 0.28), transparent 45%),
+        radial-gradient(circle at bottom right, rgba(45, 80, 22, 0.35), transparent 45%),
+        radial-gradient(circle at center, rgba(168, 217, 144, 0.1), transparent 60%),
+        rgba(0, 0, 0, 0.55) !important;
+    backdrop-filter: blur(3px) !important;
+    -webkit-backdrop-filter: blur(3px) !important;
+}
+
+/* ============================================ */
+/* HERO HEADER — Green Gradient + Glow          */
+/* ============================================ */
+.hero-header {
+    padding: 140px 20px 20px !important;
+    margin-bottom: 0 !important;
+}
+
+.hero-header h1 {
+    font-size: 3rem;
+    font-weight: 800 !important;
+    letter-spacing: -1.2px;
+    background: linear-gradient(135deg, #ffffff 0%, #a8d990 50%, #90bc79 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none !important;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 30px rgba(144, 188, 121, 0.5))
+            drop-shadow(0 0 60px rgba(168, 217, 144, 0.3));
+}
+
+.hero-header p {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-size: 1rem;
+    font-weight: 300;
+    text-shadow: 0 0 20px rgba(144, 188, 121, 0.35);
+}
+
+.hero-header .breadcrumb {
+    font-size: 0.85rem;
+    opacity: 0.75;
+}
+
+.hero-header .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.6) !important;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.hero-header .breadcrumb-item a:hover {
+    color: #a8d990 !important;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.9);
+}
+
+.hero-header .breadcrumb-item.active {
+    color: #a8d990 !important;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.7);
+}
+
+.hero-header .breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================ */
+/* STEP INDICATOR — Green Glow                  */
+/* ============================================ */
+.step-indicator-crazy {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    padding: 0 16px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.step-crazy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+    max-width: 180px;
+}
+
+.step-circle-crazy {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    z-index: 2;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+}
+
+.step-crazy.active .step-circle-crazy {
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 0 30px rgba(144, 188, 121, 0.6),
+                0 0 60px rgba(168, 217, 144, 0.3);
+}
+
+.step-crazy.completed .step-circle-crazy {
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 0 25px rgba(144, 188, 121, 0.5);
+}
+
+.step-label-crazy {
+    margin-top: 12px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    letter-spacing: 0.2px;
+}
+
+.step-crazy.active .step-label-crazy {
+    color: #a8d990;
+    font-weight: 600;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.7);
+}
+
+.step-crazy.completed .step-label-crazy {
+    color: #a8d990;
+    text-shadow: 0 0 10px rgba(144, 188, 121, 0.5);
+}
+
+.step-line-crazy {
+    position: absolute;
+    top: 27px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.08);
+    z-index: 1;
+}
+
+.step-crazy.active .step-line-crazy,
+.step-crazy.completed .step-line-crazy {
+    background: linear-gradient(90deg, #90bc79, #5a8a4a);
+    box-shadow: 0 0 15px rgba(144, 188, 121, 0.6);
+}
+
+/* ============================================ */
+/* MAIN CHECKOUT CONTAINER                      */
+/* ============================================ */
+.crazy-checkout-container {
+    max-width: 1280px;
+    margin: 0 auto 80px;
+    padding: 0 20px;
+}
+
+/* ============================================ */
+/* CHECKOUT PANEL — Dark Glass                  */
+/* ============================================ */
+.crazy-panel {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(144, 188, 121, 0.15);
+    border-radius: 24px;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 60px rgba(144, 188, 121, 0.12);
+    position: relative;
+    height: 100%;
+}
+
+.crazy-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #a8d990, #90bc79, transparent);
+    box-shadow: 0 0 20px rgba(144, 188, 121, 0.8);
+}
+
+/* Panel header */
+.crazy-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 24px 28px;
+    border-bottom: 1px solid rgba(144, 188, 121, 0.15);
+    position: relative;
+}
+
+.crazy-panel-header .icon-box {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(144, 188, 121, 0.5),
+                0 0 25px rgba(168, 217, 144, 0.4);
+}
+
+.crazy-panel-header h3 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin: 0;
+    letter-spacing: -0.3px;
+    text-shadow: 0 0 15px rgba(144, 188, 121, 0.3);
+}
+
+.crazy-panel-header p {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+    margin: 4px 0 0 0;
+}
+
+/* Panel body */
+.crazy-panel-body {
+    padding: 28px;
+}
+
+/* ============================================ */
+/* FORM FIELDS — Dark Glass + Green Focus       */
+/* ============================================ */
+.crazy-form-group {
+    margin-bottom: 20px;
+}
+
+.crazy-form-group label {
+    display: block;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+    letter-spacing: 0.3px;
+}
+
+.crazy-form-group label i {
+    color: #a8d990;
+    margin-right: 6px;
+    filter: drop-shadow(0 0 6px rgba(144, 188, 121, 0.8));
+}
+
+.crazy-form-group .optional-tag {
+    color: rgba(255, 255, 255, 0.35);
+    font-weight: 400;
+    font-size: 0.75rem;
+    margin-left: 4px;
+}
+
+.crazy-input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #ffffff;
+    font-size: 0.92rem;
+    font-family: inherit;
+    transition: all 0.25s ease;
+    outline: none;
+}
+
+.crazy-input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.crazy-input:focus {
+    border-color: rgba(144, 188, 121, 0.5);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 0 4px rgba(144, 188, 121, 0.1),
+                0 0 30px rgba(144, 188, 121, 0.35);
+}
+
+textarea.crazy-input {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.5;
+}
+
+/* ============================================ */
+/* FORM ROW GRID                                */
+/* ============================================ */
+.crazy-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 576px) {
+    .crazy-form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================ */
+/* SUBMIT BUTTON — Green Gradient               */
+/* ============================================ */
+.crazy-submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 24px;
+    margin-top: 8px;
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff !important;
+    border: none;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    font-family: inherit;
+    box-shadow: 0 10px 30px rgba(144, 188, 121, 0.5),
+                0 0 40px rgba(168, 217, 144, 0.3);
+}
+
+.crazy-submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transition: left 0.6s ease;
+}
+
+.crazy-submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(144, 188, 121, 0.7),
+                0 0 60px rgba(168, 217, 144, 0.5);
+}
+
+.crazy-submit-btn:hover::before {
+    left: 100%;
+}
+
+/* ============================================ */
+/* ORDER ITEM LIST — Cart Preview               */
+/* ============================================ */
+.crazy-order-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+}
+
+.crazy-order-item:last-child {
+    border-bottom: none;
+}
+
+.crazy-order-item-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    background: radial-gradient(circle at center, rgba(144, 188, 121, 0.15), rgba(31, 31, 40, 0.8));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    flex-shrink: 0;
+    border: 1px solid rgba(144, 188, 121, 0.2);
+    box-shadow: 0 0 15px rgba(144, 188, 121, 0.15);
+}
+
+.crazy-order-item-img img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3))
+            drop-shadow(0 0 10px rgba(144, 188, 121, 0.3));
+}
+
+.crazy-order-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.crazy-order-item-name {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.88rem;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.crazy-order-item-qty {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+}
+
+.crazy-order-item-price {
+    color: #a8d990;
+    font-weight: 700;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    text-shadow: 0 0 15px rgba(144, 188, 121, 0.5);
+}
+
+/* ============================================ */
+/* SUMMARY ROWS                                 */
+/* ============================================ */
+.crazy-summary-totals {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 20px;
+}
+
+.crazy-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+}
+
+.crazy-summary-row:last-of-type {
+    border-bottom: none;
+}
+
+.crazy-summary-row .label {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.85rem;
+}
+
+.crazy-summary-row .value {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.crazy-summary-row .value.free {
+    color: #a8d990;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.6);
+}
+
+/* ============================================ */
+/* GRAND TOTAL — Big Green Glow                 */
+/* ============================================ */
+.crazy-grand-total {
+    background: linear-gradient(135deg, rgba(144, 188, 121, 0.15), rgba(90, 138, 74, 0.15));
+    border: 1px solid rgba(144, 188, 121, 0.35);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 30px rgba(144, 188, 121, 0.25),
+                0 0 60px rgba(168, 217, 144, 0.15);
+}
+
+.crazy-grand-total .label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.crazy-grand-total .value {
+    background: linear-gradient(135deg, #a8d990, #90bc79);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    filter: drop-shadow(0 0 15px rgba(144, 188, 121, 0.6));
+}
+
+/* ============================================ */
+/* SECURE BADGE                                 */
+/* ============================================ */
+.crazy-secure-badge {
+    background: rgba(144, 188, 121, 0.08);
+    border: 1px solid rgba(144, 188, 121, 0.25);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    box-shadow: 0 0 20px rgba(144, 188, 121, 0.15);
+}
+
+.crazy-secure-badge i {
+    color: #a8d990;
+    font-size: 1rem;
+    filter: drop-shadow(0 0 8px rgba(144, 188, 121, 0.8));
+    flex-shrink: 0;
+}
+
+.crazy-secure-badge span {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+/* ============================================ */
+/* BACK LINK                                    */
+/* ============================================ */
+.crazy-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    margin-top: 20px;
+}
+
+.crazy-back-link:hover {
+    color: #a8d990;
+    gap: 12px;
+    text-shadow: 0 0 15px rgba(144, 188, 121, 0.7);
+}
+
+.crazy-back-link i {
+    transition: transform 0.25s ease;
+}
+
+.crazy-back-link:hover i {
+    transform: translateX(-4px);
+}
+
+/* ============================================ */
+/* EMPTY CART STATE                             */
+/* ============================================ */
+.crazy-empty-mini {
+    text-align: center;
+    padding: 30px 20px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+}
+
+.crazy-empty-mini i {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #a8d990, #90bc79);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 20px rgba(144, 188, 121, 0.6));
+}
+
+/* ============================================ */
+/* MOBILE                                       */
+/* ============================================ */
+@media (max-width: 991px) {
+    .hero-header {
+        padding: 120px 16px 20px !important;
+    }
+
+    .hero-header h1 {
+        font-size: 2.25rem;
+    }
+
+    .crazy-panel-header {
+        padding: 20px 22px;
+    }
+
+    .crazy-panel-body {
+        padding: 22px;
+    }
+
+    .crazy-panel {
+        margin-bottom: 24px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-header {
+        padding: 100px 14px 16px !important;
+    }
+
+    .hero-header h1 {
+        font-size: 1.85rem;
+        letter-spacing: -0.8px;
+    }
+
+    .step-indicator-crazy {
+        margin-bottom: 28px;
+        padding: 0 10px;
+    }
+
+    .step-circle-crazy {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+
+    .step-label-crazy {
+        font-size: 0.68rem;
+        margin-top: 8px;
+    }
+
+    .step-line-crazy {
+        top: 20px;
+    }
+
+    .crazy-panel-header {
+        padding: 18px 20px;
+        gap: 12px;
+    }
+
+    .crazy-panel-header .icon-box {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .crazy-panel-header h3 {
+        font-size: 1.02rem;
+    }
+
+    .crazy-panel-body {
+        padding: 20px 18px;
+    }
+
+    .crazy-input {
+        padding: 12px 14px;
+        font-size: 0.88rem;
+    }
+
+    .crazy-submit-btn {
+        padding: 14px 20px;
+        font-size: 0.88rem;
+    }
+
+    .crazy-grand-total .value {
+        font-size: 1.25rem;
+    }
+
+    .crazy-order-item-img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .crazy-order-item-name {
+        font-size: 0.82rem;
+    }
+
+    .crazy-order-item-price {
+        font-size: 0.88rem;
+    }
+}
+{% endblock %}
+
+{% block content %}
+
+<!-- ============================================ -->
+<!-- HERO HEADER -->
+<!-- ============================================ -->
+<div class="container-fluid hero-header mb-4">
+    <div class="container text-center">
+        <h1 class="mb-3 animated slideInDown">Checkout 💳</h1>
+        <p class="animated slideInDown mb-3">Complete your order in just a few steps</p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center mb-0 animated slideInDown">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/cart/">Cart</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- STEP INDICATOR -->
+<!-- ============================================ -->
+<div class="container">
+    <div class="step-indicator-crazy wow fadeIn">
+        <div class="step-crazy completed">
+            <div class="step-circle-crazy">
+                <i class="fas fa-check"></i>
+            </div>
+            <div class="step-label-crazy">Cart</div>
+            <div class="step-line-crazy"></div>
+        </div>
+        <div class="step-crazy active">
+            <div class="step-circle-crazy">
+                <i class="fas fa-truck"></i>
+            </div>
+            <div class="step-label-crazy">Delivery</div>
+            <div class="step-line-crazy"></div>
+        </div>
+        <div class="step-crazy">
+            <div class="step-circle-crazy">
+                <i class="fas fa-credit-card"></i>
+            </div>
+            <div class="step-label-crazy">Payment</div>
+            <div class="step-line-crazy"></div>
+        </div>
+        <div class="step-crazy">
+            <div class="step-circle-crazy">
+                <i class="fas fa-flag-checkered"></i>
+            </div>
+            <div class="step-label-crazy">Done</div>
         </div>
     </div>
+</div>
 
-    <!-- ============================================ -->
-    <!-- WHATSAPP FLOATING BUTTON -->
-    <!-- ============================================ -->
-    <div class="whatsapp-float">
-        <a href="https://wa.me/254795180079?text=Hello%20Delight%20Care%2C%20I%20need%20help%20with%20my%20order" 
-           class="whatsapp-btn" 
-           target="_blank" 
-           rel="noopener noreferrer"
-           aria-label="Contact us on WhatsApp">
-            <span class="ripple"></span>
-            <span class="ripple"></span>
-            <i class="fab fa-whatsapp"></i>
-            <span class="tooltip">Chat with us on WhatsApp</span>
-        </a>
-        <span class="whatsapp-label">Chat 💬</span>
-    </div>
+<!-- ============================================ -->
+<!-- CHECKOUT CONTENT -->
+<!-- ============================================ -->
+<div class="container-fluid">
+    <div class="crazy-checkout-container">
+        <div class="row g-4">
 
-    <!-- ============================================ -->
-    <!-- STEP INDICATOR -->
-    <!-- ============================================ -->
-    <div class="container mt-5">
-        <div class="step-indicator">
-            <div class="step completed">
-                <div class="step-circle">
-                    <i class="fas fa-check"></i>
-                </div>
-                <div class="step-label">Cart</div>
-                <div class="step-line"></div>
-            </div>
-            <div class="step active">
-                <div class="step-circle">
-                    <i class="fas fa-truck"></i>
-                </div>
-                <div class="step-label">Delivery Details</div>
-                <div class="step-line"></div>
-            </div>
-            <div class="step">
-                <div class="step-circle">
-                    <i class="fas fa-credit-card"></i>
-                </div>
-                <div class="step-label">Payment</div>
-                <div class="step-line"></div>
-            </div>
-            <div class="step">
-                <div class="step-circle">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="step-label">Confirmation</div>
-            </div>
-        </div>
-    </div>
+            <!-- ============================================ -->
+            <!-- LEFT: CUSTOMER DETAILS FORM -->
+            <!-- ============================================ -->
+            <div class="col-lg-7 wow fadeIn" data-wow-delay="0.1s">
+                <div class="crazy-panel">
 
-    <!-- ============================================ -->
-    <!-- MESSAGES -->
-    <!-- ============================================ -->
-    {% if messages %}
-    <div class="container mb-4">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                <i class="fas fa-info-circle me-2"></i>{{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <!-- ============================================ -->
-    <!-- CHECKOUT CONTENT -->
-    <!-- ============================================ -->
-    <div class="container-fluid py-5">
-        <div class="container">
-            <div class="row g-5">
-                
-                <!-- ============================================ -->
-                <!-- CUSTOMER DETAILS FORM -->
-                <!-- ============================================ -->
-                <div class="col-lg-7 wow fadeIn" data-wow-delay="0.1s">
-                    <div class="card checkout-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-user-circle"></i> Customer Details</h3>
+                    <div class="crazy-panel-header">
+                        <div class="icon-box">
+                            <i class="fas fa-user-circle"></i>
                         </div>
-                        <div class="card-body">
-                            <form method="post">
-                                {% csrf_token %}
-                                <div class="row g-4">
-                                    <div class="col-md-6">
-                                        <label for="name" class="form-label">
-                                            <i class="fas fa-user me-2 text-primary"></i>Full Name
-                                        </label>
-                                        <input type="text" 
-                                               class="form-control" 
-                                               id="name" 
-                                               name="name" 
-                                               placeholder="John Doe" 
-                                               required>
-                                    </div>
-                                    
-                                    <div class="col-md-6">
-                                        <label for="phone" class="form-label">
-                                            <i class="fas fa-phone me-2 text-primary"></i>Phone Number
-                                        </label>
-                                        <input type="tel" 
-                                               class="form-control" 
-                                               id="phone" 
-                                               name="phone" 
-                                               placeholder="+254 7XX XXX XXX" 
-                                               required>
-                                    </div>
-                                    
-                                    <div class="col-12">
-                                        <label for="email" class="form-label">
-                                            <i class="fas fa-envelope me-2 text-primary"></i>Email Address (Optional)
-                                        </label>
-                                        <input type="email" 
-                                               class="form-control" 
-                                               id="email" 
-                                               name="email" 
-                                               placeholder="your@email.com">
-                                    </div>
-                                    
-                                    <div class="col-12">
-                                        <label for="address" class="form-label">
-                                            <i class="fas fa-map-marker-alt me-2 text-primary"></i>Delivery Address
-                                        </label>
-                                        <textarea class="form-control" 
-                                                  id="address" 
-                                                  name="address" 
-                                                  rows="4" 
-                                                  placeholder="Enter your full shipping address including city, state, and postal code"
-                                                  required></textarea>
-                                    </div>
-                                    
-                                    <div class="col-12">
-                                        <label for="notes" class="form-label">
-                                            <i class="fas fa-sticky-note me-2 text-primary"></i>Order Notes (Optional)
-                                        </label>
-                                        <textarea class="form-control" 
-                                                  id="notes" 
-                                                  name="notes" 
-                                                  rows="3" 
-                                                  placeholder="Any special instructions for delivery?"></textarea>
-                                    </div>
-                                    
-                                    <div class="col-12 mt-4">
-                                        <button type="submit" class="btn btn-primary w-100 rounded-pill py-3 fw-bold" style="background: #90bc79 !important;">
-                                            <i class="fas fa-arrow-right me-2"></i>Continue to Payment
-                                        </button>
-                                    </div>
+                        <div>
+                            <h3>Delivery Details</h3>
+                            <p>Where should we send your order?</p>
+                        </div>
+                    </div>
+
+                    <div class="crazy-panel-body">
+                        <form method="post">
+                            {% csrf_token %}
+
+                            <div class="crazy-form-row">
+                                <div class="crazy-form-group">
+                                    <label for="name">
+                                        <i class="fas fa-user"></i>Full Name
+                                    </label>
+                                    <input type="text"
+                                           class="crazy-input"
+                                           id="name"
+                                           name="name"
+                                           placeholder="John Doe"
+                                           required>
                                 </div>
-                            </form>
+
+                                <div class="crazy-form-group">
+                                    <label for="phone">
+                                        <i class="fas fa-phone"></i>Phone Number
+                                    </label>
+                                    <input type="tel"
+                                           class="crazy-input"
+                                           id="phone"
+                                           name="phone"
+                                           placeholder="+254 7XX XXX XXX"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="crazy-form-group">
+                                <label for="email">
+                                    <i class="fas fa-envelope"></i>Email Address
+                                    <span class="optional-tag">(optional)</span>
+                                </label>
+                                <input type="email"
+                                       class="crazy-input"
+                                       id="email"
+                                       name="email"
+                                       placeholder="your@email.com">
+                            </div>
+
+                            <div class="crazy-form-group">
+                                <label for="address">
+                                    <i class="fas fa-map-marker-alt"></i>Delivery Address
+                                </label>
+                                <textarea class="crazy-input"
+                                          id="address"
+                                          name="address"
+                                          rows="4"
+                                          placeholder="Enter your full shipping address including city, state, and postal code"
+                                          required></textarea>
+                            </div>
+
+                            <div class="crazy-form-group">
+                                <label for="notes">
+                                    <i class="fas fa-sticky-note"></i>Order Notes
+                                    <span class="optional-tag">(optional)</span>
+                                </label>
+                                <textarea class="crazy-input"
+                                          id="notes"
+                                          name="notes"
+                                          rows="3"
+                                          placeholder="Any special instructions for delivery?"></textarea>
+                            </div>
+
+                            <button type="submit" class="crazy-submit-btn">
+                                <i class="fas fa-arrow-right"></i>
+                                Continue to Payment
+                            </button>
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- RIGHT: ORDER SUMMARY -->
+            <!-- ============================================ -->
+            <div class="col-lg-5 wow fadeIn" data-wow-delay="0.2s">
+                <div class="crazy-panel">
+
+                    <div class="crazy-panel-header">
+                        <div class="icon-box">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <div>
+                            <h3>Order Summary</h3>
+                            <p>{{ cart_items|length }} item{{ cart_items|length|pluralize }} in your cart</p>
                         </div>
                     </div>
-                </div>
 
-                <!-- ============================================ -->
-                <!-- ORDER SUMMARY -->
-                <!-- ============================================ -->
-                <div class="col-lg-5 wow fadeIn" data-wow-delay="0.3s">
-                    <div class="card order-summary-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-shopping-bag"></i> Order Summary</h3>
-                        </div>
-                        <div class="card-body">
-                            
-                            <!-- Cart Items -->
-                            <div class="mb-4">
-                                <h6 class="text-muted mb-3">Items in Your Cart:</h6>
-                                {% for item in cart_items %}
-                                <div class="order-item">
+                    <div class="crazy-panel-body">
+
+                        <!-- Cart items preview -->
+                        {% if cart_items %}
+                        <div class="crazy-order-list">
+                            {% for item in cart_items %}
+                            <div class="crazy-order-item">
+                                <div class="crazy-order-item-img">
                                     {% if item.product.image %}
-                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
                                     {% else %}
-                                    <img src="{% static 'store/img/product-placeholder.png' %}" alt="{{ item.product.name }}">
+                                        <img src="{% static 'store/img/product-placeholder.png' %}" alt="{{ item.product.name }}">
                                     {% endif %}
-                                    <div class="order-item-info">
-                                        <div class="order-item-name">{{ item.product.name }}</div>
-                                        <div class="order-item-qty">Qty: {{ item.quantity }}</div>
-                                    </div>
-                                    <div class="order-item-price">KES {{ item.item_total|floatformat:2 }}</div>
                                 </div>
-                                {% empty %}
-                                <div class="text-center py-3">
-                                    <p class="text-muted mb-0">Your cart is empty</p>
+                                <div class="crazy-order-item-info">
+                                    <div class="crazy-order-item-name">{{ item.product.name }}</div>
+                                    <div class="crazy-order-item-qty">Qty: {{ item.quantity }}</div>
                                 </div>
-                                {% endfor %}
+                                <div class="crazy-order-item-price">KES {{ item.item_total|floatformat:0 }}</div>
                             </div>
-                            
-                            <!-- Totals -->
-                            <div class="summary-totals">
-                                <div class="summary-row">
-                                    <span class="label">Subtotal</span>
-                                    <span class="value">KES {{ total_price|floatformat:2 }}</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span class="label">GST (18%)</span>
-                                    <span class="value">KES {{ gst|floatformat:2 }}</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span class="label">Delivery Fee</span>
-                                    <span class="value text-success">FREE</span>
-                                </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="crazy-empty-mini">
+                            <i class="fas fa-shopping-bag"></i>
+                            Your cart is empty
+                        </div>
+                        {% endif %}
+
+                        <!-- Totals -->
+                        <div class="crazy-summary-totals">
+                            <div class="crazy-summary-row">
+                                <span class="label">Subtotal</span>
+                                <span class="value">KES {{ total_price|floatformat:2 }}</span>
                             </div>
-                            
-                            <!-- Grand Total -->
-                            <div class="summary-total">
-                                <span class="label">Grand Total</span>
-                                <span class="value">KES {{ grand_total|floatformat:2 }}</span>
+                            <div class="crazy-summary-row">
+                                <span class="label">GST (18%)</span>
+                                <span class="value">KES {{ gst|floatformat:2 }}</span>
                             </div>
-                            
-                            <!-- Secure Payment -->
-                            <div class="secure-payment">
-                                <i class="fas fa-lock"></i>
-                                <p>Your payment information is encrypted and secure.</p>
-                            </div>
-                            
-                            <!-- Back to Cart -->
-                            <div class="mt-3 text-center">
-                                <a href="/cart/" class="back-link">
-                                    <i class="fas fa-arrow-left me-1"></i> Back to Cart
-                                </a>
+                            <div class="crazy-summary-row">
+                                <span class="label">Delivery Fee</span>
+                                <span class="value free">Free</span>
                             </div>
                         </div>
+
+                        <!-- Grand total -->
+                        <div class="crazy-grand-total">
+                            <span class="label">Total</span>
+                            <span class="value">KES {{ grand_total|floatformat:2 }}</span>
+                        </div>
+
+                        <!-- Secure badge -->
+                        <div class="crazy-secure-badge">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Your payment is encrypted and secure</span>
+                        </div>
+
+                        <!-- Back to cart -->
+                        <div class="text-center">
+                            <a href="/cart/" class="crazy-back-link">
+                                <i class="fas fa-arrow-left"></i>
+                                Back to Cart
+                            </a>
+                        </div>
+
                     </div>
+
                 </div>
-
             </div>
+
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <!-- ============================================ -->
-    <!-- FOOTER -->
-    <!-- ============================================ -->
-    <div class="container-fluid bg-white footer mt-5">
-        <div class="container py-5 text-center">
-            <p class="mb-0">&copy; <a class="border-bottom" href="#" style="color: #90bc79 !important;">Delight Care Plus</a>, All Rights Reserved.</p>
-        </div>
-    </div>
-
-    <!-- ============================================ -->
-    <!-- BACK TO TOP BUTTON -->
-    <!-- ============================================ -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-    <!-- ============================================ -->
-    <!-- SCRIPTS -->
-    <!-- ============================================ -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
-    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
-    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
-    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-
-    <script src="{% static 'js/main.js' %}"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Update cart badge count
-            function updateCartBadge() {
-                fetch('/cart/count/')
-                    .then(response => response.json())
-                    .then(data => {
-                        const badge = document.getElementById('cartCount');
-                        if (badge && data.count !== undefined) {
-                            badge.textContent = data.count;
-                            badge.style.display = data.count > 0 ? 'flex' : 'none';
-                        }
-                    })
-                    .catch(error => console.error('Error fetching cart count:', error));
-            }
-            updateCartBadge();
-
-            // Auto-close alerts after 5 seconds
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                setTimeout(function() {
-                    alert.style.transition = 'opacity 0.5s';
-                    alert.style.opacity = '0';
-                    setTimeout(function() {
-                        alert.remove();
-                    }, 500);
-                }, 5000);
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Phone number formatting — digits and + only
+        const phoneInput = document.getElementById('phone');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^\d+]/g, '');
             });
-
-            // WhatsApp button pulse animation
-            const whatsappBtn = document.querySelector('.whatsapp-btn');
-            if (whatsappBtn) {
-                whatsappBtn.addEventListener('mouseenter', function() {
-                    this.style.animation = 'none';
-                });
-                whatsappBtn.addEventListener('mouseleave', function() {
-                    this.style.animation = 'pulse-green 2s infinite';
-                });
-            }
-
-            // Form validation styling
-            const formControls = document.querySelectorAll('.form-control');
-            formControls.forEach(function(input) {
-                input.addEventListener('focus', function() {
-                    this.parentElement.classList.add('focused');
-                });
-                input.addEventListener('blur', function() {
-                    if (!this.value) {
-                        this.parentElement.classList.remove('focused');
-                    }
-                });
-            });
-
-            // Phone number formatting
-            const phoneInput = document.getElementById('phone');
-            if (phoneInput) {
-                phoneInput.addEventListener('input', function(e) {
-                    this.value = this.value.replace(/[^\d+]/g, '');
-                });
-            }
-        });
-    </script>
-
-</body>
-
-</html>
+        }
+    });
+</script>
+{% endblock %}

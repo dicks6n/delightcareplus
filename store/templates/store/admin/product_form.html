@@ -1,430 +1,1418 @@
 <!-- templates/store/admin/product_form.html -->
+{% extends 'base_dashboard.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <title>{% if product %}Edit{% else %}Add{% endif %} Product - Delight Care Plus</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+{% block title %}{% if product %}Edit{% else %}Add{% endif %} Product - Delight Care Plus{% endblock %}
 
-    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+{% block extra_styles %}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Poppins:wght@200;600;700&display=swap" rel="stylesheet">
+/* ============================================ */
+/* ADMIN PRODUCT FORM — GREEN GLOW DARK THEME   */
+/* ============================================ */
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+body {
+    background: #0f0f14 !important;
+}
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+body::after {
+    background:
+        radial-gradient(circle at top left, rgba(144, 188, 121, 0.28), transparent 45%),
+        radial-gradient(circle at bottom right, rgba(45, 80, 22, 0.35), transparent 45%),
+        radial-gradient(circle at center, rgba(168, 217, 144, 0.1), transparent 60%),
+        rgba(0, 0, 0, 0.55) !important;
+    backdrop-filter: blur(3px) !important;
+    -webkit-backdrop-filter: blur(3px) !important;
+}
 
-    <link href="{% static 'store/lib/animate/animate.min.css' %}" rel="stylesheet">
-    <link href="{% static 'store/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+/* ============================================ */
+/* HERO HEADER                                  */
+/* ============================================ */
+.hero-header {
+    padding: 140px 20px 20px !important;
+    margin-bottom: 0 !important;
+}
 
-    <link href="{% static 'store/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
+.hero-header h1 {
+    font-size: 3rem;
+    font-weight: 800 !important;
+    letter-spacing: -1.2px;
+    background: linear-gradient(135deg, #ffffff 0%, #a8d990 50%, #90bc79 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none !important;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 30px rgba(144, 188, 121, 0.5))
+            drop-shadow(0 0 60px rgba(168, 217, 144, 0.3));
+}
 
-    <style>
-        body {
-            background-image: url("{% static 'store/img/bg.png' %}");
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            min-height: 100vh;
-        }
+.hero-header p {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-size: 1rem;
+    font-weight: 300;
+    text-shadow: 0 0 20px rgba(144, 188, 121, 0.35);
+}
 
-        .card {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-            border: none !important;
-        }
+.hero-header .breadcrumb {
+    font-size: 0.85rem;
+    opacity: 0.75;
+}
 
-        .hero-header {
-            background: rgba(144, 188, 121, 0.92) !important;
-            backdrop-filter: blur(10px);
-        }
+.hero-header .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.6) !important;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
 
-        .bg-primary {
-            background: #90bc79 !important;
-        }
-        .text-primary {
-            color: #90bc79 !important;
-        }
-        .btn-primary {
-            background: #90bc79;
-            border: none;
-            color: #ffffff !important;
-        }
-        .btn-primary:hover {
-            background: #7dab66 !important;
-        }
-        .btn-outline-secondary:hover {
-            background: #6c757d;
-            color: white;
-        }
+.hero-header .breadcrumb-item a:hover {
+    color: #a8d990 !important;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.9);
+}
 
-        .sticky-top {
-            background: #90bc79 !important;
-        }
-        .navbar-light .navbar-nav .nav-link {
-            color: rgba(255, 255, 255, 0.8) !important;
-        }
-        .navbar-light .navbar-nav .nav-link:hover,
-        .navbar-light .navbar-nav .nav-link.active {
-            color: #ffffff !important;
-        }
-        .navbar-brand h2 {
-            color: #ffffff !important;
-        }
+.hero-header .breadcrumb-item.active {
+    color: #a8d990 !important;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.7);
+}
 
-        .back-to-top {
-            background: #90bc79 !important;
-            color: #ffffff !important;
-        }
-        .footer .border-bottom {
-            color: #90bc79 !important;
-        }
+.hero-header .breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.4);
+}
 
-        .form-control {
-            border-radius: 30px !important;
-            background: rgba(255, 255, 255, 0.9) !important;
-            border: 1px solid #e9ecef !important;
-        }
-        .form-control:focus {
-            border-color: #90bc79 !important;
-            box-shadow: 0 0 0 0.25rem rgba(144, 188, 121, 0.25) !important;
-        }
-        .form-select {
-            border-radius: 30px !important;
-            background: rgba(255, 255, 255, 0.9) !important;
-            border: 1px solid #e9ecef !important;
-        }
-        .form-select:focus {
-            border-color: #90bc79 !important;
-            box-shadow: 0 0 0 0.25rem rgba(144, 188, 121, 0.25) !important;
-        }
-        textarea.form-control {
-            border-radius: 20px !important;
-        }
-        .bg-light {
-            background-color: rgba(248, 249, 250, 0.9) !important;
-        }
-        .border-0 {
-            border: 1px solid #e9ecef !important;
-        }
-        .border-0:focus {
-            border-color: #90bc79 !important;
-            box-shadow: 0 0 0 0.25rem rgba(144, 188, 121, 0.25) !important;
-        }
-        .rounded-pill {
-            border-radius: 50px !important;
-        }
-        .shadow-sm {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
-        }
+/* ============================================ */
+/* MAIN CONTAINER                               */
+/* ============================================ */
+.crazy-form-container {
+    max-width: 1100px;
+    margin: 0 auto 80px;
+    padding: 0 20px;
+}
 
-        .image-preview {
-            max-width: 200px;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
-        }
-        .current-image {
-            border: 2px solid #90bc79;
-            padding: 5px;
-            border-radius: 10px;
-        }
-    </style>
-</head>
+/* ============================================ */
+/* FORM PANEL — Dark Glass                      */
+/* ============================================ */
+.crazy-form-panel {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(144, 188, 121, 0.15);
+    border-radius: 24px;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 60px rgba(144, 188, 121, 0.12);
+    position: relative;
+    margin-bottom: 24px;
+}
 
-<body>
-   
-    <!-- ============================================ -->
-    <!-- NAVBAR -->
-    <!-- ============================================ -->
-    <div class="container-fluid sticky-top">
-        <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-light p-0">
-                <a href="/" class="navbar-brand">
-                    <h2 class="text-white">Delight Care Plus</h2>
-                </a>
-                <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav ms-auto">
-                        <a href="/" class="nav-item nav-link">Home</a>
-                        <a href="{% url 'my_orders' %}" class="nav-item nav-link">📦 My Orders</a>
-                        <a href="/cart/" class="nav-item nav-link">🛒 View Cart</a>
-                        <a href="{% url 'blog_list' %}" class="nav-item nav-link">📝 Blog</a>
-                        
-                        {% if user.is_authenticated %}
-                            <span class="nav-item nav-link text-white-50">Welcome, {{ user.username }}</span>
-                            <a href="{% url 'logout' %}" class="nav-item nav-link text-danger">Logout</a>
-                        {% else %}
-                            <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
-                            <a href="{% url 'signup' %}" class="nav-item nav-link">Signup</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </nav>
-        </div>
+.crazy-form-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #a8d990, #90bc79, transparent);
+    box-shadow: 0 0 20px rgba(144, 188, 121, 0.8);
+}
+
+/* Panel header */
+.crazy-form-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 24px 28px;
+    border-bottom: 1px solid rgba(144, 188, 121, 0.15);
+}
+
+.crazy-form-header .icon-box {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(144, 188, 121, 0.5),
+                0 0 25px rgba(168, 217, 144, 0.4);
+}
+
+.crazy-form-header h3 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin: 0;
+    letter-spacing: -0.3px;
+    text-shadow: 0 0 15px rgba(144, 188, 121, 0.3);
+}
+
+.crazy-form-header p {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+    margin: 4px 0 0 0;
+}
+
+/* Panel body */
+.crazy-form-body {
+    padding: 28px;
+}
+
+/* ============================================ */
+/* FORM GROUP                                   */
+/* ============================================ */
+.crazy-form-group {
+    margin-bottom: 22px;
+}
+
+.crazy-form-label {
+    display: block;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.crazy-form-label i {
+    color: #a8d990;
+    margin-right: 6px;
+    filter: drop-shadow(0 0 6px rgba(144, 188, 121, 0.8));
+}
+
+.crazy-form-label .required {
+    color: #ef4444;
+    margin-left: 3px;
+}
+
+/* Inputs */
+.crazy-input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #ffffff;
+    font-size: 0.92rem;
+    font-family: inherit;
+    transition: all 0.25s ease;
+    outline: none;
+}
+
+.crazy-input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.crazy-input:focus {
+    border-color: rgba(144, 188, 121, 0.5);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 0 4px rgba(144, 188, 121, 0.1),
+                0 0 30px rgba(144, 188, 121, 0.35);
+}
+
+textarea.crazy-input {
+    resize: vertical;
+    line-height: 1.6;
+    min-height: 100px;
+}
+
+/* Select */
+.crazy-select {
+    width: 100%;
+    padding: 13px 42px 13px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #ffffff;
+    font-size: 0.92rem;
+    font-family: inherit;
+    transition: all 0.25s ease;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a8d990' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+}
+
+.crazy-select option {
+    background: #1a1a22;
+    color: #ffffff;
+}
+
+.crazy-select:focus {
+    border-color: rgba(144, 188, 121, 0.5);
+    background-color: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 0 4px rgba(144, 188, 121, 0.1),
+                0 0 30px rgba(144, 188, 121, 0.35);
+}
+
+/* Helper text */
+.crazy-help-text {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.75rem;
+    margin-top: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.5;
+}
+
+.crazy-help-text i {
+    color: #a8d990;
+    font-size: 0.8rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 6px rgba(144, 188, 121, 0.6));
+}
+
+/* ============================================ */
+/* FORM ROW GRID                                */
+/* ============================================ */
+.crazy-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.crazy-form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .crazy-form-row,
+    .crazy-form-row-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================ */
+/* IMAGE UPLOAD                                 */
+/* ============================================ */
+.crazy-image-upload {
+    position: relative;
+    border: 2px dashed rgba(144, 188, 121, 0.3);
+    border-radius: 16px;
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(144, 188, 121, 0.03);
+    overflow: hidden;
+    display: block;
+}
+
+.crazy-image-upload:hover {
+    border-color: rgba(144, 188, 121, 0.6);
+    background: rgba(144, 188, 121, 0.06);
+    box-shadow: 0 0 30px rgba(144, 188, 121, 0.25),
+                0 0 60px rgba(168, 217, 144, 0.15);
+}
+
+.crazy-image-upload.dragover {
+    border-color: #a8d990;
+    background: rgba(144, 188, 121, 0.1);
+    box-shadow: 0 0 40px rgba(144, 188, 121, 0.4),
+                0 0 80px rgba(168, 217, 144, 0.25);
+    transform: scale(1.01);
+}
+
+.crazy-image-upload input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.crazy-upload-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(144, 188, 121, 0.15), rgba(90, 138, 74, 0.15));
+    border: 1px solid rgba(144, 188, 121, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    box-shadow: 0 0 25px rgba(144, 188, 121, 0.3);
+}
+
+.crazy-upload-icon i {
+    font-size: 1.6rem;
+    background: linear-gradient(135deg, #a8d990, #90bc79);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 12px rgba(144, 188, 121, 0.8));
+}
+
+.crazy-upload-title {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+.crazy-upload-subtitle {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+.crazy-upload-filename {
+    color: #a8d990;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 12px;
+    word-break: break-all;
+    text-shadow: 0 0 10px rgba(144, 188, 121, 0.5);
+}
+
+/* Image preview */
+.crazy-image-preview {
+    margin-top: 16px;
+    display: none;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(144, 188, 121, 0.3);
+    box-shadow: 0 0 30px rgba(144, 188, 121, 0.2);
+    position: relative;
+    max-width: 300px;
+}
+
+.crazy-image-preview.active {
+    display: block;
+}
+
+.crazy-image-preview img {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: contain;
+    display: block;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Current image preview (for edit mode) */
+.crazy-current-image {
+    display: inline-block;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(144, 188, 121, 0.4);
+    box-shadow: 0 0 30px rgba(144, 188, 121, 0.25);
+    margin-bottom: 16px;
+    max-width: 200px;
+    position: relative;
+}
+
+.crazy-current-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.crazy-current-image::after {
+    content: 'CURRENT';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(144, 188, 121, 0.5);
+}
+
+/* ============================================ */
+/* VARIANTS — Dynamic Repeater                  */
+/* ============================================ */
+.crazy-variants-panel {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 8px;
+}
+
+.crazy-variants-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.crazy-variants-header h5 {
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.crazy-variants-header h5 i {
+    color: #a8d990;
+    filter: drop-shadow(0 0 8px rgba(144, 188, 121, 0.8));
+}
+
+.crazy-add-variant-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(144, 188, 121, 0.12);
+    color: #a8d990 !important;
+    border: 1px solid rgba(144, 188, 121, 0.3);
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: inherit;
+}
+
+.crazy-add-variant-btn:hover {
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff !important;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(144, 188, 121, 0.5),
+                0 0 30px rgba(144, 188, 121, 0.3);
+}
+
+.crazy-variant-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: end;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    animation: slideDown 0.25s ease;
+    position: relative;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.crazy-variant-row::before {
+    content: attr(data-variant-num);
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 12px rgba(144, 188, 121, 0.5);
+}
+
+.crazy-variant-row .variant-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.crazy-variant-row label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.crazy-variant-row .crazy-input {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+}
+
+.crazy-remove-variant {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+
+.crazy-remove-variant:hover {
+    background: #ef4444;
+    color: #ffffff;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* Empty variants note */
+.crazy-variants-empty {
+    text-align: center;
+    padding: 20px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* ============================================ */
+/* CHECKBOXES                                   */
+/* ============================================ */
+.crazy-check-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    padding: 18px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+}
+
+@media (max-width: 768px) {
+    .crazy-check-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.crazy-check {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    padding: 6px 0;
+}
+
+.crazy-check input {
+    display: none;
+}
+
+.crazy-check .checkbox-box {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+
+.crazy-check .checkbox-box i {
+    color: #ffffff;
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+}
+
+.crazy-check input:checked + .checkbox-box {
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    border-color: transparent;
+    box-shadow: 0 0 15px rgba(144, 188, 121, 0.6),
+                0 0 30px rgba(144, 188, 121, 0.3);
+}
+
+.crazy-check input:checked + .checkbox-box i {
+    opacity: 1;
+}
+
+.crazy-check .check-label {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.crazy-check .check-label i {
+    color: #a8d990;
+    margin-right: 6px;
+    filter: drop-shadow(0 0 6px rgba(144, 188, 121, 0.6));
+}
+
+/* ============================================ */
+/* ACTION BUTTONS                               */
+/* ============================================ */
+.crazy-actions-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.crazy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-family: inherit;
+    position: relative;
+    overflow: hidden;
+}
+
+.crazy-btn.primary {
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff !important;
+    box-shadow: 0 10px 30px rgba(144, 188, 121, 0.5),
+                0 0 40px rgba(168, 217, 144, 0.3);
+    flex: 1;
+    min-width: 200px;
+}
+
+.crazy-btn.primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transition: left 0.6s ease;
+}
+
+.crazy-btn.primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(144, 188, 121, 0.7),
+                0 0 60px rgba(168, 217, 144, 0.5);
+    color: #ffffff !important;
+}
+
+.crazy-btn.primary:hover::before {
+    left: 100%;
+}
+
+.crazy-btn.outline {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.crazy-btn.outline:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff !important;
+    border-color: rgba(144, 188, 121, 0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 0 30px rgba(144, 188, 121, 0.3);
+}
+
+.crazy-btn.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.crazy-btn.danger:hover {
+    background: #ef4444;
+    color: #ffffff !important;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5),
+                0 0 30px rgba(239, 68, 68, 0.3);
+}
+
+/* ============================================ */
+/* ALERTS                                       */
+/* ============================================ */
+.crazy-alert {
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    animation: fadeIn 0.4s ease;
+}
+
+.crazy-alert.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
+}
+
+.crazy-alert.success {
+    background: rgba(144, 188, 121, 0.1);
+    border: 1px solid rgba(144, 188, 121, 0.3);
+    box-shadow: 0 0 30px rgba(144, 188, 121, 0.2);
+}
+
+.crazy-alert.info {
+    background: rgba(96, 165, 250, 0.1);
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    box-shadow: 0 0 30px rgba(96, 165, 250, 0.2);
+}
+
+.crazy-alert i {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.crazy-alert.error i { color: #ef4444; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.8)); }
+.crazy-alert.success i { color: #a8d990; filter: drop-shadow(0 0 8px rgba(144, 188, 121, 0.8)); }
+.crazy-alert.info i { color: #60a5fa; filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.8)); }
+
+.crazy-alert span {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================ */
+/* TIP CARD                                     */
+/* ============================================ */
+.crazy-tip-card {
+    background: rgba(144, 188, 121, 0.06);
+    border: 1px solid rgba(144, 188, 121, 0.2);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    box-shadow: 0 0 30px rgba(144, 188, 121, 0.1);
+}
+
+.crazy-tip-card .tip-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(144, 188, 121, 0.2), rgba(90, 138, 74, 0.2));
+    border: 1px solid rgba(144, 188, 121, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.crazy-tip-card .tip-icon i {
+    color: #a8d990;
+    font-size: 1.1rem;
+    filter: drop-shadow(0 0 10px rgba(144, 188, 121, 0.8));
+}
+
+.crazy-tip-card h6 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.88rem;
+    margin: 0 0 6px 0;
+    letter-spacing: 0.3px;
+}
+
+.crazy-tip-card p {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.82rem;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ============================================ */
+/* MOBILE                                       */
+/* ============================================ */
+@media (max-width: 991px) {
+    .hero-header {
+        padding: 120px 16px 20px !important;
+    }
+
+    .hero-header h1 {
+        font-size: 2.25rem;
+    }
+
+    .crazy-form-header {
+        padding: 20px 22px;
+    }
+
+    .crazy-form-body {
+        padding: 22px;
+    }
+
+    .crazy-variant-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .crazy-remove-variant {
+        grid-column: 1 / -1;
+        width: 100%;
+        border-radius: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-header {
+        padding: 100px 14px 16px !important;
+    }
+
+    .hero-header h1 {
+        font-size: 1.85rem;
+        letter-spacing: -0.8px;
+    }
+
+    .crazy-form-header {
+        padding: 18px 20px;
+        gap: 12px;
+    }
+
+    .crazy-form-header .icon-box {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .crazy-form-header h3 {
+        font-size: 1.02rem;
+    }
+
+    .crazy-form-body {
+        padding: 20px 18px;
+    }
+
+    .crazy-input,
+    .crazy-select {
+        padding: 12px 14px;
+        font-size: 0.88rem;
+    }
+
+    .crazy-select {
+        padding-right: 40px;
+    }
+
+    .crazy-image-upload {
+        padding: 24px 16px;
+    }
+
+    .crazy-upload-icon {
+        width: 54px;
+        height: 54px;
+    }
+
+    .crazy-upload-icon i {
+        font-size: 1.3rem;
+    }
+
+    .crazy-btn {
+        padding: 13px 22px;
+        font-size: 0.85rem;
+        width: 100%;
+        min-width: unset;
+    }
+
+    .crazy-actions-row {
+        flex-direction: column-reverse;
+    }
+
+    .crazy-tip-card {
+        padding: 16px 18px;
+        gap: 12px;
+    }
+
+    .crazy-variant-row {
+        grid-template-columns: 1fr;
+    }
+}
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO HEADER -->
+<div class="container-fluid hero-header mb-4">
+    <div class="container text-center">
+        <h1 class="mb-3 animated slideInDown">
+            {% if product %}Edit Product ✏️{% else %}Add New Product 🛍️{% endif %}
+        </h1>
+        <p class="animated slideInDown mb-3">
+            {% if product %}Update details for {{ product.name }}{% else %}Create a new product for your store{% endif %}
+        </p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center mb-0 animated slideInDown">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'admin_product_list' %}">Products</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    {% if product %}Edit{% else %}Add{% endif %} Product
+                </li>
+            </ol>
+        </nav>
     </div>
+</div>
 
-    <!-- ============================================ -->
-    <!-- HERO HEADER -->
-    <!-- ============================================ -->
-    <div class="container-fluid hero-header mb-5">
-        <div class="container text-center">
-            <h1 class="display-4 text-white mb-3 animated slideInDown">
-                {% if product %}Edit{% else %}Add{% endif %} Product
-            </h1>
-            <p class="text-white animated slideInDown">
-                {% if product %}Update product details{% else %}Create a new product{% endif %}
-            </p>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb justify-content-center mb-0 animated slideInDown">
-                    <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
-                    <li class="breadcrumb-item"><a class="text-white" href="/admin/store/product/">Products</a></li>
-                    <li class="breadcrumb-item text-white active" aria-current="page">
-                        {% if product %}Edit{% else %}Add{% endif %} Product
-                    </li>
-                </ol>
-            </nav>
-        </div>
-    </div>
+<!-- FORM CONTENT -->
+<div class="container-fluid">
+    <div class="crazy-form-container">
 
-    <!-- ============================================ -->
-    <!-- MESSAGES -->
-    <!-- ============================================ -->
-    {% if messages %}
-    <div class="container">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <!-- Admin Tip -->
+        <div class="crazy-tip-card wow fadeIn">
+            <div class="tip-icon">
+                <i class="fas fa-lightbulb"></i>
             </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+            <div>
+                <h6>Admin Tip</h6>
+                <p>{% if product %}Update the fields you want to change and click <strong>Update Product</strong>.{% else %}Add high-quality images, clear descriptions, and at least one variant (size) for customers to select from.{% endif %}</p>
+            </div>
+        </div>
 
-    <!-- ============================================ -->
-    <!-- PRODUCT FORM -->
-    <!-- ============================================ -->
-    <div class="container-fluid py-5">
-        <div class="container" style="max-width: 900px;">
-            <div class="card shadow-sm border">
-                <div class="card-header bg-light py-3">
-                    <h4 class="mb-0">
-                        <i class="fas fa-box text-primary me-2"></i>
-                        {% if product %}Edit Product{% else %}Add New Product{% endif %}
-                    </h4>
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+            <div class="crazy-alert {% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}info{% endif %}">
+                <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'success' %}fa-check-circle{% else %}fa-info-circle{% endif %}"></i>
+                <span>{{ message }}</span>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Main Form Panel -->
+        <div class="crazy-form-panel wow fadeIn">
+
+            <div class="crazy-form-header">
+                <div class="icon-box">
+                    <i class="fas fa-box-open"></i>
                 </div>
-                <div class="card-body p-4">
-                    <form method="POST" enctype="multipart/form-data" action="{% url 'admin_product_form' product.id|default:0 %}">
-                        {% csrf_token %}
-                        
-                        <!-- ============================================ -->
-                        <!-- BASIC INFORMATION -->
-                        <!-- ============================================ -->
-                        <h5 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Basic Information</h5>
-                        
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Product Name</label>
-                            <input type="text" name="name" class="form-control bg-light border-0 px-4 py-3" 
-                                   placeholder="Enter product name" value="{{ product.name|default:'' }}" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Description</label>
-                            <textarea name="description" class="form-control bg-light border-0 px-4 py-3" 
-                                      rows="4" placeholder="Enter product description">{{ product.description|default:'' }}</textarea>
-                        </div>
-                        
-                        <!-- ============================================ -->
-                        <!-- CATEGORY & PRICING -->
-                        <!-- ============================================ -->
-                        <h5 class="text-primary mb-3 mt-4"><i class="fas fa-tags me-2"></i>Category & Pricing</h5>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Category</label>
-                                <select name="category" class="form-select bg-light border-0 px-4 py-3">
-                                    <option value="">Select Category</option>
-                                    {% for category in categories %}
-                                    <option value="{{ category.id }}" {% if product.category.id == category.id %}selected{% endif %}>
+                <div>
+                    <h3>{% if product %}Edit Product{% else %}Product Details{% endif %}</h3>
+                    <p>Fill in the fields below {% if product %}to update the product{% else %}to create a new product{% endif %}</p>
+                </div>
+            </div>
+
+            <div class="crazy-form-body">
+                <form method="POST" enctype="multipart/form-data"
+                      action="{% url 'admin_product_form' product.id|default:0 %}"
+                      id="productForm">
+                    {% csrf_token %}
+
+                    <!-- Product Name -->
+                    <div class="crazy-form-group">
+                        <label for="name" class="crazy-form-label">
+                            <i class="fas fa-tag"></i>Product Name <span class="required">*</span>
+                        </label>
+                        <input type="text"
+                               id="name"
+                               name="name"
+                               class="crazy-input"
+                               placeholder="e.g., Organic Ashwagandha Powder"
+                               value="{{ product.name|default:'' }}"
+                               maxlength="200"
+                               required>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="crazy-form-group">
+                        <label for="description" class="crazy-form-label">
+                            <i class="fas fa-align-left"></i>Description <span class="required">*</span>
+                        </label>
+                        <textarea id="description"
+                                  name="description"
+                                  class="crazy-input"
+                                  rows="5"
+                                  placeholder="Describe your product — ingredients, benefits, usage, etc."
+                                  required>{{ product.description|default:'' }}</textarea>
+                    </div>
+
+                    <!-- Category + Stock -->
+                    <div class="crazy-form-row">
+                        <div class="crazy-form-group">
+                            <label for="category" class="crazy-form-label">
+                                <i class="fas fa-th-list"></i>Category
+                            </label>
+                            <select id="category" name="category" class="crazy-select">
+                                <option value="">— Select Category —</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}"
+                                            {% if product and product.category.id == category.id %}selected{% endif %}>
                                         {{ category.name }}
                                     </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Price (KES)</label>
-                                <input type="number" step="0.01" name="price" class="form-control bg-light border-0 px-4 py-3" 
-                                       placeholder="0.00" value="{{ product.price|default:'0.00' }}" required>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="crazy-form-group">
+                            <label for="stock" class="crazy-form-label">
+                                <i class="fas fa-warehouse"></i>Stock Quantity
+                            </label>
+                            <input type="number"
+                                   id="stock"
+                                   name="stock"
+                                   class="crazy-input"
+                                   placeholder="e.g., 50"
+                                   min="0"
+                                   value="{{ product.stock|default:'0' }}">
+                        </div>
+                    </div>
+
+                    <!-- Price + Compare Price -->
+                    <div class="crazy-form-row">
+                        <div class="crazy-form-group">
+                            <label for="price" class="crazy-form-label">
+                                <i class="fas fa-money-bill"></i>Price (KES) <span class="required">*</span>
+                            </label>
+                            <input type="number"
+                                   id="price"
+                                   name="price"
+                                   class="crazy-input"
+                                   placeholder="e.g., 1500"
+                                   min="0"
+                                   step="0.01"
+                                   value="{{ product.price|default:'' }}"
+                                   required>
+                        </div>
+
+                        <div class="crazy-form-group">
+                            <label for="compare_price" class="crazy-form-label">
+                                <i class="fas fa-tags"></i>Compare Price (KES)
+                            </label>
+                            <input type="number"
+                                   id="compare_price"
+                                   name="compare_price"
+                                   class="crazy-input"
+                                   placeholder="e.g., 2000 (optional)"
+                                   min="0"
+                                   step="0.01"
+                                   value="{{ product.compare_price|default:'' }}">
+                            <div class="crazy-help-text">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Original price to show discount (optional)</span>
                             </div>
                         </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Compare Price (KES)</label>
-                                <input type="number" step="0.01" name="compare_price" class="form-control bg-light border-0 px-4 py-3" 
-                                       placeholder="0.00" value="{{ product.compare_price|default:'' }}">
-                                <small class="text-muted">Original price for discount display</small>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Stock Quantity</label>
-                                <input type="number" name="stock" class="form-control bg-light border-0 px-4 py-3" 
-                                       placeholder="0" value="{{ product.stock|default:'0' }}" required>
-                            </div>
+                    </div>
+
+                    <!-- Featured Image -->
+                    <div class="crazy-form-group">
+                        <label class="crazy-form-label">
+                            <i class="fas fa-image"></i>Product Image
+                        </label>
+
+                        {% if product and product.image %}
+                        <div class="crazy-current-image">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
                         </div>
-                        
-                        <!-- ============================================ -->
-                        <!-- IMAGE -->
-                        <!-- ============================================ -->
-                        <h5 class="text-primary mb-3 mt-4"><i class="fas fa-image me-2"></i>Product Image</h5>
-                        
-                        <div class="mb-3">
-                            {% if product.image %}
-                            <div class="mb-2">
-                                <label class="form-label fw-bold">Current Image</label>
-                                <div>
-                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="image-preview current-image">
-                                </div>
+                        {% endif %}
+
+                        <label for="image" class="crazy-image-upload" id="imageDrop">
+                            <input type="file"
+                                   id="image"
+                                   name="image"
+                                   accept="image/*">
+                            <div class="crazy-upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
                             </div>
-                            {% endif %}
-                            <label class="form-label fw-bold">{% if product.image %}Change Image{% else %}Upload Image{% endif %}</label>
-                            <input type="file" name="image" class="form-control bg-light border-0 px-4 py-3" accept="image/*">
-                            <small class="text-muted">Recommended size: 500x500 pixels</small>
+                            <div class="crazy-upload-title">
+                                {% if product and product.image %}Click to change or drag & drop{% else %}Click to upload or drag & drop{% endif %}
+                            </div>
+                            <div class="crazy-upload-subtitle">PNG, JPG, WEBP up to 5MB</div>
+                            <div class="crazy-upload-filename" id="fileName"></div>
+                        </label>
+
+                        <div class="crazy-image-preview" id="imagePreview">
+                            <img src="" alt="Preview" id="previewImg">
                         </div>
-                        
-                        <!-- ============================================ -->
-                        <!-- STATUS -->
-                        <!-- ============================================ -->
-                        <h5 class="text-primary mb-3 mt-4"><i class="fas fa-toggle-on me-2"></i>Status</h5>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <div class="form-check">
-                                    <input type="checkbox" name="is_active" id="is_active" class="form-check-input" 
-                                           {% if product.is_active or not product %}checked{% endif %}>
-                                    <label for="is_active" class="form-check-label">Active</label>
-                                </div>
+                    </div>
+
+                    <!-- Variants (only for add mode, or show existing on edit) -->
+                    <div class="crazy-form-group">
+                        <label class="crazy-form-label">
+                            <i class="fas fa-layer-group"></i>Product Variants
+                        </label>
+
+                        <div class="crazy-variants-panel">
+                            <div class="crazy-variants-header">
+                                <h5><i class="fas fa-cubes"></i>Sizes / Options</h5>
+                                <button type="button" class="crazy-add-variant-btn" id="addVariantBtn">
+                                    <i class="fas fa-plus"></i> Add Variant
+                                </button>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-check">
-                                    <input type="checkbox" name="is_featured" id="is_featured" class="form-check-input" 
-                                           {% if product.is_featured %}checked{% endif %}>
-                                    <label for="is_featured" class="form-check-label">Featured</label>
-                                </div>
+
+                            <div id="variantsContainer">
+                                <!-- Existing variants (edit mode) will be loaded via JS -->
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-check">
-                                    <input type="checkbox" name="is_best_seller" id="is_best_seller" class="form-check-input" 
-                                           {% if product.is_best_seller %}checked{% endif %}>
-                                    <label for="is_best_seller" class="form-check-label">Best Seller</label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- ============================================ -->
-                        <!-- BUTTONS -->
-                        <!-- ============================================ -->
-                        <div class="d-flex gap-3 flex-wrap mt-4 pt-3 border-top">
-                            <button type="submit" class="btn btn-primary px-5 py-2 rounded-pill">
-                                <i class="fas fa-save me-2"></i>{% if product %}Update{% else %}Save{% endif %} Product
-                            </button>
-                            <a href="{% url 'admin_product_list' %}" class="btn btn-outline-secondary px-5 py-2 rounded-pill">
-                                <i class="bi bi-x-circle me-2"></i>Cancel
-                            </a>
+
                             {% if product %}
-                            <button type="button" class="btn btn-outline-danger px-5 py-2 rounded-pill" 
-                                    onclick="if(confirm('Delete this product?')) { window.location.href='{% url 'admin_product_delete' product.id %}' }">
-                                <i class="fas fa-trash me-2"></i>Delete
-                            </button>
+                            <!-- Existing variants display -->
+                            <div class="crazy-help-text" style="margin-top: 10px;">
+                                <i class="fas fa-info-circle"></i>
+                                <span>
+                                    {% if product.variants.exists %}
+                                        Existing variants:
+                                        {% for v in product.variants.all %}
+                                            <strong>{{ v.size }}</strong> (KES {{ v.price|floatformat:0 }}){% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        No variants yet. Add some above.
+                                    {% endif %}
+                                </span>
+                            </div>
                             {% endif %}
                         </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="crazy-form-group">
+                        <label class="crazy-form-label">
+                            <i class="fas fa-cog"></i>Visibility & Options
+                        </label>
+                        <div class="crazy-check-row">
+
+                            <label class="crazy-check">
+                                <input type="checkbox" name="is_active" id="is_active"
+                                       {% if product.is_active or not product %}checked{% endif %}>
+                                <span class="checkbox-box"><i class="fas fa-check"></i></span>
+                                <span class="check-label">
+                                    <i class="fas fa-eye"></i>Active (visible)
+                                </span>
+                            </label>
+
+                            <label class="crazy-check">
+                                <input type="checkbox" name="is_featured" id="is_featured"
+                                       {% if product.is_featured %}checked{% endif %}>
+                                <span class="checkbox-box"><i class="fas fa-check"></i></span>
+                                <span class="check-label">
+                                    <i class="fas fa-star"></i>Featured
+                                </span>
+                            </label>
+
+                            <label class="crazy-check">
+                                <input type="checkbox" name="is_best_seller" id="is_best_seller"
+                                       {% if product.is_best_seller %}checked{% endif %}>
+                                <span class="checkbox-box"><i class="fas fa-check"></i></span>
+                                <span class="check-label">
+                                    <i class="fas fa-fire"></i>Best Seller
+                                </span>
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="crazy-actions-row">
+                        <a href="{% url 'admin_product_list' %}" class="crazy-btn outline">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+
+                        <button type="submit" class="crazy-btn primary">
+                            <i class="fas fa-save"></i>
+                            {% if product %}Update Product{% else %}Create Product{% endif %}
+                        </button>
+
+                        {% if product %}
+                        <button type="button" class="crazy-btn danger"
+                                onclick="if(confirm('⚠️ Delete this product? This action cannot be undone.')) { window.location.href='{% url 'admin_product_delete' product.id %}' }">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                        {% endif %}
+                    </div>
+
+                </form>
             </div>
+
         </div>
+
     </div>
+</div>
+{% endblock %}
 
-    <!-- ============================================ -->
-    <!-- FOOTER -->
-    <!-- ============================================ -->
-    <div class="container-fluid bg-white footer">
-        <div class="container py-5 text-center">
-            <p class="mb-0">&copy; <a class="border-bottom" href="#" style="color: #90bc79 !important;">Delight Care Plus</a>, All Rights Reserved.</p>
-        </div>
-    </div>
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
 
-    <!-- ============================================ -->
-    <!-- BACK TO TOP BUTTON -->
-    <!-- ============================================ -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        // ============================================
+        // IMAGE UPLOAD PREVIEW
+        // ============================================
+        const imageInput = document.getElementById('image');
+        const imageDrop = document.getElementById('imageDrop');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const fileName = document.getElementById('fileName');
 
-    <!-- ============================================ -->
-    <!-- SCRIPTS -->
-    <!-- ============================================ -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
-    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
-    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
-    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+        if (imageInput) {
+            imageInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (!file) return;
 
-    <script src="{% static 'js/main.js' %}"></script>
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('⚠️ File too large. Max 5MB.');
+                    this.value = '';
+                    return;
+                }
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Auto-close alerts after 5 seconds
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                setTimeout(function() {
-                    alert.style.transition = 'opacity 0.5s';
-                    alert.style.opacity = '0';
-                    setTimeout(function() {
-                        alert.remove();
-                    }, 500);
-                }, 5000);
+                fileName.textContent = '📎 ' + file.name;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    imagePreview.classList.add('active');
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Drag & drop
+        if (imageDrop) {
+            ['dragenter', 'dragover'].forEach(ev => {
+                imageDrop.addEventListener(ev, function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.classList.add('dragover');
+                });
             });
 
-            // Back to top button
-            const backToTop = document.querySelector('.back-to-top');
-            if (backToTop) {
-                backToTop.addEventListener('click', function(e) {
+            ['dragleave', 'drop'].forEach(ev => {
+                imageDrop.addEventListener(ev, function(e) {
                     e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    e.stopPropagation();
+                    this.classList.remove('dragover');
                 });
-            }
+            });
 
-            // Image preview on file select
-            const imageInput = document.querySelector('input[type="file"][name="image"]');
-            if (imageInput) {
-                imageInput.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            const preview = document.querySelector('.image-preview');
-                            if (preview) {
-                                preview.src = event.target.result;
-                            }
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-        });
-    </script>
+            imageDrop.addEventListener('drop', function(e) {
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    imageInput.files = e.dataTransfer.files;
+                    imageInput.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            });
+        }
 
-</body>
+        // ============================================
+        // DYNAMIC VARIANTS
+        // ============================================
+        const variantsContainer = document.getElementById('variantsContainer');
+        const addVariantBtn = document.getElementById('addVariantBtn');
+        let variantCounter = 0;
 
-</html>
+        function addVariantRow(size = '', price = '', stock = '') {
+            variantCounter++;
+            const row = document.createElement('div');
+            row.className = 'crazy-variant-row';
+            row.setAttribute('data-variant-num', '#' + variantCounter);
+            row.innerHTML = `
+                <div class="variant-field">
+                    <label>Size / Option</label>
+                    <input type="text"
+                           name="variant_size[]"
+                           class="crazy-input"
+                           placeholder="e.g., 500mg, 100g, 1kg"
+                           value="${size}"
+                           required>
+                </div>
+                <div class="variant-field">
+                    <label>Price (KES)</label>
+                    <input type="number"
+                           name="variant_price[]"
+                           class="crazy-input"
+                           placeholder="e.g., 1500"
+                           min="0"
+                           step="0.01"
+                           value="${price}"
+                           required>
+                </div>
+                <div class="variant-field">
+                    <label>Stock</label>
+                    <input type="number"
+                           name="variant_stock[]"
+                           class="crazy-input"
+                           placeholder="e.g., 50"
+                           min="0"
+                           value="${stock}">
+                </div>
+                <button type="button" class="crazy-remove-variant" title="Remove variant">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            variantsContainer.appendChild(row);
+
+            // Attach remove handler
+            row.querySelector('.crazy-remove-variant').addEventListener('click', function() {
+                row.remove();
+            });
+        }
+
+        if (addVariantBtn) {
+            addVariantBtn.addEventListener('click', function() {
+                addVariantRow();
+            });
+        }
+
+        // Start with one empty variant row on ADD mode
+        {% if not product %}
+        addVariantRow();
+        {% endif %}
+
+        // ============================================
+        // FORM VALIDATION
+        // ============================================
+        const form = document.getElementById('productForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const name = document.getElementById('name').value.trim();
+                const description = document.getElementById('description').value.trim();
+                const price = document.getElementById('price').value.trim();
+
+                if (!name) {
+                    e.preventDefault();
+                    alert('⚠️ Please enter a product name.');
+                    document.getElementById('name').focus();
+                    return false;
+                }
+
+                if (!description) {
+                    e.preventDefault();
+                    alert('⚠️ Please enter a description.');
+                    document.getElementById('description').focus();
+                    return false;
+                }
+
+                if (!price || parseFloat(price) <= 0) {
+                    e.preventDefault();
+                    alert('⚠️ Please enter a valid price.');
+                    document.getElementById('price').focus();
+                    return false;
+                }
+
+                // Disable submit button to prevent double submission
+                const submitBtn = form.querySelector('button[type="submit"].primary');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                }
+            });
+        }
+
+    });
+</script>
+{% endblock %}

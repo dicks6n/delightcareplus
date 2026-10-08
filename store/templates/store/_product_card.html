@@ -1,72 +1,81 @@
 <!-- templates/store/_product_card.html -->
 {% load static %}
-<div class="product-item position-relative text-center border h-100 p-4 d-flex flex-column justify-content-between bg-white rounded shadow-sm overflow-hidden">
-    
-    <div class="position-absolute top-0 start-0 bg-primary text-white fw-bold px-3 py-2 shadow-sm rounded-bottom-end text-uppercase" style="z-index: 5; font-size: 0.8rem; letter-spacing: 0.5px; border-bottom-right-radius: 12px !important;">
-        {% if product.get_discount_percentage %}
-            {{ product.get_discount_percentage }}% OFF ✨
-        {% else %}
-            20% OFF ✨
-        {% endif %}
-    </div>
+<div class="product-card-crazy">
 
-    <div>
+    {% if product.get_discount_percentage %}
+    <div class="discount-badge-crazy">
+        {{ product.get_discount_percentage }}% OFF
+    </div>
+    {% endif %}
+
+    <a href="{% url 'product_detail' product.id %}" class="product-image-crazy">
         {% if product.image %}
-            <a href="{% url 'product_detail' product.id %}">
-                <img class="img-fluid mb-4" src="{{ product.image.url }}" alt="{{ product.name }}" style="max-height: 250px; object-fit: contain;">
-            </a>
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
         {% else %}
-            <a href="{% url 'product_detail' product.id %}">
-                <img class="img-fluid mb-4" src="{% static 'img/product-1.png' %}" alt="Fallback Image" style="max-height: 250px; object-fit: contain;">
-            </a>
+            <img src="{% static 'img/product-1.png' %}" alt="{{ product.name }}">
         {% endif %}
-        
-        <div class="mb-2 mt-2">
-            <small class="fa fa-star text-primary"></small>
-            <small class="fa fa-star text-primary"></small>
-            <small class="fa fa-star text-primary"></small>
-            <small class="fa fa-star text-primary"></small>
-            <small class="fa fa-star text-primary"></small>
-            <small class="text-muted">(99)</small>
+    </a>
+
+    <div class="product-info-crazy">
+
+        <div class="product-rating-crazy">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <span class="rating-count-crazy">(99)</span>
         </div>
-        
-        <a href="{% url 'product_detail' product.id %}" class="h6 d-block mb-3 text-dark text-decoration-none fw-bold text-uppercase">
+
+        <div class="product-price-crazy">
+            KES {{ product.price|floatformat:0 }}
+        </div>
+
+        <a href="{% url 'product_detail' product.id %}" class="product-name-crazy">
             {{ product.name }}
         </a>
-    </div>
-    
-    <div class="mt-auto pt-2 border-top">
-        <div class="d-flex align-items-center justify-content-between mb-2">
-            <span class="text-primary fw-bold fs-6">KES {{ product.price|floatformat:2 }}</span>
-            <a href="{% url 'product_detail' product.id %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Details</a>
-        </div>
-        
-        <!-- ✅ ADD TO CART + BUY NOW BUTTONS -->
-        <div class="product-actions">
-            <!-- Add to Cart Button -->
-            <form method="post" action="{% url 'add_to_cart' product.id %}">
-                {% csrf_token %}
-                {% if product.variants.exists %}
-                    <input type="hidden" name="variant_id" value="{{ product.variants.first.id }}">
-                {% endif %}
-                <input type="hidden" name="quantity" value="1">
-                <button type="submit" class="btn btn-primary btn-add-to-cart">
-                    <i class="fa fa-shopping-cart"></i> Add
-                </button>
-            </form>
-            
-            <!-- Buy Now Button -->
-            <form method="post" action="{% url 'buy_now' product.id %}">
-                {% csrf_token %}
-                {% if product.variants.exists %}
-                    <input type="hidden" name="variant_id" value="{{ product.variants.first.id }}">
-                {% endif %}
-                <input type="hidden" name="quantity" value="1">
-                <button type="submit" class="btn btn-success btn-buy-now">
-                    <i class="fas fa-bolt"></i> Buy
-                </button>
-            </form>
-        </div>
-    </div>
 
+        <div class="product-actions-crazy">
+
+            <a href="{% url 'product_detail' product.id %}" class="btn-view-crazy">
+                View Details
+            </a>
+
+            <div class="action-row-crazy">
+
+                <!-- ADD TO CART — AJAX -->
+                <form method="post"
+                      action="{% url 'add_to_cart_ajax' product.id %}"
+                      class="js-add-to-cart-form">
+                    {% csrf_token %}
+                    {% if product.variants.exists %}
+                        <input type="hidden" name="variant_id" value="{{ product.variants.first.id }}">
+                    {% endif %}
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="btn-add-crazy">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Add</span>
+                    </button>
+                </form>
+
+                <!-- BUY NOW — AJAX -->
+                <form method="post"
+                      action="{% url 'buy_now_ajax' product.id %}"
+                      class="js-buy-now-form">
+                    {% csrf_token %}
+                    {% if product.variants.exists %}
+                        <input type="hidden" name="variant_id" value="{{ product.variants.first.id }}">
+                    {% endif %}
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="btn-buy-crazy">
+                        <i class="fas fa-bolt"></i>
+                        <span>Buy</span>
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 </div>

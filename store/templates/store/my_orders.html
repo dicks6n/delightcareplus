@@ -1,1520 +1,1540 @@
 <!-- templates/store/my_orders.html -->
+{% extends 'base_dashboard.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <title>Orders - Delight Care Plus</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+{% block title %}My Orders - Delight Care Plus{% endblock %}
 
-    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+{% block nav_orders %}active{% endblock %}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+{% block extra_styles %}
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
-    <link href="{% static 'store/lib/animate/animate.min.css' %}" rel="stylesheet">
-    <link href="{% static 'store/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
-
-    <link href="{% static 'store/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
-
-    <style>
-        /* ============================================ */
-        /* YOUR COLOR: #90bc79 */
-        /* FULL PAGE BACKGROUND WITH BLUR & DARK OVERLAY */
-        /* ============================================ */
-        
-        /* --- FULL PAGE BACKGROUND --- */
-        body {
-            font-family: 'Poppins', 'Open Sans', sans-serif;
-            min-height: 100vh;
-            background: #f5f8f4;
-            position: relative;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Background image that covers the entire page */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("{% static 'store/img/IMG_0385.jpg' %}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            z-index: -2;
-        }
-
-        /* Dark overlay layer with blur */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            z-index: -1;
-        }
-
-        /* ============================================ */
-        /* PROFESSIONAL NAVBAR WITH bg.png */
-        /* ============================================ */
-        .sticky-top {
-            position: sticky !important;
-            top: 0 !important;
-            z-index: 9999 !important;
-            background-image: url("{% static 'store/img/bg.png' %}") !important;
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
-            padding: 8px 0;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sticky-top::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(144, 188, 121, 0.85);
-            z-index: 0;
-        }
-
-        .sticky-top .container {
-            position: relative;
-            z-index: 1;
-        }
-
-        .navbar-brand h2 {
-            color: #ffffff !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 1.8rem;
-            letter-spacing: -0.5px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .navbar-nav .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            font-size: 0.95rem;
-            padding: 8px 18px !important;
-            transition: all 0.3s ease;
-            border-radius: 30px;
-            letter-spacing: 0.3px;
-            position: relative;
-            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
-        }
-
-        .navbar-nav .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: #ffffff;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-
-        .navbar-nav .nav-link:hover::after,
-        .navbar-nav .nav-link.active::after {
-            width: 60%;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #ffffff !important;
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .navbar-nav .nav-link.active {
-            color: #ffffff !important;
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .cart-link {
-            position: relative;
-            padding: 8px 18px !important;
-        }
-        .cart-link .cart-badge {
-            position: absolute;
-            top: -2px;
-            right: 2px;
-            background: #ff6b6b;
-            color: white;
-            font-size: 0.6rem;
-            font-weight: 700;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        .cart-link i {
-            font-size: 1.2rem;
-        }
-
-        .text-white-50 {
-            color: rgba(255, 255, 255, 0.7) !important;
-        }
-
-        /* ============================================ */
-        /* All content sits above the background */
-        /* ============================================ */
-        .container-fluid:not(.sticky-top),
-        .container,
-        .footer,
-        .hero-header,
-        .card,
-        .bg-light,
-        .bg-white,
-        .whatsapp-float,
-        .back-to-top {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ============================================ */
-        /* WHATSAPP FLOATING BUTTON */
-        /* ============================================ */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .whatsapp-float .whatsapp-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            background: #25d366;
-            border-radius: 50%;
-            color: #ffffff;
-            font-size: 2.2rem;
-            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            position: relative;
-            animation: pulse-green 2s infinite;
-        }
-
-        .whatsapp-float .whatsapp-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
-        }
-
-        .whatsapp-float .whatsapp-btn .tooltip {
-            position: absolute;
-            left: 70px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .whatsapp-float .whatsapp-btn:hover .tooltip {
-            opacity: 1;
-            visibility: visible;
-            left: 75px;
-        }
-
-        .whatsapp-float .whatsapp-btn .tooltip::before {
-            content: '';
-            position: absolute;
-            right: 100%;
-            top: 50%;
-            transform: translateY(-50%);
-            border: 6px solid transparent;
-            border-right-color: rgba(0, 0, 0, 0.8);
-        }
-
-        .whatsapp-float .whatsapp-label {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: #25d366;
-            background: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .whatsapp-float .whatsapp-btn .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(37, 211, 102, 0.3);
-            animation: ripple 1.5s ease-out infinite;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        .whatsapp-float .whatsapp-btn .ripple:nth-child(1) {
-            animation-delay: 0.5s;
-        }
-
-        @keyframes pulse-green {
-            0%, 100% {
-                box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
-            }
-            50% {
-                box-shadow: 0 4px 30px rgba(37, 211, 102, 0.7);
-            }
-        }
-
-        @keyframes ripple {
-            0% {
-                transform: scale(0.8);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1.8);
-                opacity: 0;
-            }
-        }
-
-        /* ============================================ */
-        /* CARDS WITH GLASS EFFECT */
-        /* ============================================ */
-        .card,
-        .bg-light,
-        .bg-white {
-            background: rgba(255, 255, 255, 0.92) !important;
-            backdrop-filter: blur(8px);
-        }
-
-        .footer {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-        }
-
-        /* ============================================ */
-        /* HERO HEADER - now transparent to show background */
-        /* ============================================ */
-        .hero-header {
-            background: transparent !important;
-            padding: 80px 20px !important;
-            position: relative;
-        }
-        .hero-header::before {
-            display: none;
-        }
-        .hero-header .container {
-            position: relative;
-            z-index: 2;
-        }
-        .hero-header h1 {
-            color: #ffffff !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-        }
-        .hero-header p {
-            color: rgba(255, 255, 255, 0.95) !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 300;
-            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* ============================================ */
-        /* BUTTONS - YOUR COLOR */
-        /* ============================================ */
-        .bg-primary {
-            background: #90bc79 !important;
-        }
-        .text-primary {
-            color: #90bc79 !important;
-        }
-        .btn-primary {
-            background: #90bc79;
-            border: none;
-            transition: all 0.3s;
-            color: #ffffff !important;
-        }
-        .btn-primary:hover {
-            background: #7dab66 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
-            color: #ffffff !important;
-        }
-        .btn-outline-primary {
-            color: #90bc79 !important;
-            border-color: #90bc79 !important;
-        }
-        .btn-outline-primary:hover {
-            background: #90bc79 !important;
-            color: #ffffff !important;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.3);
-        }
-        .btn-outline-danger:hover {
-            background: #dc3545;
-            color: white;
-        }
-        .btn-outline-success:hover {
-            background: #198754;
-            color: white;
-        }
-        .btn-outline-secondary:hover {
-            background: #6c757d;
-            color: white;
-        }
-        .rounded-pill {
-            border-radius: 50px !important;
-        }
-        .shadow-sm {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
-        }
-        .border-top {
-            border-top: 1px solid rgba(233, 236, 239, 0.5) !important;
-        }
-        .border-bottom-dashed {
-            border-bottom: 1px dashed #dee2e6 !important;
-        }
-        .badge {
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        .card {
-            transition: all 0.3s ease;
-            border-radius: 12px !important;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
-        }
-        .btn-link {
-            color: #6c757d !important;
-            text-decoration: none !important;
-        }
-        .btn-link:hover {
-            color: #90bc79 !important;
-        }
-
-        .fa-star.text-primary {
-            color: #90bc79 !important;
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-        }
-
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 998;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #90bc79 !important;
-            color: #ffffff !important;
-            border: none !important;
-            transition: all 0.3s;
-        }
-        .back-to-top:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
-            color: #ffffff !important;
-        }
-
-        .bg-success {
-            background-color: #198754 !important;
-        }
-        .bg-secondary {
-            background-color: #6c757d !important;
-        }
-        .bg-warning {
-            background-color: #ffc107 !important;
-        }
-        .bg-info {
-            background-color: #0dcaf0 !important;
-        }
-        .bg-danger {
-            background-color: #dc3545 !important;
-        }
-
-        .rounded-circle {
-            border-radius: 50% !important;
-        }
-        .text-success {
-            color: #198754 !important;
-        }
-        .text-warning {
-            color: #ffc107 !important;
-        }
-        .text-info {
-            color: #0dcaf0 !important;
-        }
-        .text-danger {
-            color: #dc3545 !important;
-        }
-
-        /* Order specific styles */
-        .order-item {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .order-item:hover {
-            transform: translateX(3px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08) !important;
-        }
-        .order-details {
-            display: none;
-        }
-        .order-item.active .order-details {
-            display: block !important;
-        }
-        .order-item.active .fa-chevron-right {
-            transform: rotate(90deg);
-            transition: transform 0.3s;
-        }
-        .fa-chevron-right {
-            transition: transform 0.3s;
-        }
-        .input-group-text {
-            border-radius: 30px 0 0 30px;
-        }
-        .input-group .form-control {
-            border-radius: 0 30px 30px 0;
-        }
 /* ============================================ */
-/* YOUR COLOR: #90bc79 */
-/* FULL PAGE BACKGROUND WITH BLUR & DARK OVERLAY */
+/* MY ORDERS — GREEN GLOW DARK THEME            */
 /* ============================================ */
 
-/* --- FULL PAGE BACKGROUND --- */
 body {
-    font-family: 'Poppins', 'Open Sans', sans-serif;
-    min-height: 100vh;
-    background: #f5f8f4;
-    position: relative;
-    margin: 0;
-    padding: 0;
+    background: #0f0f14 !important;
 }
 
-/* Background image that covers the entire page */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url("{% static 'store/img/IMG_0385.jpg' %}");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    z-index: -2;
-}
-
-/* Dark overlay layer with blur */
 body::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    z-index: -1;
+    background:
+        radial-gradient(circle at top left, rgba(144, 188, 121, 0.28), transparent 45%),
+        radial-gradient(circle at bottom right, rgba(45, 80, 22, 0.35), transparent 45%),
+        radial-gradient(circle at center, rgba(168, 217, 144, 0.1), transparent 60%),
+        rgba(0, 0, 0, 0.55) !important;
+    backdrop-filter: blur(3px) !important;
+    -webkit-backdrop-filter: blur(3px) !important;
 }
 
 /* ============================================ */
-/* ✅ TRANSPARENT NAVBAR */
+/* HERO HEADER                                   */
 /* ============================================ */
-.sticky-top {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 9999 !important;
-    background: transparent !important;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
+.hero-header {
+    padding: 140px 20px 20px !important;
+    margin-bottom: 0 !important;
 }
 
-.sticky-top::before {
-    display: none;
-}
-
-.sticky-top .container {
-    position: relative;
-    z-index: 1;
-}
-
-.navbar-brand {
-    display: flex;
-    align-items: center;
-}
-
-.navbar-brand img {
-    height: 50px;
-    width: auto;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.navbar-brand img:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(144, 188, 121, 0.3);
-}
-
-/* ============================================ */
-/* ✅ ANIMATED BRAND TEXT */
-/* ============================================ */
-.animated-brand {
-    background: linear-gradient(
-        90deg,
-        #ffffff 0%,
-        #e8f5e9 25%,
-        #90bc79 50%,
-        #e8f5e9 75%,
-        #ffffff 100%
-    );
-    background-size: 200% auto;
+.hero-header h1 {
+    font-size: 3rem;
+    font-weight: 800 !important;
+    letter-spacing: -1.2px;
+    background: linear-gradient(135deg, #ffffff 0%, #a8d990 50%, #90bc79 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: gradient-shift 3s linear infinite;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    font-size: 1.6rem;
-    letter-spacing: -0.5px;
-    display: inline-block;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    text-shadow: none !important;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 30px rgba(144, 188, 121, 0.5))
+            drop-shadow(0 0 60px rgba(168, 217, 144, 0.3));
 }
 
-@keyframes gradient-shift {
-    0% {
-        background-position: 0% center;
-    }
-    100% {
-        background-position: 200% center;
-    }
+.hero-header p {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-size: 1rem;
+    font-weight: 300;
+    text-shadow: 0 0 20px rgba(144, 188, 121, 0.35);
 }
 
-.animated-brand:hover {
-    animation: gradient-shift 1s linear infinite;
-    cursor: pointer;
+.hero-header .breadcrumb {
+    font-size: 0.85rem;
+    opacity: 0.75;
+}
+
+.hero-header .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.6) !important;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.hero-header .breadcrumb-item a:hover {
+    color: #a8d990 !important;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.9);
+}
+
+.hero-header .breadcrumb-item.active {
+    color: #a8d990 !important;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.7);
 }
 
 /* ============================================ */
-/* ✅ NAV LINKS - WHITE TEXT FOR DARK BACKGROUND */
+/* MAIN CONTAINER                                */
 /* ============================================ */
-.navbar-nav .nav-link {
-    color: rgba(255, 255, 255, 0.9) !important;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
+.crazy-orders-container {
+    max-width: 1100px;
+    margin: 0 auto 80px;
+    padding: 0 20px;
+}
+
+/* ============================================ */
+/* SEARCH BAR                                    */
+/* ============================================ */
+.crazy-search-bar {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50px;
+    overflow: hidden;
+    padding: 5px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: all 0.25s ease;
+    margin-bottom: 32px;
+}
+
+.crazy-search-bar:focus-within {
+    border-color: rgba(144, 188, 121, 0.5);
+    box-shadow: 0 0 0 4px rgba(144, 188, 121, 0.1),
+                0 0 30px rgba(144, 188, 121, 0.4),
+                0 0 60px rgba(168, 217, 144, 0.25);
+}
+
+.crazy-search-bar i {
+    color: rgba(255, 255, 255, 0.4);
+    margin-left: 18px;
     font-size: 0.95rem;
-    padding: 8px 18px !important;
-    transition: all 0.3s ease;
-    border-radius: 30px;
-    letter-spacing: 0.3px;
-    position: relative;
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+    transition: color 0.2s ease;
 }
 
-.navbar-nav .nav-link::after {
+.crazy-search-bar:focus-within i {
+    color: #a8d990;
+    filter: drop-shadow(0 0 8px rgba(144, 188, 121, 0.8));
+}
+
+.crazy-search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 12px 18px;
+    font-size: 0.9rem;
+    background: transparent;
+    color: #ffffff;
+    font-family: inherit;
+}
+
+.crazy-search-bar input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================ */
+/* STATS GRID                                    */
+/* ============================================ */
+.crazy-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.crazy-stat-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.crazy-stat-card::before {
     content: '';
     position: absolute;
-    bottom: 2px;
-    left: 50%;
-    width: 0;
+    top: 0; left: 0; right: 0;
     height: 2px;
-    background: #90bc79;
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-    border-radius: 2px;
+    transition: opacity 0.3s ease;
 }
 
-.navbar-nav .nav-link:hover::after,
-.navbar-nav .nav-link.active::after {
-    width: 60%;
+.crazy-stat-card.pending::before { background: linear-gradient(90deg, transparent, #fbbf24, transparent); }
+.crazy-stat-card.processing::before { background: linear-gradient(90deg, transparent, #60a5fa, transparent); }
+.crazy-stat-card.delivered::before { background: linear-gradient(90deg, transparent, #a8d990, transparent); }
+.crazy-stat-card.cancelled::before { background: linear-gradient(90deg, transparent, #ef4444, transparent); }
+
+.crazy-stat-card.pending { box-shadow: 0 0 25px rgba(251, 191, 36, 0.15); }
+.crazy-stat-card.processing { box-shadow: 0 0 25px rgba(96, 165, 250, 0.15); }
+.crazy-stat-card.delivered { box-shadow: 0 0 25px rgba(144, 188, 121, 0.2); }
+.crazy-stat-card.cancelled { box-shadow: 0 0 25px rgba(239, 68, 68, 0.15); }
+
+.crazy-stat-card:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.06);
 }
 
-.navbar-nav .nav-link:hover {
-    color: #ffffff !important;
-    background: rgba(144, 188, 121, 0.2);
+.crazy-stat-info {
+    flex: 1;
+    min-width: 0;
 }
 
-.navbar-nav .nav-link.active {
-    color: #ffffff !important;
+.crazy-stat-label {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     font-weight: 600;
-    background: rgba(144, 188, 121, 0.25);
+    margin-bottom: 6px;
 }
 
-/* ============================================ */
-/* ✅ CART ICON WITH IMAGE */
-/* ============================================ */
-.cart-link {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 18px !important;
+.crazy-stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1;
 }
 
-.cart-icon-img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-    transition: transform 0.3s ease;
-    filter: brightness(0) invert(1);
+.crazy-stat-card.pending .crazy-stat-value {
+    color: #fbbf24;
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+}
+.crazy-stat-card.processing .crazy-stat-value {
+    color: #60a5fa;
+    text-shadow: 0 0 20px rgba(96, 165, 250, 0.6);
+}
+.crazy-stat-card.delivered .crazy-stat-value {
+    background: linear-gradient(135deg, #a8d990, #90bc79);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 15px rgba(144, 188, 121, 0.6));
+}
+.crazy-stat-card.cancelled .crazy-stat-value {
+    color: #ef4444;
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
 }
 
-.cart-link:hover .cart-icon-img {
-    transform: scale(1.15);
-}
-
-.cart-badge {
-    position: absolute;
-    top: -2px;
-    right: 2px;
-    background: #ff6b6b;
-    color: white;
-    font-size: 0.6rem;
-    font-weight: 700;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
+.crazy-stat-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-size: 1.2rem;
+    flex-shrink: 0;
 }
 
-.navbar-nav .text-white-50 {
-    color: rgba(255, 255, 255, 0.7) !important;
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+.crazy-stat-card.pending .crazy-stat-icon {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
 }
-
-.navbar-nav .nav-link.text-danger {
-    color: #ff6b6b !important;
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+.crazy-stat-card.processing .crazy-stat-icon {
+    background: rgba(96, 165, 250, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(96, 165, 250, 0.3);
 }
-
-.navbar-nav .nav-link.text-danger:hover {
-    color: #ff4444 !important;
-    background: rgba(220, 53, 69, 0.2);
+.crazy-stat-card.delivered .crazy-stat-icon {
+    background: rgba(144, 188, 121, 0.15);
+    color: #a8d990;
+    border: 1px solid rgba(144, 188, 121, 0.35);
+}
+.crazy-stat-card.cancelled .crazy-stat-icon {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 /* ============================================ */
-/* All content sits above the background */
+/* SECTION HEADER                                */
 /* ============================================ */
-.container-fluid:not(.sticky-top),
-.container,
-.footer,
-.hero-header,
-.card,
-.bg-light,
-.bg-white,
-.whatsapp-float,
-.back-to-top {
+.crazy-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.crazy-section-title {
+    color: #ffffff;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.3px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+}
+
+.crazy-section-subtitle {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    margin: 4px 0 0 0;
+}
+
+/* ============================================ */
+/* ORDER CARD                                    */
+/* ============================================ */
+.crazy-order-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(144, 188, 121, 0.12);
+    border-radius: 20px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: all 0.3s ease;
+    cursor: pointer;
     position: relative;
-    z-index: 1;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2),
+                0 0 20px rgba(144, 188, 121, 0.05);
+}
+
+.crazy-order-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(144, 188, 121, 0.6), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.crazy-order-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(144, 188, 121, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(144, 188, 121, 0.2),
+                0 0 50px rgba(144, 188, 121, 0.25);
+}
+
+.crazy-order-card:hover::before {
+    opacity: 1;
+}
+
+.crazy-order-card.active {
+    border-color: rgba(144, 188, 121, 0.5);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 20px 40px rgba(144, 188, 121, 0.25),
+                0 0 60px rgba(168, 217, 144, 0.3);
+}
+
+/* Order card header row — DESKTOP */
+.crazy-order-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto auto;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 22px;
+}
+
+.crazy-order-header .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.crazy-order-header .status-badge.pending {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+}
+.crazy-order-header .status-badge.processing {
+    background: rgba(96, 165, 250, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(96, 165, 250, 0.35);
+    box-shadow: 0 0 15px rgba(96, 165, 250, 0.3);
+}
+.crazy-order-header .status-badge.shipped {
+    background: rgba(167, 139, 250, 0.15);
+    color: #a78bfa;
+    border: 1px solid rgba(167, 139, 250, 0.35);
+    box-shadow: 0 0 15px rgba(167, 139, 250, 0.3);
+}
+.crazy-order-header .status-badge.delivered {
+    background: rgba(144, 188, 121, 0.15);
+    color: #a8d990;
+    border: 1px solid rgba(144, 188, 121, 0.4);
+    box-shadow: 0 0 15px rgba(144, 188, 121, 0.4);
+}
+.crazy-order-header .status-badge.cancelled,
+.crazy-order-header .status-badge.failed {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+}
+.crazy-order-header .status-badge.other {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.crazy-order-meta {
+    min-width: 0;
+}
+
+.crazy-order-meta .meta-label {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.crazy-order-meta .meta-value {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.crazy-order-meta .meta-value.price {
+    background: linear-gradient(135deg, #a8d990, #90bc79);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    filter: drop-shadow(0 0 12px rgba(144, 188, 121, 0.5));
+}
+
+.crazy-order-toggle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.crazy-order-card.active .crazy-order-toggle {
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff;
+    transform: rotate(90deg);
+    box-shadow: 0 0 20px rgba(144, 188, 121, 0.6);
 }
 
 /* ============================================ */
-/* WHATSAPP FLOATING BUTTON */
+/* ORDER DETAILS                                 */
 /* ============================================ */
-.whatsapp-float {
-    position: fixed;
-    bottom: 30px;
-    left: 30px;
-    z-index: 999;
+.crazy-order-details {
+    display: none;
+    padding: 0 22px 22px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    margin-top: 0;
+    animation: slideDown 0.3s ease;
+}
+
+.crazy-order-card.active .crazy-order-details {
+    display: block;
+    padding-top: 22px;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================ */
+/* TIMELINE                                      */
+/* ============================================ */
+.crazy-timeline {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+}
+
+.crazy-timeline-step {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    position: relative;
+    flex: 1;
+    max-width: 140px;
 }
 
-.whatsapp-float .whatsapp-btn {
+.crazy-timeline-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
-    background: #25d366;
-    border-radius: 50%;
-    color: #ffffff;
-    font-size: 2.2rem;
-    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.4);
     transition: all 0.3s ease;
-    text-decoration: none;
-    position: relative;
-    animation: pulse-green 2s infinite;
-}
-
-.whatsapp-float .whatsapp-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
-}
-
-.whatsapp-float .whatsapp-btn .tooltip {
-    position: absolute;
-    left: 70px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    font-family: 'Poppins', sans-serif;
-}
-
-.whatsapp-float .whatsapp-btn:hover .tooltip {
-    opacity: 1;
-    visibility: visible;
-    left: 75px;
-}
-
-.whatsapp-float .whatsapp-btn .tooltip::before {
-    content: '';
-    position: absolute;
-    right: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 6px solid transparent;
-    border-right-color: rgba(0, 0, 0, 0.8);
-}
-
-.whatsapp-float .whatsapp-label {
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.65rem;
-    font-weight: 600;
-    color: #25d366;
-    background: white;
-    padding: 4px 12px;
-    border-radius: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-.whatsapp-float .whatsapp-btn .ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(37, 211, 102, 0.3);
-    animation: ripple 1.5s ease-out infinite;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-}
-
-.whatsapp-float .whatsapp-btn .ripple:nth-child(1) {
-    animation-delay: 0.5s;
-}
-
-@keyframes pulse-green {
-    0%, 100% {
-        box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
-    }
-    50% {
-        box-shadow: 0 4px 30px rgba(37, 211, 102, 0.7);
-    }
-}
-
-@keyframes ripple {
-    0% {
-        transform: scale(0.8);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(1.8);
-        opacity: 0;
-    }
-}
-
-/* ============================================ */
-/* CARDS WITH GLASS EFFECT */
-/* ============================================ */
-.card,
-.bg-light,
-.bg-white {
-    background: rgba(255, 255, 255, 0.92) !important;
-    backdrop-filter: blur(8px);
-}
-
-.footer {
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(10px);
-}
-
-/* ============================================ */
-/* HERO HEADER - now transparent to show background */
-/* ============================================ */
-.hero-header {
-    background: transparent !important;
-    padding: 120px 20px 60px !important;
-    position: relative;
-    margin-top: -60px;
-}
-.hero-header::before {
-    display: none;
-}
-.hero-header .container {
-    position: relative;
     z-index: 2;
 }
-.hero-header h1 {
-    color: #ffffff !important;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
-}
-.hero-header p {
-    color: rgba(255, 255, 255, 0.95) !important;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 300;
-    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
-}
-.hero-header .breadcrumb-item a {
-    color: rgba(255, 255, 255, 0.85) !important;
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
-}
-.hero-header .breadcrumb-item.active {
-    color: #ffffff !important;
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
-}
-.hero-header .breadcrumb-item a:hover {
-    color: #ffffff !important;
+
+.crazy-timeline-step.completed .crazy-timeline-circle {
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 0 20px rgba(144, 188, 121, 0.6),
+                0 0 40px rgba(168, 217, 144, 0.3);
 }
 
-/* ============================================ */
-/* BUTTONS - YOUR COLOR */
-/* ============================================ */
-.bg-primary {
-    background: #90bc79 !important;
+.crazy-timeline-step.active .crazy-timeline-circle {
+    background: linear-gradient(135deg, #a8d990, #90bc79);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 0 25px rgba(144, 188, 121, 0.8),
+                0 0 50px rgba(168, 217, 144, 0.5);
+    animation: pulseActive 2s ease-in-out infinite;
 }
-.text-primary {
-    color: #90bc79 !important;
+
+@keyframes pulseActive {
+    0%, 100% {
+        box-shadow: 0 0 25px rgba(144, 188, 121, 0.8),
+                    0 0 50px rgba(168, 217, 144, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 35px rgba(144, 188, 121, 1),
+                    0 0 70px rgba(168, 217, 144, 0.7);
+    }
 }
-.btn-primary {
-    background: #90bc79;
-    border: none;
-    transition: all 0.3s;
-    color: #ffffff !important;
-}
-.btn-primary:hover {
-    background: #7dab66 !important;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
-    color: #ffffff !important;
-}
-.btn-outline-primary {
-    color: #90bc79 !important;
-    border-color: #90bc79 !important;
-}
-.btn-outline-primary:hover {
-    background: #90bc79 !important;
-    color: #ffffff !important;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(144, 188, 121, 0.3);
-}
-.btn-outline-danger:hover {
-    background: #dc3545;
-    color: white;
-}
-.btn-outline-success:hover {
-    background: #198754;
-    color: white;
-}
-.btn-outline-secondary:hover {
-    background: #6c757d;
-    color: white;
-}
-.rounded-pill {
-    border-radius: 50px !important;
-}
-.shadow-sm {
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
-}
-.border-top {
-    border-top: 1px solid rgba(233, 236, 239, 0.5) !important;
-}
-.badge {
+
+.crazy-timeline-label {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 8px;
     font-weight: 500;
-    font-size: 0.9rem;
-}
-.card {
-    transition: all 0.3s ease;
-    border-radius: 12px !important;
-}
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
-}
-.btn-link {
-    color: #6c757d !important;
-    text-decoration: none !important;
-}
-.btn-link:hover {
-    color: #90bc79 !important;
+    text-align: center;
+    letter-spacing: 0.3px;
 }
 
-.container {
-    position: relative;
+.crazy-timeline-step.completed .crazy-timeline-label {
+    color: #a8d990;
+    text-shadow: 0 0 10px rgba(144, 188, 121, 0.5);
+}
+
+.crazy-timeline-step.active .crazy-timeline-label {
+    color: #ffffff;
+    font-weight: 700;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.7);
+}
+
+.crazy-timeline-line {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.08);
     z-index: 1;
 }
 
-.back-to-top {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 998;
+.crazy-timeline-step.completed .crazy-timeline-line {
+    background: linear-gradient(90deg, #90bc79, #5a8a4a);
+    box-shadow: 0 0 12px rgba(144, 188, 121, 0.5);
+}
+
+/* ============================================ */
+/* ORDER ITEMS                                   */
+/* ============================================ */
+.crazy-order-items {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.crazy-order-items-header {
+    display: grid;
+    grid-template-columns: 1fr 100px 80px 120px;
+    gap: 12px;
+    padding: 12px 18px;
+    background: rgba(144, 188, 121, 0.06);
+    border-bottom: 1px solid rgba(144, 188, 121, 0.15);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.crazy-order-item-row {
+    display: grid;
+    grid-template-columns: 1fr 100px 80px 120px;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.85rem;
+    align-items: center;
+}
+
+.crazy-order-item-row:last-child {
+    border-bottom: none;
+}
+
+.crazy-order-item-row .product-name {
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.crazy-order-item-row .text-center {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.crazy-order-item-row .text-end {
+    text-align: right;
+    color: #a8d990;
+    font-weight: 700;
+    text-shadow: 0 0 12px rgba(144, 188, 121, 0.5);
+}
+
+/* ============================================ */
+/* ORDER ACTIONS                                 */
+/* ============================================ */
+.crazy-order-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.crazy-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.82rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    font-family: inherit;
+    letter-spacing: 0.3px;
+}
+
+.crazy-action-btn.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.crazy-action-btn.danger:hover {
+    background: #ef4444;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.5);
+}
+
+.crazy-action-btn.success {
+    background: rgba(144, 188, 121, 0.1);
+    color: #a8d990;
+    border: 1px solid rgba(144, 188, 121, 0.3);
+}
+
+.crazy-action-btn.success:hover {
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(144, 188, 121, 0.5);
+}
+
+/* ============================================ */
+/* EMPTY STATE                                   */
+/* ============================================ */
+.crazy-empty-state {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(144, 188, 121, 0.15);
+    border-radius: 24px;
+    padding: 80px 40px;
+    text-align: center;
+    backdrop-filter: blur(20px);
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 60px rgba(144, 188, 121, 0.15);
+}
+
+.crazy-empty-icon {
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    background: linear-gradient(135deg, rgba(144, 188, 121, 0.15), rgba(90, 138, 74, 0.15));
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #90bc79 !important;
-    color: #ffffff !important;
-    border: none !important;
-    transition: all 0.3s;
-}
-.back-to-top:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(144, 188, 121, 0.4);
-    color: #ffffff !important;
+    margin: 0 auto 28px;
+    border: 1px solid rgba(144, 188, 121, 0.3);
+    animation: emptyPulse 2.5s ease-in-out infinite;
 }
 
-/* ============================================ */
-/* TOAST NOTIFICATION */
-/* ============================================ */
-.add-to-cart-toast {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    background: #28a745;
-    color: white;
-    padding: 15px 25px;
-    border-radius: 10px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    display: flex;
+.crazy-empty-icon i {
+    font-size: 3rem;
+    background: linear-gradient(135deg, #a8d990, #90bc79);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(144, 188, 121, 0.7));
+}
+
+@keyframes emptyPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(144, 188, 121, 0.4),
+                    0 0 30px rgba(144, 188, 121, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 20px rgba(144, 188, 121, 0),
+                    0 0 50px rgba(144, 188, 121, 0.5);
+    }
+}
+
+.crazy-empty-state h3 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    text-shadow: 0 0 20px rgba(144, 188, 121, 0.3);
+}
+
+.crazy-empty-state p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+    line-height: 1.6;
+}
+
+.crazy-empty-btn {
+    display: inline-flex;
     align-items: center;
     gap: 10px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    animation: slideInRight 0.3s ease;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #90bc79, #5a8a4a);
+    color: #ffffff !important;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(144, 188, 121, 0.5),
+                0 0 40px rgba(168, 217, 144, 0.3);
 }
 
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+.crazy-empty-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(144, 188, 121, 0.7),
+                0 0 60px rgba(168, 217, 144, 0.5);
+    color: #ffffff !important;
 }
 
 /* ============================================ */
-/* MOBILE RESPONSIVE */
+/* CUSTOM CANCEL MODAL                          */
+/* ============================================ */
+.cancel-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.cancel-modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.cancel-modal {
+    background: linear-gradient(135deg, #1a1a22, #0f0f14);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 20px;
+    padding: 36px 32px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7),
+                0 0 60px rgba(239, 68, 68, 0.15);
+    animation: modalPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.cancel-modal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.8), transparent);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+}
+
+@keyframes modalPop {
+    from { opacity: 0; transform: scale(0.9) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.cancel-modal-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.25);
+}
+
+.cancel-modal-icon i {
+    font-size: 1.8rem;
+    color: #ef4444;
+    filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.7));
+}
+
+.cancel-modal h4 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.35rem;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.3px;
+}
+
+.cancel-modal p {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin: 0 0 28px 0;
+}
+
+.cancel-modal p strong {
+    color: #a8d990;
+    font-weight: 700;
+}
+
+.cancel-modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.cancel-modal-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    letter-spacing: 0.3px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.cancel-modal-btn.secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.cancel-modal-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.cancel-modal-btn.danger {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35),
+                0 0 20px rgba(220, 38, 38, 0.2);
+}
+
+.cancel-modal-btn.danger:hover {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.5),
+                0 0 30px rgba(220, 38, 38, 0.3);
+}
+
+.cancel-modal-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* ============================================ */
+/* MOBILE                                       */
 /* ============================================ */
 @media (max-width: 991px) {
-    .navbar-collapse {
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(10px);
-        border-radius: 0 0 15px 15px;
-        padding: 10px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    .hero-header {
+        padding: 120px 16px 20px !important;
     }
-    
-    .navbar-nav .nav-link {
-        text-align: center;
-        padding: 10px 15px !important;
-        color: #ffffff !important;
+
+    .hero-header h1 {
+        font-size: 2.25rem;
     }
-    
-    .navbar-nav .nav-link::after {
+
+    .crazy-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Order header — 2-row grid */
+    .crazy-order-header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "status toggle"
+            "meta meta";
+        gap: 14px;
+        padding: 16px 18px;
+    }
+
+    .crazy-order-header .status-badge {
+        grid-area: status;
+        justify-self: start;
+    }
+
+    .crazy-order-toggle {
+        grid-area: toggle;
+        align-self: center;
+    }
+
+    .crazy-order-header .crazy-order-meta {
+        grid-area: meta;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px 16px;
+    }
+
+    .crazy-order-meta .meta-label {
+        white-space: nowrap;
+    }
+
+    .crazy-order-meta .meta-value {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Timeline */
+    .crazy-timeline {
+        padding: 16px 12px;
+    }
+
+    .crazy-timeline-circle {
+        width: 34px;
+        height: 34px;
+        font-size: 0.75rem;
+    }
+
+    .crazy-timeline-line {
+        top: 17px;
+    }
+
+    .crazy-timeline-label {
+        font-size: 0.62rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-header {
+        padding: 100px 14px 16px !important;
+    }
+
+    .hero-header h1 {
+        font-size: 1.85rem;
+    }
+
+    .crazy-stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .crazy-stat-card {
+        padding: 14px;
+    }
+
+    .crazy-stat-value {
+        font-size: 1.5rem;
+    }
+
+    .crazy-stat-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+
+    .crazy-stat-label {
+        font-size: 0.65rem;
+    }
+
+    /* Order header — meta grid 2 cols */
+    .crazy-order-header {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .crazy-order-header .crazy-order-meta {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 14px;
+    }
+
+    .crazy-order-meta .meta-value {
+        font-size: 0.82rem;
+    }
+
+    .crazy-order-details {
+        padding: 0 16px 16px;
+    }
+
+    .crazy-order-card.active .crazy-order-details {
+        padding-top: 18px;
+    }
+
+    /* Vertical timeline */
+    .crazy-timeline {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .crazy-timeline-step {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .crazy-timeline-line {
         display: none;
     }
-    
-    .navbar-toggler {
-        border-color: rgba(255, 255, 255, 0.5) !important;
+
+    .crazy-timeline-label {
+        margin-top: 0;
+        text-align: left;
+        font-size: 0.75rem;
     }
-    
-    .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+
+    /* Items — stack on mobile */
+    .crazy-order-items-header {
+        display: none;
     }
-    
-    .whatsapp-float {
-        bottom: 20px;
-        left: 20px;
+
+    .crazy-order-item-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        padding: 14px;
     }
-    .whatsapp-float .whatsapp-btn {
-        width: 50px;
-        height: 50px;
-        font-size: 1.8rem;
+
+    .crazy-order-item-row .text-center,
+    .crazy-order-item-row .text-end {
+        text-align: left;
+    }
+
+    .crazy-order-item-row .text-center::before {
+        content: 'Size: ';
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.75rem;
+    }
+
+    .crazy-order-item-row .text-end::before {
+        content: 'Price: ';
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.75rem;
+    }
+
+    /* Actions stack */
+    .crazy-order-actions {
+        flex-direction: column-reverse;
+        gap: 8px;
+    }
+
+    .crazy-action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Modal */
+    .cancel-modal {
+        padding: 28px 22px;
+        border-radius: 16px;
+    }
+
+    .cancel-modal-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .cancel-modal-icon i {
+        font-size: 1.5rem;
+    }
+
+    .cancel-modal h4 {
+        font-size: 1.15rem;
+    }
+
+    .cancel-modal p {
+        font-size: 0.86rem;
+    }
+
+    .cancel-modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .cancel-modal-btn {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 0.82rem;
     }
 }
 
-@media (max-width: 768px) {
-    .animated-brand {
-        font-size: 1.3rem;
-    }
-    .cart-icon-img {
-        width: 20px;
-        height: 20px;
-    }
-}
-    </style>
-</head>
+{% endblock %}
 
-<body>
-   
-<!-- ============================================ -->
-<!-- ✅ WHITE NAVBAR WITH GIF LOGO AND ANIMATED TEXT -->
-<!-- ============================================ -->
-<div class="container-fluid sticky-top">
-    <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light p-0">
-            <a href="/" class="navbar-brand d-flex align-items-center">
-                <!-- GIF Logo -->
-                <img src="{% static 'store/img/DELIGHT.gif' %}" 
-                     alt="Delight Care Plus" 
-                     style="height: 50px; width: auto; border-radius: 8px;">
-                <!-- Animated Text Logo -->
-                <span class="d-none d-md-inline ms-2 animated-brand">
-                    Delight Care Plus 
-                </span>
-            </a>
-            <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ms-auto">
-                    <a href="/" class="nav-item nav-link active">Home</a>
-                    <a href="{% url 'my_orders' %}" class="nav-item nav-link">My Orders</a>
-                    <a href="/cart/" class="nav-item nav-link cart-link">
-                        <i class="fa fa-shopping-bag"></i>
-                        <span class="cart-badge" id="cartCount">0</span>
-                    </a>
-                    <a href="{% url 'blog_list' %}" class="nav-item nav-link">Blog</a>
-                    
-                    {% if user.is_authenticated %}
-                        <span class="nav-item nav-link text-white-50">Welcome, {{ user.username }}</span>
-                        <a href="{% url 'logout' %}" class="nav-item nav-link text-danger">Logout</a>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
-                        <a href="{% url 'signup' %}" class="nav-item nav-link">Signup</a>
-                    {% endif %}
-                </div>
-            </div>
+{% block content %}
+
+<!-- HERO HEADER -->
+<div class="container-fluid hero-header mb-4">
+    <div class="container text-center">
+        <h1 class="mb-3 animated slideInDown">My Orders 📦</h1>
+        <p class="animated slideInDown mb-3">Track and manage all your orders</p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center mb-0 animated slideInDown">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Orders</li>
+            </ol>
         </nav>
     </div>
 </div>
-    <!-- ============================================ -->
-    <!-- ✅ WHATSAPP FLOATING BUTTON -->
-    <!-- ============================================ -->
-    <div class="whatsapp-float">
-        <a href="https://wa.me/254795180079?text=Hello%20Delight%20Care%2C%20I%20need%20help%20with%20my%20orders" 
-           class="whatsapp-btn" 
-           target="_blank" 
-           rel="noopener noreferrer"
-           aria-label="Contact us on WhatsApp">
-            <span class="ripple"></span>
-            <span class="ripple"></span>
-            <i class="fab fa-whatsapp"></i>
-            <span class="tooltip">Chat with us on WhatsApp</span>
-        </a>
-        <span class="whatsapp-label">Chat 💬</span>
-    </div>
 
-    <!-- ============================================ -->
-    <!-- ✅ HERO HEADER - TRANSPARENT -->
-    <!-- ============================================ -->
-    <div class="container-fluid hero-header mb-5">
-        <div class="container text-center">
-            <h1 class="display-4 text-white mb-3 animated slideInDown">Orders</h1>
-            <p class="text-white animated slideInDown">Track and manage all your orders</p>
+<!-- ORDERS CONTENT -->
+<div class="container-fluid">
+    <div class="crazy-orders-container">
+
+        <!-- Search Bar -->
+        <div class="crazy-search-bar wow fadeIn">
+            <i class="fas fa-search"></i>
+            <input type="text" id="orderSearch" placeholder="Search orders by ID, product, or status...">
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="crazy-stats-grid wow fadeIn">
+            <div class="crazy-stat-card pending">
+                <div class="crazy-stat-info">
+                    <div class="crazy-stat-label">Pending</div>
+                    <div class="crazy-stat-value">{{ pending_count|default:0 }}</div>
+                </div>
+                <div class="crazy-stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+            </div>
+
+            <div class="crazy-stat-card processing">
+                <div class="crazy-stat-info">
+                    <div class="crazy-stat-label">Processing</div>
+                    <div class="crazy-stat-value">{{ processing_count|default:0 }}</div>
+                </div>
+                <div class="crazy-stat-icon">
+                    <i class="fas fa-spinner"></i>
+                </div>
+            </div>
+
+            <div class="crazy-stat-card delivered">
+                <div class="crazy-stat-info">
+                    <div class="crazy-stat-label">Delivered</div>
+                    <div class="crazy-stat-value">{{ delivered_count|default:0 }}</div>
+                </div>
+                <div class="crazy-stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+            </div>
+
+            <div class="crazy-stat-card cancelled">
+                <div class="crazy-stat-info">
+                    <div class="crazy-stat-label">Cancelled</div>
+                    <div class="crazy-stat-value">{{ cancelled_count|default:0 }}</div>
+                </div>
+                <div class="crazy-stat-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Header -->
+        <div class="crazy-section-header wow fadeIn">
+            <div>
+                <h2 class="crazy-section-title">Order History</h2>
+                <p class="crazy-section-subtitle">
+                    {% if orders %}
+                        {{ orders|length }} order{{ orders|length|pluralize }} found
+                    {% else %}
+                        No orders yet
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- Orders List -->
+        {% if orders %}
+        <div class="orders-list wow fadeIn">
+            {% for order in orders %}
+            <div class="crazy-order-card" data-order-status="{{ order.status }}">
+
+                <!-- Header Row -->
+                <div class="crazy-order-header">
+
+                    <!-- Status Badge -->
+                    <span class="status-badge
+                        {% if order.status == 'PAYMENT_PENDING' %}pending
+                        {% elif order.status == 'PROCESSING' or order.status == 'PACKED' %}processing
+                        {% elif order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' %}shipped
+                        {% elif order.status == 'DELIVERED' %}delivered
+                        {% elif order.status == 'CANCELLED' or order.status == 'FAILED' %}cancelled
+                        {% else %}other{% endif %}">
+                        {% if order.status == 'PAYMENT_PENDING' %}
+                            <i class="fas fa-clock"></i>
+                        {% elif order.status == 'PROCESSING' or order.status == 'PACKED' %}
+                            <i class="fas fa-spinner"></i>
+                        {% elif order.status == 'SHIPPED' or order.status == 'OUT_FOR_DELIVERY' %}
+                            <i class="fas fa-truck"></i>
+                        {% elif order.status == 'DELIVERED' %}
+                            <i class="fas fa-check-circle"></i>
+                        {% elif order.status == 'CANCELLED' or order.status == 'FAILED' %}
+                            <i class="fas fa-times-circle"></i>
+                        {% else %}
+                            <i class="fas fa-box"></i>
+                        {% endif %}
+                        {{ order.get_status_display }}
+                    </span>
+
+                    <!-- Meta: Order # -->
+                    <div class="crazy-order-meta">
+                        <div class="meta-label">Order ID</div>
+                        <div class="meta-value">#{{ order.id }}</div>
+                    </div>
+
+                    <!-- Meta: Date -->
+                    <div class="crazy-order-meta">
+                        <div class="meta-label">Date</div>
+                        <div class="meta-value">{{ order.created_at|date:"M d, Y" }}</div>
+                    </div>
+
+                    <!-- Meta: Total -->
+                    <div class="crazy-order-meta">
+                        <div class="meta-label">Total</div>
+                        <div class="meta-value price">KES {{ order.grand_total|floatformat:0 }}</div>
+                    </div>
+
+                    <!-- Toggle -->
+                    <div class="crazy-order-toggle">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+
+                </div>
+
+                <!-- Details (expandable) -->
+                <div class="crazy-order-details">
+
+                    <!-- Timeline -->
+                    <div class="crazy-timeline">
+
+                        <div class="crazy-timeline-step completed">
+                            <div class="crazy-timeline-circle">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="crazy-timeline-label">Ordered</div>
+                        </div>
+
+                        <div class="crazy-timeline-step {% if order.status in 'PAID,PROCESSING,PACKED,SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}completed{% endif %}">
+                            <div class="crazy-timeline-circle">
+                                {% if order.status in 'PAID,PROCESSING,PACKED,SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}
+                                    <i class="fas fa-check"></i>
+                                {% else %}
+                                    <i class="fas fa-clock"></i>
+                                {% endif %}
+                            </div>
+                            <div class="crazy-timeline-label">Processing</div>
+                            <div class="crazy-timeline-line"></div>
+                        </div>
+
+                        <div class="crazy-timeline-step {% if order.status in 'PACKED,SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}completed{% endif %}">
+                            <div class="crazy-timeline-circle">
+                                {% if order.status in 'PACKED,SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}
+                                    <i class="fas fa-check"></i>
+                                {% else %}
+                                    <i class="fas fa-box"></i>
+                                {% endif %}
+                            </div>
+                            <div class="crazy-timeline-label">Packed</div>
+                            <div class="crazy-timeline-line"></div>
+                        </div>
+
+                        <div class="crazy-timeline-step {% if order.status in 'SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}completed{% endif %}">
+                            <div class="crazy-timeline-circle">
+                                {% if order.status in 'SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}
+                                    <i class="fas fa-check"></i>
+                                {% else %}
+                                    <i class="fas fa-truck"></i>
+                                {% endif %}
+                            </div>
+                            <div class="crazy-timeline-label">Shipped</div>
+                            <div class="crazy-timeline-line"></div>
+                        </div>
+
+                        <div class="crazy-timeline-step {% if order.status == 'DELIVERED' %}completed active{% endif %}">
+                            <div class="crazy-timeline-circle">
+                                {% if order.status == 'DELIVERED' %}
+                                    <i class="fas fa-check"></i>
+                                {% else %}
+                                    <i class="fas fa-home"></i>
+                                {% endif %}
+                            </div>
+                            <div class="crazy-timeline-label">Delivered</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Items Table -->
+                    <div class="crazy-order-items">
+                        <div class="crazy-order-items-header">
+                            <div>Product</div>
+                            <div class="text-center">Size</div>
+                            <div class="text-center">Qty</div>
+                            <div class="text-end">Price</div>
+                        </div>
+                        {% for item in order.items.all %}
+                        <div class="crazy-order-item-row">
+                            <div class="product-name">{{ item.variant.product.name }}</div>
+                            <div class="text-center">{{ item.variant.size }}</div>
+                            <div class="text-center">{{ item.quantity }}</div>
+                            <div class="text-end">KES {{ item.price|floatformat:0 }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="crazy-order-actions">
+                        {% if order.status != "PAID" and order.status != "CANCELLED" and order.status != "DELIVERED" and order.status != "SHIPPED" %}
+                            <button type="button"
+                                    class="crazy-action-btn danger js-cancel-order"
+                                    data-order-id="{{ order.id }}"
+                                    data-cancel-url="{% url 'cancel_order' order.id %}">
+                                <i class="fas fa-times-circle"></i> Cancel Order
+                            </button>
+                        {% endif %}
+                        {% if order.mpesa_receipt_number %}
+                            <button class="crazy-action-btn success js-view-receipt"
+                                    data-receipt="{{ order.mpesa_receipt_number }}">
+                                <i class="fas fa-receipt"></i> View Receipt
+                            </button>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="crazy-empty-state wow fadeIn">
+            <div class="crazy-empty-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h3>No Orders Yet</h3>
+            <p>You haven't placed any orders yet.<br>Discover our premium supplements and start your wellness journey.</p>
+            <a href="/" class="crazy-empty-btn">
+                <i class="fas fa-shopping-bag"></i>
+                Start Shopping
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- CUSTOM CANCEL CONFIRMATION MODAL              -->
+<!-- ============================================ -->
+<div class="cancel-modal-overlay" id="cancelOrderModal">
+    <div class="cancel-modal">
+        <div class="cancel-modal-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+
+        <h4>Cancel This Order?</h4>
+        <p>Are you sure you want to cancel order <strong id="modalOrderId">#0</strong>?<br>This action cannot be undone.</p>
+
+        <div class="cancel-modal-actions">
+            <button type="button" class="cancel-modal-btn secondary" id="modalKeepBtn">
+                <i class="fas fa-arrow-left"></i> Keep Order
+            </button>
+            <button type="button" class="cancel-modal-btn danger" id="modalConfirmBtn">
+                <i class="fas fa-times-circle"></i> Yes, Cancel
+            </button>
         </div>
     </div>
+</div>
 
-    {% if messages %}
-    <div class="container">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+{% endblock %}
 
-    <div class="container-fluid py-5">
-        <div class="container" style="max-width: 1000px;">
-            
-            <!-- Search Bar -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="input-group">
-                        <span class="input-group-text bg-light border-0">
-                            <i class="fas fa-search text-muted"></i>
-                        </span>
-                        <input type="text" id="orderSearch" class="form-control bg-light border-0 py-3" placeholder="Find an order by ID, product, or name...">
-                    </div>
-                </div>
-            </div>
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('My Orders page loaded ✅');
 
-            <!-- Orders History Header -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="fw-bold mb-0" style="color: #ffffff; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);">Orders history</h2>
-            </div>
+        // ============================================
+        // SEARCH FILTER
+        // ============================================
+        const searchInput = document.getElementById('orderSearch');
+        const orderCards = document.querySelectorAll('.crazy-order-card');
 
-            <!-- Order Statistics -->
-            <div class="row g-2 mb-4">
-                <div class="col-md-3 col-6">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted small">Awaiting Payment</span>
-                                <h3 class="mb-0 text-warning">{{ pending_count|default:0 }}</h3>
-                            </div>
-                            <i class="fas fa-clock text-warning fs-3"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted small">Processing</span>
-                                <h3 class="mb-0 text-info">{{ processing_count|default:0 }}</h3>
-                            </div>
-                            <i class="fas fa-spinner text-info fs-3"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted small">Delivered</span>
-                                <h3 class="mb-0 text-success">{{ delivered_count|default:0 }}</h3>
-                            </div>
-                            <i class="fas fa-check-circle text-success fs-3"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted small">Canceled</span>
-                                <h3 class="mb-0 text-danger">{{ cancelled_count|default:0 }}</h3>
-                            </div>
-                            <i class="fas fa-times-circle text-danger fs-3"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Orders List -->
-            {% if orders %}
-                <div class="orders-list">
-                    {% for order in orders %}
-                    <div class="card border-0 shadow-sm mb-3 order-item" data-order-status="{{ order.status }}">
-                        <div class="card-body p-3">
-                            <div class="row align-items-center">
-                                <div class="col-md-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3">
-                                            <span class="badge 
-                                                {% if order.status == 'PAYMENT_PENDING' %}bg-warning text-dark
-                                                {% elif order.status == 'PROCESSING' %}bg-info
-                                                {% elif order.status == 'PACKED' %}bg-info
-                                                {% elif order.status == 'SHIPPED' %}bg-primary
-                                                {% elif order.status == 'OUT_FOR_DELIVERY' %}bg-primary
-                                                {% elif order.status == 'DELIVERED' %}bg-success
-                                                {% elif order.status == 'CANCELLED' %}bg-danger
-                                                {% elif order.status == 'FAILED' %}bg-danger
-                                                {% else %}bg-secondary{% endif %} 
-                                                px-3 py-2 rounded-pill">
-                                                {{ order.get_status_display }}
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <span class="text-muted small">Order #</span>
-                                            <div class="fw-bold">{{ order.id }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <span class="text-muted small">Date</span>
-                                    <div class="fw-bold">{{ order.created_at|date:"M d, Y" }}</div>
-                                </div>
-                                <div class="col-md-3">
-                                    <span class="text-muted small">Total</span>
-                                    <div class="fw-bold text-primary">KES {{ order.grand_total|floatformat:2 }}</div>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <i class="fas fa-chevron-right text-muted"></i>
-                                </div>
-                            </div>
-                            
-                            <!-- Order Details -->
-                            <div class="order-details mt-3 pt-3 border-top">
-                                <!-- Status Timeline -->
-                                <div class="mb-3">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="text-center">
-                                            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto" style="width: 30px; height: 30px;">
-                                                <i class="fas fa-check" style="font-size: 12px;"></i>
-                                            </div>
-                                            <small class="d-block mt-1 text-success" style="font-size: 10px;">Ordered</small>
-                                        </div>
-                                        <div class="flex-grow-1" style="height: 2px; background: {% if order.status in 'PAID,PROCESSING,PACKED,SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}#198754{% else %}#dee2e6{% endif %};"></div>
-                                        <div class="text-center">
-                                            <div class="rounded-circle {% if order.status in 'PAID,PROCESSING,PACKED,SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}bg-success{% else %}bg-secondary{% endif %} text-white d-flex align-items-center justify-content-center mx-auto" style="width: 30px; height: 30px;">
-                                                <i class="fas {% if order.status in 'PAID,PROCESSING,PACKED,SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}fa-check{% else %}fa-clock{% endif %}" style="font-size: 12px;"></i>
-                                            </div>
-                                            <small class="d-block mt-1 {% if order.status in 'PAID,PROCESSING,PACKED,SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}text-success{% else %}text-muted{% endif %}" style="font-size: 10px;">Processing</small>
-                                        </div>
-                                        <div class="flex-grow-1" style="height: 2px; background: {% if order.status in 'PACKED,SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}#198754{% else %}#dee2e6{% endif %};"></div>
-                                        <div class="text-center">
-                                            <div class="rounded-circle {% if order.status in 'PACKED,SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}bg-success{% else %}bg-secondary{% endif %} text-white d-flex align-items-center justify-content-center mx-auto" style="width: 30px; height: 30px;">
-                                                <i class="fas {% if order.status in 'PACKED,SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}fa-check{% else %}fa-box{% endif %}" style="font-size: 12px;"></i>
-                                            </div>
-                                            <small class="d-block mt-1 {% if order.status in 'PACKED,SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}text-success{% else %}text-muted{% endif %}" style="font-size: 10px;">Packed</small>
-                                        </div>
-                                        <div class="flex-grow-1" style="height: 2px; background: {% if order.status in 'SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}#198754{% else %}#dee2e6{% endif %};"></div>
-                                        <div class="text-center">
-                                            <div class="rounded-circle {% if order.status in 'SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}bg-success{% else %}bg-secondary{% endif %} text-white d-flex align-items-center justify-content-center mx-auto" style="width: 30px; height: 30px;">
-                                                <i class="fas {% if order.status in 'SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}fa-check{% else %}fa-truck{% endif %}" style="font-size: 12px;"></i>
-                                            </div>
-                                            <small class="d-block mt-1 {% if order.status in 'SHIPPED,OUT_FOR_DELIVERY,DELIVERED' %}text-success{% else %}text-muted{% endif %}" style="font-size: 10px;">Shipped</small>
-                                        </div>
-                                        <div class="flex-grow-1" style="height: 2px; background: {% if order.status == 'DELIVERED' %}#198754{% else %}#dee2e6{% endif %};"></div>
-                                        <div class="text-center">
-                                            <div class="rounded-circle {% if order.status == 'DELIVERED' %}bg-success{% else %}bg-secondary{% endif %} text-white d-flex align-items-center justify-content-center mx-auto" style="width: 30px; height: 30px;">
-                                                <i class="fas {% if order.status == 'DELIVERED' %}fa-check{% else %}fa-home{% endif %}" style="font-size: 12px;"></i>
-                                            </div>
-                                            <small class="d-block mt-1 {% if order.status == 'DELIVERED' %}text-success{% else %}text-muted{% endif %}" style="font-size: 10px;">Delivered</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Order Items -->
-                                <div class="table-responsive">
-                                    <table class="table table-borderless align-middle mb-0">
-                                        <thead class="table-light text-muted small">
-                                            <tr>
-                                                <th>Product</th>
-                                                <th class="text-center">Size</th>
-                                                <th class="text-center">Qty</th>
-                                                <th class="text-end">Price</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for item in order.items.all %}
-                                            <tr>
-                                                <td class="fw-bold text-dark">{{ item.variant.product.name }}</td>
-                                                <td class="text-center text-muted">{{ item.variant.get_size_display }}</td>
-                                                <td class="text-center">{{ item.quantity }}</td>
-                                                <td class="text-end text-primary fw-bold">KES {{ item.price|floatformat:2 }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <!-- Actions -->
-                                <div class="mt-3 d-flex justify-content-end gap-2">
-                                    {% if order.status != "PAID" and order.status != "CANCELLED" and order.status != "DELIVERED" and order.status != "SHIPPED" %}
-                                        <a href="{% url 'cancel_order' order.id %}" 
-                                           class="btn btn-outline-danger btn-sm rounded-pill px-3"
-                                           onclick="return confirm('Cancel order #{{ order.id }}?')">
-                                            <i class="bi bi-x-circle me-1"></i> Cancel
-                                        </a>
-                                    {% endif %}
-                                    {% if order.mpesa_receipt_number %}
-                                        <button class="btn btn-outline-success btn-sm rounded-pill px-3" 
-                                                onclick="alert('Receipt: {{ order.mpesa_receipt_number }}')">
-                                            <i class="bi bi-receipt me-1"></i> Receipt
-                                        </button>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="text-center py-5">
-                    <div class="mb-4">
-                        <i class="bi bi-box-seam text-muted display-1"></i>
-                    </div>
-                    <h3 class="text-muted fw-light" style="color: #ffffff !important; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);">No orders yet</h3>
-                    <p class="text-secondary" style="color: rgba(255, 255, 255, 0.9) !important; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);">Start shopping to see your orders here.</p>
-                    <a href="/" class="btn btn-primary rounded-pill px-5 py-3">Start Shopping</a>
-                </div>
-            {% endif %}
-
-        </div>
-    </div>
-
-    <!-- ============================================ -->
-    <!-- FOOTER -->
-    <!-- ============================================ -->
-    <div class="container-fluid bg-white footer mt-5">
-        <div class="container py-5 text-center">
-            <p class="mb-0">&copy; <a class="border-bottom" href="#" style="color: #90bc79 !important;">Delight Care Plus</a>, All Rights Reserved.</p>
-        </div>
-    </div>
-
-    <!-- ============================================ -->
-    <!-- BACK TO TOP BUTTON -->
-    <!-- ============================================ -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-    <!-- ============================================ -->
-    <!-- SCRIPTS -->
-    <!-- ============================================ -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
-    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
-    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
-    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-
-    <script src="{% static 'js/main.js' %}"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Search functionality
-            const searchInput = document.getElementById('orderSearch');
-            const orderItems = document.querySelectorAll('.order-item');
-            
-            searchInput.addEventListener('keyup', function() {
-                const searchTerm = this.value.toLowerCase();
-                orderItems.forEach(item => {
-                    const text = item.textContent.toLowerCase();
-                    if (text.includes(searchTerm)) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const term = this.value.toLowerCase().trim();
+                orderCards.forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    card.style.display = (term === '' || text.includes(term)) ? 'block' : 'none';
                 });
             });
-            
-            // Toggle order details on click
-            const orderItemsClick = document.querySelectorAll('.order-item');
-            orderItemsClick.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    if (e.target.closest('a') || e.target.closest('button')) {
-                        return;
-                    }
-                    this.classList.toggle('active');
-                });
-            });
-            
-            // Auto-close alerts after 5 seconds
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                setTimeout(function() {
-                    alert.style.transition = 'opacity 0.5s';
-                    alert.style.opacity = '0';
-                    setTimeout(function() {
-                        alert.remove();
-                    }, 500);
-                }, 5000);
-            });
+        }
 
-            // WhatsApp button pulse animation
-            const whatsappBtn = document.querySelector('.whatsapp-btn');
-            if (whatsappBtn) {
-                whatsappBtn.addEventListener('mouseenter', function() {
-                    this.style.animation = 'none';
-                });
-                whatsappBtn.addEventListener('mouseleave', function() {
-                    this.style.animation = 'pulse-green 2s infinite';
-                });
-            }
-
-            // Update cart badge
-            function updateCartBadge() {
-                fetch('/cart/count/')
-                    .then(response => response.json())
-                    .then(data => {
-                        const badge = document.getElementById('cartCount');
-                        if (badge && data.count !== undefined) {
-                            badge.textContent = data.count;
-                            badge.style.display = data.count > 0 ? 'flex' : 'none';
-                        }
-                    })
-                    .catch(error => console.error('Error fetching cart count:', error));
-            }
-            updateCartBadge();
+        // ============================================
+        // TOGGLE ORDER DETAILS
+        // ============================================
+        orderCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Don't toggle if clicking a button
+                if (e.target.closest('button') || e.target.closest('a')) {
+                    return;
+                }
+                this.classList.toggle('active');
+            });
         });
-    </script>
 
-</body>
+        // ============================================
+        // CUSTOM CANCEL MODAL
+        // ============================================
+        const cancelModal = document.getElementById('cancelOrderModal');
+        const modalOrderId = document.getElementById('modalOrderId');
+        const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+        const modalKeepBtn = document.getElementById('modalKeepBtn');
 
-</html>
+        let currentCancelUrl = null;
+
+        // Open modal
+        document.querySelectorAll('.js-cancel-order').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const orderId = this.getAttribute('data-order-id');
+                currentCancelUrl = this.getAttribute('data-cancel-url');
+                modalOrderId.textContent = '#' + orderId;
+                cancelModal.classList.add('active');
+            });
+        });
+
+        // Confirm
+        if (modalConfirmBtn) {
+            modalConfirmBtn.addEventListener('click', function() {
+                if (currentCancelUrl) {
+                    modalConfirmBtn.disabled = true;
+                    modalConfirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
+                    window.location.href = currentCancelUrl;
+                }
+            });
+        }
+
+        // Keep
+        if (modalKeepBtn) {
+            modalKeepBtn.addEventListener('click', function() {
+                cancelModal.classList.remove('active');
+                currentCancelUrl = null;
+            });
+        }
+
+        // Overlay click closes
+        if (cancelModal) {
+            cancelModal.addEventListener('click', function(e) {
+                if (e.target === cancelModal) {
+                    cancelModal.classList.remove('active');
+                    currentCancelUrl = null;
+                }
+            });
+        }
+
+        // Escape closes
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && cancelModal && cancelModal.classList.contains('active')) {
+                cancelModal.classList.remove('active');
+                currentCancelUrl = null;
+            }
+        });
+
+        // ============================================
+        // RECEIPT POPUP (basic alert — can be upgraded)
+        // ============================================
+        document.querySelectorAll('.js-view-receipt').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const receipt = this.getAttribute('data-receipt');
+                alert('M-Pesa Receipt: ' + receipt);
+            });
+        });
+    });
+</script>
+{% endblock %}

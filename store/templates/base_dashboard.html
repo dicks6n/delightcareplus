@@ -1,0 +1,1294 @@
+<!-- templates/store/base_dashboard.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Delight Care Plus{% endblock %}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <link href="{% static 'store/lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'store/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'store/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
+
+    <style>
+        /* ============================================ */
+        /* PROFESSIONAL NEUTRAL PALETTE                 */
+        /* ============================================ */
+        :root {
+            --brand-charcoal: #1f2937;
+            --brand-charcoal-dark: #111827;
+            --brand-deep-green: #2d5016;
+            --brand-deep-green-dark: #1f3810;
+            --brand-border: #e5e7eb;
+            --brand-text-primary: #111827;
+            --brand-text-secondary: #374151;
+            --brand-text-muted: #6b7280;
+            --brand-text-light: #9ca3af;
+            --health-green: #90bc79;
+            --health-green-bright: #a8d990;
+            --health-green-deep: #5a8a4a;
+            --health-green-dark: #2d5016;
+        }
+
+        body {
+            font-family: 'Poppins', 'Open Sans', sans-serif;
+            min-height: 100vh;
+            background: #0f0f14;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("{% static 'store/img/IMG_0385.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(circle at top left, rgba(144, 188, 121, 0.28), transparent 45%),
+                radial-gradient(circle at bottom right, rgba(45, 80, 22, 0.35), transparent 45%),
+                rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            z-index: -1;
+        }
+
+        /* ============================================ */
+        /* TRANSPARENT NAVBAR                           */
+        /* ============================================ */
+        .sticky-top {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 9999 !important;
+            background: transparent !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .sticky-top::before { display: none; }
+
+        .sticky-top .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            max-width: 70%;
+        }
+
+        .navbar-brand img {
+            height: 50px;
+            width: auto;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .navbar-brand img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(144, 188, 121, 0.3);
+        }
+
+        /* ============================================ */
+        /* ANIMATED BRAND TEXT — ALWAYS VISIBLE          */
+        /* ============================================ */
+        .animated-brand {
+            background: linear-gradient(
+                90deg,
+                #ffffff 0%,
+                #e8f5e9 25%,
+                #a8d990 50%,
+                #e8f5e9 75%,
+                #ffffff 100%
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 3s linear infinite;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
+            display: inline-block;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+        }
+
+        @keyframes gradient-shift {
+            0%   { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .animated-brand:hover {
+            animation: gradient-shift 1s linear infinite;
+            cursor: pointer;
+        }
+
+        /* Brand text responsive sizing */
+        .brand-text-mobile {
+            display: inline-block !important;
+            font-size: 1.6rem;
+        }
+
+        /* ============================================ */
+        /* NAV LINKS                                    */
+        /* ============================================ */
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 8px 18px !important;
+            transition: all 0.3s ease;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+            position: relative;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #a8d990;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .navbar-nav .nav-link:hover::after,
+        .navbar-nav .nav-link.active::after {
+            width: 60%;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #ffffff !important;
+            background: rgba(144, 188, 121, 0.2);
+        }
+
+        .navbar-nav .nav-link.active {
+            color: #ffffff !important;
+            font-weight: 600;
+            background: rgba(144, 188, 121, 0.25);
+        }
+
+        /* ============================================ */
+        /* CART ICON — Desktop                          */
+        /* ============================================ */
+        .cart-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 18px !important;
+        }
+
+        .cart-icon-img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            filter: brightness(0) invert(1);
+        }
+
+        .cart-link:hover .cart-icon-img {
+            transform: scale(1.15);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -2px;
+            right: 2px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar-nav .text-white-50 {
+            color: rgba(255, 255, 255, 0.7) !important;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-nav .nav-link.text-danger {
+            color: #ff8b8b !important;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-nav .nav-link.text-danger:hover {
+            color: #ffffff !important;
+            background: rgba(220, 53, 69, 0.3);
+        }
+
+        /* ============================================ */
+        /* MOBILE-ONLY CART (next to hamburger)         */
+        /* ============================================ */
+        .mobile-cart-wrapper {
+            display: none;   /* Hidden by default; shown on mobile */
+            align-items: center;
+        }
+
+        .mobile-cart-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.25s ease;
+            text-decoration: none;
+        }
+
+        .mobile-cart-btn:hover {
+            background: rgba(144, 188, 121, 0.25);
+            border-color: rgba(144, 188, 121, 0.5);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(144, 188, 121, 0.4);
+        }
+
+        .mobile-cart-btn i {
+            font-size: 1.15rem;
+            color: #ffffff;
+            filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.4));
+        }
+
+        .mobile-cart-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 5px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(15, 15, 20, 0.9);
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Content above background */
+        .container-fluid:not(.sticky-top),
+        .container,
+        .footer,
+        .hero-header,
+        .card,
+        .bg-light,
+        .bg-white,
+        .whatsapp-float,
+        .back-to-top {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============================================ */
+        /* WHATSAPP FLOATING BUTTON                     */
+        /* ============================================ */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .whatsapp-float .whatsapp-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: #25d366;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 2.2rem;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            animation: pulse-green 2s infinite;
+        }
+
+        .whatsapp-float .whatsapp-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
+        }
+
+        .whatsapp-float .whatsapp-btn .tooltip {
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .whatsapp-float .whatsapp-btn:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+            left: 75px;
+        }
+
+        .whatsapp-float .whatsapp-btn .tooltip::before {
+            content: '';
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 6px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .whatsapp-float .whatsapp-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #25d366;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .whatsapp-float .whatsapp-btn .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(37, 211, 102, 0.3);
+            animation: ripple 1.5s ease-out infinite;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .whatsapp-float .whatsapp-btn .ripple:nth-child(1) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); }
+            50%      { box-shadow: 0 4px 30px rgba(37, 211, 102, 0.7); }
+        }
+
+        @keyframes ripple {
+            0%   { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        /* ============================================ */
+        /* CARDS                                        */
+        /* ============================================ */
+        .card,
+        .bg-light,
+        .bg-white {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(8px);
+        }
+
+        .footer {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+
+        /* ============================================ */
+        /* HERO HEADER                                  */
+        /* ============================================ */
+        .hero-header {
+            background: transparent !important;
+            padding: 140px 20px 40px !important;
+            position: relative;
+            margin-top: 0 !important;
+        }
+
+        .hero-header::before { display: none; }
+
+        .hero-header .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-header h1 {
+            color: #ffffff !important;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600 !important;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            letter-spacing: -0.5px;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-header p {
+            color: rgba(255, 255, 255, 0.95) !important;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-header .breadcrumb {
+            justify-content: center;
+            margin-bottom: 0;
+        }
+
+        .hero-header .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.85) !important;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+            text-decoration: none;
+        }
+
+        .hero-header .breadcrumb-item.active {
+            color: #ffffff !important;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-header .breadcrumb-item a:hover {
+            color: #ffffff !important;
+        }
+
+        .hero-header .breadcrumb-item + .breadcrumb-item::before {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ============================================ */
+        /* BUTTONS                                      */
+        /* ============================================ */
+        .btn-primary,
+        .bg-primary {
+            background: var(--brand-charcoal) !important;
+            border: none !important;
+            color: #ffffff !important;
+            transition: all 0.25s ease;
+        }
+
+        .btn-primary:hover,
+        .bg-primary:hover {
+            background: var(--brand-charcoal-dark) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(17, 24, 39, 0.25);
+            color: #ffffff !important;
+        }
+
+        .text-primary {
+            color: var(--brand-charcoal) !important;
+        }
+
+        .btn-outline-primary {
+            color: var(--brand-charcoal) !important;
+            border: 1px solid var(--brand-charcoal) !important;
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--brand-charcoal) !important;
+            color: #ffffff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(17, 24, 39, 0.2);
+        }
+
+        .btn-success,
+        .bg-success {
+            background: var(--brand-deep-green) !important;
+            border: none !important;
+            color: #ffffff !important;
+        }
+
+        .btn-success:hover {
+            background: var(--brand-deep-green-dark) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(45, 80, 22, 0.3);
+            color: #ffffff !important;
+        }
+
+        .btn-outline-success {
+            color: var(--brand-deep-green) !important;
+            border: 1px solid var(--brand-deep-green) !important;
+        }
+
+        .btn-outline-success:hover {
+            background: var(--brand-deep-green) !important;
+            color: #ffffff !important;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-danger:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-outline-secondary {
+            color: var(--brand-text-secondary) !important;
+            border: 1px solid var(--brand-border) !important;
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--brand-charcoal) !important;
+            color: #ffffff !important;
+            border-color: var(--brand-charcoal) !important;
+            transform: translateY(-1px);
+        }
+
+        .btn-link {
+            color: var(--brand-text-muted) !important;
+            text-decoration: none !important;
+        }
+
+        .btn-link:hover {
+            color: var(--brand-charcoal) !important;
+        }
+
+        .rounded-pill { border-radius: 50px !important; }
+        .shadow-sm { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important; }
+        .border-top { border-top: 1px solid var(--brand-border) !important; }
+        .badge { font-weight: 500; font-size: 0.9rem; }
+
+        .card {
+            transition: all 0.25s ease;
+            border-radius: 14px !important;
+        }
+
+        .fa-star.text-primary {
+            color: #fbbf24 !important;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 998;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--brand-charcoal) !important;
+            color: #ffffff !important;
+            border: none !important;
+            transition: all 0.25s;
+        }
+
+        .back-to-top:hover {
+            background: var(--brand-charcoal-dark) !important;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(17, 24, 39, 0.3);
+            color: #ffffff !important;
+        }
+
+        /* ============================================ */
+        /* TOAST NOTIFICATION                            */
+        /* ============================================ */
+        .add-to-cart-toast {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            z-index: 99999;
+            background: var(--brand-charcoal);
+            color: white;
+            padding: 14px 22px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            animation: slideInRight 0.35s ease;
+            max-width: 320px;
+        }
+
+        .add-to-cart-toast i {
+            color: #a8d990;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(110%); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+
+        @media (max-width: 576px) {
+            .add-to-cart-toast {
+                top: auto;
+                bottom: 90px;
+                right: 12px;
+                left: 12px;
+                max-width: none;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* ============================================ */
+        /* MOBILE NAVBAR — Brand visible, Cart icon,     */
+        /* CHARCOAL dropdown (NOT green)                */
+        /* ============================================ */
+        @media (max-width: 991px) {
+
+            /* Hide desktop cart link inside collapse */
+            .navbar-nav .cart-link {
+                display: none !important;
+            }
+
+            /* Show mobile cart next to hamburger */
+            .mobile-cart-wrapper {
+                display: inline-flex !important;
+            }
+
+            /* ⭐ FORCE CHARCOAL DROPDOWN */
+            .navbar-collapse,
+            #navbarCollapse,
+            #navbarCollapse.collapse,
+            #navbarCollapse.collapse.show,
+            #navbarCollapse.collapsing,
+            .container-fluid.sticky-top .navbar .navbar-collapse {
+                background: #1f2937 !important;
+                background-color: #1f2937 !important;
+                background-image: none !important;
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-radius: 16px;
+                padding: 12px;
+                margin-top: 12px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                border: 1px solid rgba(144, 188, 121, 0.15);
+            }
+
+            /* Nav links on charcoal */
+            .navbar-nav .nav-link {
+                text-align: center;
+                padding: 12px 16px !important;
+                color: #ffffff !important;
+                border-radius: 10px;
+                margin-bottom: 4px;
+                font-weight: 500;
+                text-shadow: none;
+            }
+
+            .navbar-nav .nav-link:hover {
+                background: rgba(144, 188, 121, 0.15);
+                color: #ffffff !important;
+            }
+
+            .navbar-nav .nav-link.active {
+                background: rgba(144, 188, 121, 0.25);
+                color: #ffffff !important;
+                font-weight: 600;
+            }
+
+            .navbar-nav .nav-link::after {
+                display: none !important;
+            }
+
+            .navbar-nav .text-white-50 {
+                color: rgba(255, 255, 255, 0.55) !important;
+                text-align: center;
+                text-shadow: none;
+            }
+
+            .navbar-nav .nav-link.text-danger {
+                color: #ff8b8b !important;
+                text-shadow: none;
+            }
+
+            .navbar-nav .nav-link.text-danger:hover {
+                color: #ffffff !important;
+                background: rgba(220, 53, 69, 0.3);
+            }
+
+            /* ⭐ BRAND TEXT — Visible & sized for mobile */
+            .brand-text-mobile {
+                display: inline-block !important;
+                font-size: 1.05rem !important;
+                letter-spacing: -0.4px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 180px;
+            }
+
+            .navbar-brand img {
+                height: 42px !important;
+            }
+
+            .navbar-brand {
+                max-width: 70%;
+            }
+
+            /* Hamburger */
+            .navbar-toggler {
+                border-color: rgba(255, 255, 255, 0.4) !important;
+                padding: 6px 10px;
+                border-radius: 10px;
+            }
+
+            .navbar-toggler:focus {
+                box-shadow: 0 0 0 3px rgba(144, 188, 121, 0.3);
+            }
+
+            .navbar-toggler-icon {
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+            }
+
+            .whatsapp-float {
+                bottom: 20px;
+                left: 20px;
+            }
+            .whatsapp-float .whatsapp-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.8rem;
+            }
+
+            .hero-header {
+                padding: 120px 16px 30px !important;
+            }
+
+            .hero-header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-header {
+                padding: 100px 14px 20px !important;
+            }
+
+            .hero-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero-header p {
+                font-size: 0.9rem;
+            }
+
+            /* Smaller brand text on tiny screens */
+            .brand-text-mobile {
+                font-size: 0.95rem !important;
+                max-width: 150px;
+            }
+
+            .navbar-brand img {
+                height: 38px !important;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .brand-text-mobile {
+                font-size: 0.85rem !important;
+                max-width: 130px;
+            }
+
+            .navbar-brand img {
+                height: 35px !important;
+            }
+
+            .mobile-cart-btn {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cart-icon-img { width: 20px; height: 20px; }
+        }
+
+
+
+
+        /* ============================================ */
+/* NUCLEAR FIX — Force charcoal dropdown        */
+/* ============================================ */
+@media (max-width: 991px) {
+    /* Target the dropdown with ALL possible selectors */
+    .sticky-top .navbar .navbar-collapse,
+    .sticky-top nav .navbar-collapse,
+    .container-fluid.sticky-top .navbar-collapse,
+    .navbar .navbar-collapse,
+    .navbar-collapse,
+    #navbarCollapse,
+    div#navbarCollapse.collapse,
+    div#navbarCollapse.collapse.show,
+    div#navbarCollapse.collapsing,
+    .navbar-collapse.collapse,
+    .navbar-collapse.collapse.show,
+    .navbar-collapse.collapsing {
+        background: #1f2937 !important;
+        background-color: #1f2937 !important;
+        background-image: none !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-radius: 16px !important;
+        padding: 12px !important;
+        margin-top: 12px !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+        border: 1px solid rgba(144, 188, 121, 0.15) !important;
+    }
+
+    /* Also force any child elements */
+    .navbar-collapse > .navbar-nav,
+    .navbar-collapse .navbar-nav {
+        background: transparent !important;
+        background-image: none !important;
+    }
+
+    /* Individual nav links */
+    .navbar-collapse .nav-link {
+        background: transparent !important;
+        color: #ffffff !important;
+    }
+
+    .navbar-collapse .nav-link:hover,
+    .navbar-collapse .nav-link.active {
+        background: rgba(144, 188, 121, 0.15) !important;
+        color: #ffffff !important;
+    }
+}
+
+        /* ============================================ */
+        /* PAGE-SPECIFIC STYLES                         */
+        /* ============================================ */
+        {% block extra_styles %}{% endblock %}
+
+
+    </style>
+</head>
+
+<body>
+
+    <!-- ============================================ -->
+    <!-- NAVBAR                                       -->
+    <!-- ============================================ -->
+    <div class="container-fluid sticky-top">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light p-0">
+
+                <!-- Brand (logo + always-visible brand name) -->
+                <a href="/" class="navbar-brand d-flex align-items-center">
+                    <img src="{% static 'store/img/DELIGHT.gif' %}"
+                         alt="Delight Care Plus"
+                         style="height: 50px; width: auto; border-radius: 8px;">
+                    <span class="ms-2 animated-brand brand-text-mobile">
+                        Delight Care Plus
+                    </span>
+                </a>
+
+                <!-- Mobile Cart + Hamburger (only on mobile) -->
+                <div class="ms-auto d-flex align-items-center gap-2">
+
+                    <!-- Mobile Cart Icon -->
+                    <div class="mobile-cart-wrapper">
+                        <a href="/cart/" class="mobile-cart-btn" aria-label="View Cart">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span class="mobile-cart-badge" id="mobileCartCount">0</span>
+                        </a>
+                    </div>
+
+                    <!-- Hamburger Toggler -->
+                    <button type="button" class="navbar-toggler me-0"
+                            data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                            aria-controls="navbarCollapse" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+
+                <!-- Nav Links -->
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto">
+                        <a href="/" class="nav-item nav-link {% block nav_home %}{% endblock %}">Home</a>
+                        <a href="{% url 'my_orders' %}" class="nav-item nav-link {% block nav_orders %}{% endblock %}">My Orders</a>
+
+                        <!-- Desktop Cart Link (hidden on mobile) -->
+                        <a href="/cart/" class="nav-item nav-link cart-link {% block nav_cart %}{% endblock %}">
+                            <img src="{% static 'store/icons/shopping-cart.png' %}"
+                                 alt="Cart"
+                                 class="cart-icon-img">
+                            <span class="cart-badge" id="cartCount">0</span>
+                        </a>
+
+                        <a href="{% url 'blog_list' %}" class="nav-item nav-link {% block nav_blog %}{% endblock %}">Blog</a>
+
+                        {% if user.is_staff %}
+                            <a href="{% url 'admin_product_list' %}" class="nav-item nav-link">
+                                <i class="fas fa-cog me-1"></i>Admin
+                            </a>
+                        {% endif %}
+
+                        {% if user.is_authenticated %}
+                            <span class="nav-item nav-link text-white-50">Welcome, {{ user.username }}</span>
+                            <a href="{% url 'logout' %}" class="nav-item nav-link text-danger">Logout</a>
+                        {% else %}
+                            <a href="{% url 'login' %}"  class="nav-item nav-link {% block nav_login %}{% endblock %}">Login</a>
+                            <a href="{% url 'signup' %}" class="nav-item nav-link {% block nav_signup %}{% endblock %}">Signup</a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- WHATSAPP FLOATING BUTTON                     -->
+    <!-- ============================================ -->
+    <div class="whatsapp-float">
+        <a href="https://wa.me/254795180079?text=Hello%20Delight%20Care%2C%20I%20need%20help"
+           class="whatsapp-btn"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="Contact us on WhatsApp">
+            <span class="ripple"></span>
+            <span class="ripple"></span>
+            <i class="fab fa-whatsapp"></i>
+            <span class="tooltip">Chat with us on WhatsApp</span>
+        </a>
+        <span class="whatsapp-label">Chat 💬</span>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- MESSAGES                                     -->
+    <!-- ============================================ -->
+    {% if messages %}
+    <div class="container mb-4" style="margin-top: 20px;">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <i class="fas fa-info-circle me-2"></i>{{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ============================================ -->
+    <!-- MAIN CONTENT                                 -->
+    <!-- ============================================ -->
+    {% block content %}{% endblock %}
+
+    <!-- ============================================ -->
+    <!-- FOOTER                                       -->
+    <!-- ============================================ -->
+    <div class="container-fluid bg-white footer mt-5">
+        <div class="container py-5 text-center">
+            <p class="mb-0" style="color: #6b7280;">
+                &copy; <a class="border-bottom" href="#" style="color: #1f2937 !important; text-decoration: none; font-weight: 600;">Delight Care Plus</a>, All Rights Reserved.
+            </p>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- BACK TO TOP BUTTON                           -->
+    <!-- ============================================ -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- ============================================ -->
+    <!-- SCRIPTS                                      -->
+    <!-- ============================================ -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <!-- ============================================ -->
+    <!-- COMMON SCRIPTS                               -->
+    <!-- ============================================ -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // ============================================
+        // CSRF TOKEN
+        // ============================================
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const CSRF_TOKEN = getCookie('csrftoken');
+
+        // ============================================
+        // CART BADGE (both desktop + mobile)
+        // ============================================
+        function updateCartBadge(count) {
+            // Desktop badge
+            const desktopBadge = document.getElementById('cartCount');
+            if (desktopBadge) {
+                desktopBadge.textContent = count;
+                desktopBadge.style.display = count > 0 ? 'flex' : 'none';
+                desktopBadge.style.transform = 'scale(1.4)';
+                setTimeout(() => {
+                    desktopBadge.style.transform = 'scale(1)';
+                    desktopBadge.style.transition = 'transform 0.3s ease';
+                }, 150);
+            }
+
+            // Mobile badge
+            const mobileBadge = document.getElementById('mobileCartCount');
+            if (mobileBadge) {
+                mobileBadge.textContent = count;
+                mobileBadge.style.display = count > 0 ? 'flex' : 'none';
+                mobileBadge.style.transform = 'scale(1.4)';
+                setTimeout(() => {
+                    mobileBadge.style.transform = 'scale(1)';
+                    mobileBadge.style.transition = 'transform 0.3s ease';
+                }, 150);
+            }
+        }
+
+        // Initial cart badge fetch
+        fetch('/cart/count/')
+            .then(r => r.json())
+            .then(data => updateCartBadge(data.count || 0))
+            .catch(err => console.error('Cart count error:', err));
+
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        function showToast(message, type = 'success') {
+            document.querySelectorAll('.add-to-cart-toast').forEach(t => t.remove());
+
+            const toast = document.createElement('div');
+            toast.className = 'add-to-cart-toast';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+            toast.style.background = type === 'success' ? '#1f2937' : '#dc3545';
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.4s, transform 0.4s';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 400);
+            }, 2500);
+        }
+
+        // ============================================
+        // AJAX FORM HANDLING
+        // ============================================
+        document.addEventListener('submit', function(e) {
+            const form = e.target;
+
+            if (form.classList.contains('js-add-to-cart-form')) {
+                e.preventDefault();
+                const button = form.querySelector('button');
+                const originalHTML = button.innerHTML;
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': CSRF_TOKEN,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: new FormData(form),
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        updateCartBadge(data.cart_count);
+                        showToast(data.message || 'Added to cart!');
+                    } else {
+                        showToast(data.error || 'Failed to add to cart', 'error');
+                    }
+                })
+                .catch(err => {
+                    console.error('Add to cart error:', err);
+                    showToast('Something went wrong', 'error');
+                })
+                .finally(() => {
+                    button.disabled = false;
+                    button.innerHTML = originalHTML;
+                });
+                return;
+            }
+
+            if (form.classList.contains('js-buy-now-form')) {
+                e.preventDefault();
+                const button = form.querySelector('button');
+                const originalHTML = button.innerHTML;
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': CSRF_TOKEN,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: new FormData(form),
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(data.message || 'Redirecting...');
+                        setTimeout(() => {
+                            window.location.href = data.redirect_url;
+                        }, 500);
+                    } else {
+                        showToast(data.error || 'Failed', 'error');
+                        button.disabled = false;
+                        button.innerHTML = originalHTML;
+                    }
+                })
+                .catch(err => {
+                    console.error('Buy now error:', err);
+                    showToast('Something went wrong', 'error');
+                    button.disabled = false;
+                    button.innerHTML = originalHTML;
+                });
+                return;
+            }
+        });
+
+        // ============================================
+        // AUTO-CLOSE ALERTS
+        // ============================================
+        document.querySelectorAll('.alert').forEach(function(alert) {
+            setTimeout(function() {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        });
+
+        // ============================================
+        // WHATSAPP BUTTON ANIMATION
+        // ============================================
+        const whatsappBtn = document.querySelector('.whatsapp-btn');
+        if (whatsappBtn) {
+            whatsappBtn.addEventListener('mouseenter', function() {
+                this.style.animation = 'none';
+            });
+            whatsappBtn.addEventListener('mouseleave', function() {
+                this.style.animation = 'pulse-green 2s infinite';
+            });
+        }
+
+        // ============================================
+        // CART ICON HOVER ANIMATION
+        // ============================================
+        const cartLink = document.querySelector('.cart-link');
+        if (cartLink) {
+            cartLink.addEventListener('mouseenter', function() {
+                const icon = this.querySelector('.cart-icon-img');
+                if (icon) icon.style.transform = 'scale(1.2)';
+            });
+            cartLink.addEventListener('mouseleave', function() {
+                const icon = this.querySelector('.cart-icon-img');
+                if (icon) icon.style.transform = 'scale(1)';
+            });
+        }
+
+        // ============================================
+        // AUTO-CLOSE MOBILE MENU ON LINK CLICK
+        // ============================================
+        const navCollapse = document.getElementById('navbarCollapse');
+        if (navCollapse) {
+            document.querySelectorAll('#navbarCollapse .nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 992) {
+                        const bsCollapse = bootstrap.Collapse.getInstance(navCollapse);
+                        if (bsCollapse) bsCollapse.hide();
+                    }
+                });
+            });
+        }
+    });
+    </script>
+
+    <!-- ============================================ -->
+    <!-- PAGE-SPECIFIC SCRIPTS                        -->
+    <!-- ============================================ -->
+    {% block extra_scripts %}{% endblock %}
+
+</body>
+
+</html>
