@@ -153,14 +153,14 @@ FACEBOOK_URL = env("FACEBOOK_URL", "")
 # ---------------------------------------------------------------------------
 # Payments
 # ---------------------------------------------------------------------------
-MPESA_ENVIRONMENT = env("MPESA_ENVIRONMENT", "sandbox")  # sandbox | production
+MPESA_ENVIRONMENT = env("MPESA_ENVIRONMENT", "production")  # production | sandbox
 MPESA_BASE_URL = env(
     "MPESA_BASE_URL",
     "https://api.safaricom.co.ke" if MPESA_ENVIRONMENT == "production" else "https://sandbox.safaricom.co.ke",
 )
 MPESA_CONSUMER_KEY = env("MPESA_CONSUMER_KEY", "")
 MPESA_CONSUMER_SECRET = env("MPESA_CONSUMER_SECRET", "")
-MPESA_SHORTCODE = env("MPESA_SHORTCODE", "174379")
+MPESA_SHORTCODE = env("MPESA_SHORTCODE", "4701129")  # Delight Care Plus PayBill
 MPESA_PASSKEY = env("MPESA_PASSKEY", "")
 MPESA_PARTY_B = env("MPESA_PARTY_B", MPESA_SHORTCODE)
 MPESA_TRANSACTION_TYPE = env("MPESA_TRANSACTION_TYPE", "CustomerPayBillOnline")
