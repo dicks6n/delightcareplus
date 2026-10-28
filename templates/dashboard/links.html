@@ -1,0 +1,31 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}Tracked links{% endblock %}
+{% block content %}
+<div class="d-head">
+    <div><h1><i class="fa-solid fa-link text-green me-2"></i>Tracked links</h1>
+        <p>Short links for your bio, posts, creators and WhatsApp broadcasts. Each one counts clicks and the sales it brings.</p></div>
+    <a href="{% url 'dashboard:link_add' %}" class="btn-d primary"><i class="fa-solid fa-plus"></i> New link</a>
+</div>
+<div class="card-d"><div class="bd flush t-wrap"><table class="t">
+    <thead><tr><th>Link</th><th>Opens</th><th>Posted on</th><th>Clicks</th><th>Orders</th><th>Sales</th><th>Conversion</th><th></th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+    <tr>
+        <td><strong>{{ base }}/go/{{ r.link.slug }}</strong>{% if r.link.note %}<br><small class="text-3">{{ r.link.note }}</small>{% endif %}</td>
+        <td><small>{{ r.link.destination }}</small></td>
+        <td>{{ r.link.source }}{% if r.link.medium %} · {{ r.link.medium }}{% endif %}</td>
+        <td>{{ r.link.clicks|intcomma }}</td><td>{{ r.orders }}</td><td>KES {{ r.revenue|floatformat:0|intcomma }}</td>
+        <td>{% if r.link.clicks %}{{ r.rate|floatformat:1 }}%{% else %}—{% endif %}</td>
+        <td class="text-nowrap"><button class="btn-d sm" type="button" data-copy="{{ base }}/go/{{ r.link.slug }}"><i class="fa-regular fa-copy"></i></button>
+            <a class="btn-d sm" href="{% url 'dashboard:link_edit' r.link.pk %}">Edit</a></td>
+    </tr>
+    {% empty %}<tr><td colspan="8"><div class="empty-d"><i class="fa-solid fa-link"></i>No links yet. Try one for your Instagram bio: name <em>ig-bio</em>, posted on <em>instagram</em>. <a href="{% url 'dashboard:link_add' %}?source=instagram">Make it</a>.</div></td></tr>{% endfor %}
+    </tbody></table></div></div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('click', e => { const b = e.target.closest('[data-copy]'); if (!b) return;
+    navigator.clipboard.writeText(b.dataset.copy).then(() => { const h = b.innerHTML; b.innerHTML = '<i class="fa-solid fa-check"></i>'; setTimeout(() => b.innerHTML = h, 1500); }); });
+</script>
+{% endblock %}

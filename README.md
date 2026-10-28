@@ -147,6 +147,81 @@ python manage.py collectstatic
 
 ---
 
+## 7. Marketing & advertising
+
+Everything is in **Seller Center → Marketing**.
+
+### Connect your ad accounts (Ads & tracking)
+
+Paste the IDs, then save:
+
+| Platform | Where to find the ID |
+|---|---|
+| Meta Pixel (Facebook & Instagram ads) | Meta Events Manager → Data sources → your pixel → the 15–16 digit ID |
+| TikTok Pixel | TikTok Ads Manager → Tools → Events → Web events → the pixel code (e.g. `CABC123…`) |
+| Google Analytics 4 | Google Analytics → Admin → Data streams → Measurement ID (`G-…`) |
+| Google Search Console | Add your site → *HTML tag* method → copy only the `content="…"` value |
+| Meta domain verification | Business settings → Brand safety → Domains → *Meta-tag* → copy only the `content` value |
+
+The shop then reports these events to every connected platform: page view, product view, add to bag, checkout started, purchase (with the order total), search, sign-up and newsletter sign-up. Ads can then optimise for real purchases.
+
+Visitors see a short cookie notice. The tracking only loads if they accept, as Kenya's Data Protection Act expects.
+
+### Product catalogs (Instagram & Facebook Shop, TikTok, Google Shopping)
+
+These links always show your current products, prices, photos and stock:
+
+- `https://YOUR-DOMAIN/feeds/meta.csv`: Meta Commerce Manager (Instagram Shop, Facebook Shop, catalog ads, WhatsApp catalog)
+- `https://YOUR-DOMAIN/feeds/tiktok.csv`: TikTok catalog
+- `https://YOUR-DOMAIN/feeds/google.xml`: Google Merchant Center (Shopping ads and free listings)
+
+Add each one as a **scheduled feed** (daily) on the platform. The Ads & tracking page has the exact links and steps.
+
+Also submit `https://YOUR-DOMAIN/sitemap.xml` in Google Search Console.
+
+### See which ads and posts bring sales
+
+- **Tracked links:** short links like `delightcareplus.com/go/ig-bio` for your bio, a TikTok creator, a WhatsApp broadcast or a flyer. Each shows clicks, orders and sales.
+- **Automatic tagging:** links from Ad Studio captions and email campaigns are tagged automatically. Visits from Facebook/Instagram, TikTok or Google ads, and from Google search, are recognised too.
+- **Where results show:** every order records its source. See it in **Reports → Where sales came from** and on the Ads & tracking page.
+
+### Ad Studio
+
+Choose a product, size and style, then download a ready-to-post image.
+
+- **Sizes:** square post 1080×1080, Story / WhatsApp Status / TikTok 1080×1920, or wide ad 1200×628.
+- **What's on it:** your logo, price, offer badge, coupon and contact line.
+- **Captions:** it also writes captions for Instagram, TikTok, Facebook and WhatsApp, each with its own tracked link.
+- **All at once:** *All 3 sizes + captions* downloads everything as one zip.
+
+Keep claims to what the label says ("supports", "helps maintain"). Kenya's Pharmacy and Poisons Board does not allow ads that say a supplement cures or treats disease.
+
+### Refer-a-friend
+
+Every customer gets a personal invite link on their account page, with a *Share on WhatsApp* button.
+
+- **The friend:** sees a welcome note and gets the discount (default 10%) on their first order, applied to their bag automatically.
+- **The customer:** earns Glow Points (default 200) once that order is delivered.
+- **Abuse checks:** codes can't be used on your own orders or by returning customers.
+
+Change the amounts, or switch it off, on the Ads & tracking page.
+
+### Email campaigns and bag reminders
+
+- **Email campaigns:** write a message, pick up to 6 products and a coupon, send yourself a test, then send it.
+  - It goes only to newsletter subscribers and customers who ticked "send me offers".
+  - Every email has an unsubscribe link.
+  - Sales from each email show on the campaigns page.
+- **Bag reminders:** members who opted in and left items in their bag get one friendly reminder. Their bag is also saved to their account, so it follows them to other devices.
+
+Add this daily task, next to the refill reminders (on PythonAnywhere: **Tasks** tab):
+
+```bash
+cd ~/delightcareplus && workon <your-virtualenv> && python manage.py send_refill_reminders && python manage.py send_bag_reminders
+```
+
+Emails need the `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` settings in `.env`; for Gmail, use an App Password.
+
 ## Project layout
 
 ```
@@ -159,6 +234,7 @@ accounts/    login/signup, profile, wishlist, Glow Points
 chat/        live chat + staff inbox
 blog/        journal posts
 dashboard/   Seller Center (/manage/)
+marketing/   ad tracking, product feeds, tracked links, Ad Studio, refer-a-friend, email campaigns, bag reminders
 templates/   all pages and emails
 static/      css, js, logo
 ```

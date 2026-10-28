@@ -142,6 +142,11 @@
         const html = btn ? btn.innerHTML : "";
         if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; }
         post(form.action, fd).then(d => {
+            if (d.ok && d.redirect) {
+                document.dispatchEvent(new CustomEvent("dcp:cart", { detail: d }));
+                setTimeout(() => { window.location.href = d.redirect; }, 150);  // let ad tags send AddToCart
+                return;
+            }
             if (d.redirect) { window.location.href = d.redirect; return; }
             if (!d.ok) { toast(d.message || "Couldn't add that item", "err"); return; }
             setBadge("cart", d.cart_count);

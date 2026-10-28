@@ -11,7 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="{% static 'css/site.css' %}?v=3" rel="stylesheet">
-    <link href="{% static 'css/dashboard.css' %}?v=2" rel="stylesheet">
+    <link href="{% static 'css/dashboard.css' %}?v=4" rel="stylesheet">
     {% block head %}{% endblock %}
 </head>
 <body class="dash">
@@ -47,6 +47,10 @@
             <a href="{% url 'dashboard:newsletter' %}" class="{% if u == 'newsletter' %}on{% endif %}"><i class="fa-solid fa-paper-plane"></i> Newsletter</a>
 
             <h6>Marketing</h6>
+            <a href="{% url 'dashboard:marketing' %}" class="{% if u == 'marketing' %}on{% endif %}"><i class="fa-solid fa-bullhorn"></i> Ads &amp; tracking</a>
+            <a href="{% url 'dashboard:ad_studio' %}" class="{% if u == 'ad_studio' %}on{% endif %}"><i class="fa-solid fa-wand-magic-sparkles"></i> Ad Studio</a>
+            <a href="{% url 'dashboard:campaigns' %}" class="{% if u == 'campaigns' or u == 'campaign' or u == 'campaign_add' %}on{% endif %}"><i class="fa-solid fa-envelope"></i> Email campaigns</a>
+            <a href="{% url 'dashboard:links' %}" class="{% if u == 'links' or u == 'link_add' or u == 'link_edit' %}on{% endif %}"><i class="fa-solid fa-link"></i> Tracked links</a>
             <a href="{% url 'dashboard:crud' 'coupons' %}" class="{% if kind == 'coupons' %}on{% endif %}"><i class="fa-solid fa-ticket"></i> Coupons</a>
             <a href="{% url 'dashboard:crud' 'banners' %}" class="{% if kind == 'banners' %}on{% endif %}"><i class="fa-solid fa-images"></i> Home banners</a>
             <a href="{% url 'dashboard:crud' 'posts' %}" class="{% if kind == 'posts' %}on{% endif %}"><i class="fa-solid fa-pen-nib"></i> Blog posts</a>

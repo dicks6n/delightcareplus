@@ -1,0 +1,92 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Ad Studio{% endblock %}
+{% block content %}
+<div class="d-head">
+    <div><h1><i class="fa-solid fa-wand-magic-sparkles text-green me-2"></i>Ad Studio</h1>
+        <p>Pick a product, choose a size and style — download a ready-to-post ad with a caption for each platform.</p></div>
+</div>
+{% if not product %}
+<div class="card-d"><div class="bd"><div class="empty-d"><i class="fa-solid fa-box-open"></i>Add a product first, then come back to make ads for it.</div></div></div>
+{% else %}
+<div class="row g-3">
+    <div class="col-xl-4">
+        <form method="get" class="card-d" id="adForm">
+            <div class="hd"><h3>Your ad</h3></div>
+            <div class="bd">
+                <div class="mb-3"><label class="lbl">Product</label>
+                    <select class="inp" name="product" onchange="this.form.querySelectorAll('[data-reset]').forEach(i => i.disabled = true); this.form.submit()">
+                        {% for x in products %}<option value="{{ x.pk }}" {% if x.pk == product.pk %}selected{% endif %}>{{ x.name }}{% if x.brand %} · {{ x.brand.name }}{% endif %}</option>{% endfor %}
+                    </select></div>
+                <div class="mb-3"><label class="lbl">Size</label>
+                    <div class="d-flex gap-2 flex-wrap">{% for key, f in formats.items %}
+                        <label class="chip-d {% if p.fmt == key %}on{% endif %}"><input type="radio" name="fmt" value="{{ key }}" {% if p.fmt == key %}checked{% endif %} hidden onchange="this.form.submit()">{{ f.0 }}<small>{{ f.1 }}×{{ f.2 }}</small></label>
+                    {% endfor %}</div></div>
+                <div class="mb-3"><label class="lbl">Style</label>
+                    <div class="d-flex gap-2 flex-wrap">{% for key, label in styles.items %}
+                        <label class="chip-d {% if p.style == key %}on{% endif %}"><input type="radio" name="style" value="{{ key }}" {% if p.style == key %}checked{% endif %} hidden onchange="this.form.submit()">{{ label }}</label>
+                    {% endfor %}</div></div>
+                <div class="mb-3"><label class="lbl">Headline</label><input class="inp" name="headline" value="{{ p.headline }}" maxlength="120" data-reset></div>
+                <div class="mb-3"><label class="lbl">Line under it</label><textarea class="inp" name="sub" rows="2" maxlength="200" data-reset>{{ p.sub }}</textarea></div>
+                <div class="row">
+                    <div class="col-6 mb-3"><label class="lbl">Badge</label><input class="inp" name="badge" value="{{ p.badge }}" maxlength="14" placeholder="-20%, New…" data-reset></div>
+                    <div class="col-6 mb-3"><label class="lbl">Big offer <small class="text-3">(Big offer style)</small></label><input class="inp" name="big_offer" value="{{ p.big_offer }}" maxlength="20" placeholder="20% OFF" data-reset></div>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-3"><label class="lbl">Coupon code</label>
+                        <input class="inp" name="coupon" value="{{ p.coupon }}" list="couponList" maxlength="20" placeholder="optional">
+                        <datalist id="couponList">{% for c in coupons %}<option value="{{ c.code }}">{{ c.description }}</option>{% endfor %}</datalist></div>
+                    <div class="col-6 mb-3"><label class="lbl">Button</label><input class="inp" name="cta" value="{{ p.cta }}" maxlength="24"></div>
+                </div>
+                <div class="mb-3"><label class="lbl">Contact line</label><input class="inp" name="footer" value="{{ p.footer }}" maxlength="70"></div>
+                <div class="mb-3"><label class="d-flex align-items-center gap-2" style="cursor:pointer">
+                    <input type="hidden" name="show_price" value="0"><input type="checkbox" name="show_price" value="1" {% if p.show_price %}checked{% endif %}> Show the price</label></div>
+                <button class="btn-d primary w-100 justify-content-center" type="submit"><i class="fa-solid fa-rotate"></i> Update preview</button>
+                <small class="help mt-2 d-block"><i class="fa-solid fa-scale-balanced"></i> Keep health claims to what the label says — "supports", "helps maintain" — never "cures" or "treats". Kenya's Pharmacy and Poisons Board checks supplement ads.</small>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-xl-8">
+        <div class="card-d mb-3">
+            <div class="hd"><h3>Preview</h3>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a class="btn-d sm primary" href="{% url 'dashboard:ad_image' product.pk %}?{{ query }}&download=1"><i class="fa-solid fa-download"></i> Download this</a>
+                    <a class="btn-d sm" href="{% url 'dashboard:ad_pack' product.pk %}?{{ query }}"><i class="fa-solid fa-file-zipper"></i> All 3 sizes + captions</a>
+                </div></div>
+            <div class="bd text-center" style="background:repeating-conic-gradient(rgba(255,255,255,.03) 0 25%, transparent 0 50%) 0 0/24px 24px;border-radius:0 0 16px 16px">
+                <img src="{% url 'dashboard:ad_image' product.pk %}?{{ query }}&preview=1" alt="Ad preview" class="ad-preview ad-{{ p.fmt }}" id="adPreview">
+            </div>
+        </div>
+
+        <div class="card-d">
+            <div class="hd"><h3><i class="fa-solid fa-pen-nib text-green me-1"></i> Captions</h3><small class="text-3">Each has its own tracked link — sales show in Ads &amp; tracking</small></div>
+            <div class="bd">
+                <div class="row g-3">
+                {% for key, c in captions.items %}
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="lbl mb-0"><i class="{{ c.icon }} me-1"></i> {{ c.label }}</label>
+                            <button class="btn-d sm" type="button" data-copy-target="cap-{{ key }}"><i class="fa-regular fa-copy"></i> Copy</button>
+                        </div>
+                        <textarea class="inp" id="cap-{{ key }}" rows="9" readonly style="font-size:.8rem">{{ c.text }}</textarea>
+                        <small class="help">Link for {{ c.label }}: <span class="text-break">{{ c.link }}</span></small>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('click', e => {
+    const b = e.target.closest('[data-copy-target]');
+    if (!b) return;
+    const el = document.getElementById(b.dataset.copyTarget);
+    navigator.clipboard.writeText(el.value).then(() => { const h = b.innerHTML; b.innerHTML = '<i class="fa-solid fa-check"></i> Copied'; setTimeout(() => b.innerHTML = h, 1500); });
+});
+</script>
+{% endblock %}

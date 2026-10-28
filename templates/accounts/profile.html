@@ -12,6 +12,21 @@
                     <h2 class="mb-0">{{ points }} <small class="text-3 fs-6">= KES {{ points }} off</small></h2>
                     <small class="text-3">Earn 1 point per KES 100 on delivered orders. Use them at checkout (up to 20% of your bag).</small></div>
             </section>
+            {% if referral %}
+            <section class="glass pad">
+                <div class="d-flex align-items-center gap-3 flex-wrap mb-2">
+                    <i class="fa-solid fa-gift fs-2 text-green"></i>
+                    <div class="flex-grow-1"><h5 class="mb-0">Invite friends, earn {{ referral.points }} points each</h5>
+                        <small class="text-3">Friends get {{ referral.percent }}% off their first order. When it's delivered, you get {{ referral.points }} Glow Points (KES {{ referral.points }}).</small></div>
+                </div>
+                <div class="d-flex gap-2 flex-wrap mt-2">
+                    <input class="input flex-grow-1" readonly value="{{ referral.link }}" onclick="this.select()" aria-label="Your invite link" style="min-width:220px">
+                    <button type="button" class="btn-ghost" data-copy="{{ referral.link }}"><i class="fa-regular fa-copy"></i> Copy</button>
+                    <a class="btn-glow" href="{{ referral.whatsapp }}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Share on WhatsApp</a>
+                </div>
+                <small class="text-3 d-block mt-2">Your code: <strong>{{ referral.code }}</strong> · {{ referral.friends }} friend{{ referral.friends|pluralize }} ordered{% if referral.rewarded %} · {{ referral.rewarded }} reward{{ referral.rewarded|pluralize }} earned{% endif %}</small>
+            </section>
+            {% endif %}
             {% if history %}
             <section class="glass pad">
                 <h5>Points history</h5>
@@ -45,4 +60,11 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('click', e => { const b = e.target.closest('[data-copy]'); if (!b) return;
+    navigator.clipboard.writeText(b.dataset.copy).then(() => { const h = b.innerHTML; b.innerHTML = '<i class="fa-solid fa-check"></i> Copied'; setTimeout(() => b.innerHTML = h, 1500); }); });
+</script>
 {% endblock %}

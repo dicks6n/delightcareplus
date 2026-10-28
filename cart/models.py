@@ -21,6 +21,9 @@ class Coupon(models.Model):
     valid_from = models.DateTimeField(null=True, blank=True)
     valid_until = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    first_order_only = models.BooleanField(default=False, help_text="Only for customers who haven't ordered before")
+    referrer = models.ForeignKey("auth.User", null=True, blank=True, on_delete=models.CASCADE, related_name="referral_coupons",
+                                 help_text="Set for refer-a-friend codes: this customer earns points when the code is used")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -30,10 +33,15 @@ class Coupon(models.Model):
     def __str__(self):
         return self.code
 
-    def check_valid(self, subtotal):
+    def check_valid(self, subtotal, user=None):
         now = timezone.now()
         if not self.is_active:
             return False, "This coupon is no longer active."
+        if user is not None and user.is_authenticated:
+            if self.referrer_id == user.id:
+                return False, "That's your own invite code — share it with friends instead."
+            if self.first_order_only and user.orders.exclude(status__in=["CANCELLED", "FAILED"]).exists():
+                return False, "This code is for first orders only."
         if self.valid_from and now < self.valid_from:
             return False, "This coupon isn't active yet."
         if self.valid_until and now > self.valid_until:

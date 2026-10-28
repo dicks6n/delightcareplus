@@ -1,5 +1,6 @@
 from django.urls import path
 
+from . import marketing_views as mk
 from . import views
 
 app_name = "dashboard"
@@ -34,6 +35,20 @@ urlpatterns = [
 
     path("reviews/", views.review_list, name="reviews"),
     path("reviews/<int:pk>/", views.review_action, name="review_action"),
+
+    path("marketing/", mk.marketing, name="marketing"),
+    path("marketing/ad-studio/", mk.ad_studio, name="ad_studio"),
+    path("marketing/ad-studio/<int:pk>/image.jpg", mk.ad_image, name="ad_image"),
+    path("marketing/ad-studio/<int:pk>/pack.zip", mk.ad_pack, name="ad_pack"),
+    path("marketing/links/", mk.links, name="links"),
+    path("marketing/links/add/", mk.link_edit, name="link_add"),
+    path("marketing/links/<int:pk>/", mk.link_edit, name="link_edit"),
+    path("marketing/emails/", mk.campaigns, name="campaigns"),
+    path("marketing/emails/add/", mk.campaign_edit, name="campaign_add"),
+    path("marketing/emails/<int:pk>/", mk.campaign_edit, name="campaign"),
+    path("marketing/emails/<int:pk>/preview/", mk.campaign_preview, name="campaign_preview"),
+    path("marketing/emails/<int:pk>/send/", mk.campaign_send, name="campaign_send"),
+    path("marketing/emails/<int:pk>/duplicate/", mk.campaign_duplicate, name="campaign_duplicate"),
 
     path("inbox/", views.inbox, name="inbox"),
     path("messages/", views.contact_messages, name="contact_messages"),

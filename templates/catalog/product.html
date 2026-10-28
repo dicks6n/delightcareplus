@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static marketing %}
 
 {% block title %}{{ product.name }}{% if product.brand %} by {{ product.brand.name }}{% endif %} — Delight Care Plus{% endblock %}
 {% block description %}{{ product.short_description|default:product.description|truncatechars:155 }}{% endblock %}
@@ -12,17 +12,23 @@
   "@context": "https://schema.org/",
   "@type": "Product",
   "name": "{{ product.name|escapejs }}",
+  "sku": "{{ product.id }}",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ product.get_absolute_url }}",
   {% if product.image %}"image": "{{ request.scheme }}://{{ request.get_host }}{{ product.image.url }}",{% endif %}
   "description": "{{ product.short_description|default:product.description|truncatechars:300|escapejs }}",
   {% if product.brand %}"brand": {"@type": "Brand", "name": "{{ product.brand.name|escapejs }}"},{% endif %}
   {% if rating.count %}"aggregateRating": {"@type": "AggregateRating", "ratingValue": "{{ rating.avg }}", "reviewCount": "{{ rating.count }}"},{% endif %}
   "offers": {"@type": "Offer", "priceCurrency": "KES", "price": "{{ product.price|floatformat:0 }}",
+             "url": "{{ request.scheme }}://{{ request.get_host }}{{ product.get_absolute_url }}",
+             "itemCondition": "https://schema.org/NewCondition",
+             "seller": {"@type": "Organization", "name": "Delight Care Plus"},
              "availability": "https://schema.org/{% if product.in_stock %}InStock{% else %}OutOfStock{% endif %}"}
 }
 </script>
 {% endblock %}
 
 {% block content %}
+{% track_view product %}
 <div class="container-xl pt-4 pb-5">
     {% include 'partials/crumbs.html' %}
 

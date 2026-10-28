@@ -70,6 +70,11 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="PENDING")
     cancellation_reason = models.CharField(max_length=255, blank=True)
     stock_deducted = models.BooleanField(default=False)
+    # Marketing: which ad, post or link brought this order (from utm_… tags or a /go/ link)
+    source = models.CharField(max_length=60, blank=True, help_text="e.g. instagram, tiktok, whatsapp, google")
+    medium = models.CharField(max_length=60, blank=True, help_text="e.g. paid, story, influencer, email")
+    campaign = models.CharField(max_length=100, blank=True)
+    referral_rewarded = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

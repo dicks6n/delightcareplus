@@ -780,6 +780,8 @@ def crud_list(request, kind):
     if not cfg:
         return redirect("dashboard:overview")
     qs = cfg["model"].objects.all()
+    if kind == "coupons":
+        qs = qs.filter(referrer__isnull=True)  # customers' refer-a-friend codes are listed under Marketing
     if cfg.get("count"):
         qs = qs.annotate(_n=Count(cfg["count"], distinct=True))
     q = request.GET.get("q", "").strip()
@@ -877,6 +879,8 @@ def reports(request):
                .annotate(units=Sum("quantity"), revenue=line_total).order_by("-revenue"))
     by_city = orders.values("city").annotate(n=Count("id"), t=Sum("total")).order_by("-t")[:10]
     coupons = orders.exclude(coupon_code="").values("coupon_code").annotate(n=Count("id"), d=Sum("discount")).order_by("-n")
+    by_source = orders.values("source", "medium").annotate(n=Count("id"), t=Sum("total")).order_by("-t")
+    by_campaign = orders.exclude(campaign="").values("source", "campaign").annotate(n=Count("id"), t=Sum("total")).order_by("-t")[:15]
 
     if request.GET.get("export") == "csv":
         return _csv_response(f"sales_{d_from}_{d_to}.csv", ["Product", "Brand", "Units", "Revenue"],
@@ -888,6 +892,7 @@ def reports(request):
         "chart_labels": json.dumps([r["d"].strftime("%b %d") for r in by_day]),
         "chart_values": json.dumps([float(r["t"]) for r in by_day]),
         "by_product": by_product, "by_brand": by_brand, "by_dept": by_dept, "by_city": by_city, "coupons": coupons,
+        "by_source": by_source, "by_campaign": by_campaign,
     })
 
 

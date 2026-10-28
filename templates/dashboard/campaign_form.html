@@ -1,0 +1,45 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{% if obj %}{{ obj.subject }}{% else %}New email{% endif %}{% endblock %}
+{% block content %}
+<div class="d-head"><div><a href="{% url 'dashboard:campaigns' %}" class="text-3" style="font-size:.82rem;"><i class="fa-solid fa-arrow-left"></i> Email campaigns</a>
+    <h1 class="mt-1">{% if obj %}{{ obj.subject }}{% else %}New email{% endif %}</h1></div>
+    {% if obj %}<div class="d-flex gap-2 flex-wrap">
+        <a class="btn-d" href="{% url 'dashboard:campaign_preview' obj.pk %}" target="_blank"><i class="fa-solid fa-eye"></i> Preview</a>
+        <form method="post" action="{% url 'dashboard:campaign_duplicate' obj.pk %}">{% csrf_token %}<button class="btn-d" type="submit"><i class="fa-regular fa-copy"></i> Duplicate</button></form>
+    </div>{% endif %}
+</div>
+<div class="row g-3">
+    <div class="col-xl-8">
+        <form method="post" class="card-d">{% csrf_token %}
+            <div class="bd">
+                {% if obj.sent_at %}<div class="flash-d info"><i class="fa-solid fa-paper-plane"></i><span>Sent to {{ obj.sent_count }} people on {{ obj.sent_at|date:"M j, Y H:i" }}. Duplicate it to send something similar.</span></div>{% endif %}
+                <fieldset {% if obj.sent_at %}disabled{% endif %}>
+                <div class="row">
+                    {% for f in form %}<div class="{% if f.name == 'body' or f.name == 'products' %}col-12{% else %}col-md-6{% endif %}">{% include 'dashboard/_field.html' %}</div>{% endfor %}
+                </div>
+                <button class="btn-d primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+                </fieldset>
+            </div>
+        </form>
+    </div>
+    <div class="col-xl-4">
+        {% if obj %}
+        <div class="card-d mb-3"><div class="hd"><h3>1 · Send yourself a test</h3></div><div class="bd">
+            <form method="post" action="{% url 'dashboard:campaign_send' obj.pk %}">{% csrf_token %}
+                <input type="hidden" name="test" value="1">
+                <input class="inp mb-2" type="email" name="test_email" value="{{ request.user.email }}" placeholder="you@example.com">
+                <button class="btn-d w-100 justify-content-center" type="submit"><i class="fa-solid fa-flask"></i> Send test</button>
+            </form></div></div>
+        {% if not obj.sent_at %}
+        <div class="card-d"><div class="hd"><h3>2 · Send to everyone</h3></div><div class="bd">
+            <p class="text-3" style="font-size:.84rem">Goes to <strong>{{ obj.get_audience_display|lower }}</strong>: {% for key, n in sizes.items %}{% if key == obj.audience %}<strong>{{ n }}</strong> people{% endif %}{% endfor %}. Everyone gets an unsubscribe link.</p>
+            <form method="post" action="{% url 'dashboard:campaign_send' obj.pk %}" data-confirm="Send “{{ obj.subject }}” now? This can't be undone.">{% csrf_token %}
+                <button class="btn-d primary w-100 justify-content-center" type="submit"><i class="fa-solid fa-paper-plane"></i> Send now</button>
+            </form></div></div>
+        {% endif %}
+        {% else %}
+        <div class="card-d"><div class="bd text-3" style="font-size:.86rem"><i class="fa-solid fa-lightbulb text-green me-1"></i> Save first, then preview it and send yourself a test before sending to everyone.</div></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

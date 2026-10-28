@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from cart import delivery
+from marketing import referrals
 from core.models import SiteSettings
 from cart.cart import Cart
 
@@ -107,6 +108,11 @@ def checkout(request):
         allowed = ["mpesa", "airtel"] + (["cod"] if shop.pay_on_delivery else [])
         if method not in allowed:
             errors["payment_method"] = "Choose how you'd like to pay."
+        coupon = summary["coupon"]
+        if (coupon and coupon.first_order_only and not request.user.is_authenticated
+                and referrals.is_returning_customer(details["phone"], details["email"])):
+            errors["stock"] = (f"The code {coupon.code} is for first orders only, and we've delivered to you before. "
+                               "Remove it from your bag to continue — thank you for coming back!")
         for line in summary["lines"]:
             if line["quantity"] > line["variant"].stock:
                 errors["stock"] = f"Only {line['variant'].stock} × {line['product'].name} left — please lower the quantity."

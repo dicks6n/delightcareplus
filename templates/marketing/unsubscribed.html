@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Email preferences — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl page-hero">
+    <div class="glass pad-lg mx-auto text-center" style="max-width:560px">
+        {% if done %}
+        <i class="fa-solid fa-circle-check fs-1 text-green"></i>
+        <h1 class="h3 mt-3">You're unsubscribed</h1>
+        <p class="text-2">We won't send offers to <strong>{{ email }}</strong> any more. You'll still get emails about your orders.</p>
+        <a href="{% url 'core:home' %}" class="btn-ghost mt-2">Back to the shop</a>
+        {% else %}
+        <i class="fa-regular fa-envelope fs-1 text-green"></i>
+        <h1 class="h3 mt-3">Stop offer emails?</h1>
+        <p class="text-2">We'll stop sending news and offers to <strong>{{ email }}</strong>.</p>
+        <form method="post">{% csrf_token %}<button class="btn-glow" type="submit">Yes, unsubscribe me</button></form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}Ads & tracking{% endblock %}
+{% block content %}
+<div class="d-head">
+    <div><h1><i class="fa-solid fa-bullhorn text-green me-2"></i>Ads &amp; tracking</h1>
+        <p>Connect Instagram, Facebook, TikTok and Google, see which ads bring sales, and grow with refer-a-friend.</p></div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'dashboard:ad_studio' %}" class="btn-d primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Make an ad</a>
+        <a href="{% url 'dashboard:link_add' %}" class="btn-d"><i class="fa-solid fa-link"></i> New tracked link</a>
+        <a href="{% url 'dashboard:campaign_add' %}" class="btn-d"><i class="fa-solid fa-envelope"></i> New email</a>
+    </div>
+</div>
+
+<div class="kpis">
+    {% for name, value in pixels %}
+    <div class="card-d kpi"><div class="lbl">{{ name }}</div>
+        <div class="val" style="font-size:1.05rem">{% if value %}<span class="pill green"><i class="fa-solid fa-circle-check"></i> Connected</span>{% else %}<span class="pill gray">Not set up</span>{% endif %}</div>
+        <div class="sub">{% if value %}{{ value }}{% else %}Add the ID below{% endif %}</div></div>
+    {% endfor %}
+    <div class="card-d kpi"><div class="lbl">Email audience</div><div class="val">{{ audience_size|intcomma }}</div>
+        <div class="sub">subscribers + customers who opted in</div></div>
+</div>
+
+<div class="row g-3">
+    <div class="col-xl-7">
+        <div class="card-d mb-3">
+            <div class="hd"><h3><i class="fa-solid fa-chart-pie text-green me-1"></i> Where sales came from · last 30 days</h3><a class="btn-d sm" href="{% url 'dashboard:reports' %}">Full report</a></div>
+            <div class="bd flush t-wrap"><table class="t">
+                <thead><tr><th>Source</th><th>Type</th><th>Orders</th><th>Sales</th></tr></thead>
+                <tbody>
+                {% for r in sources %}<tr><td><strong>{{ r.source|title }}</strong></td><td>{{ r.medium|default:"—" }}</td><td>{{ r.n }}</td><td>KES {{ r.revenue|floatformat:0|intcomma }}</td></tr>
+                {% empty %}<tr><td colspan="4"><div class="empty-d"><i class="fa-solid fa-chart-pie"></i>No tagged sales yet. Use Ad Studio captions or tracked links in your posts and ads — their sales show up here.</div></td></tr>{% endfor %}
+                {% if untracked.n %}<tr><td class="text-3">Direct / unknown</td><td class="text-3">typed the address, WhatsApp chats…</td><td class="text-3">{{ untracked.n }}</td><td class="text-3">KES {{ untracked.revenue|floatformat:0|intcomma }}</td></tr>{% endif %}
+                </tbody></table></div>
+        </div>
+
+        <div class="card-d mb-3">
+            <div class="hd"><h3><i class="fa-solid fa-link text-green me-1"></i> Tracked links</h3><a class="btn-d sm" href="{% url 'dashboard:links' %}">All links</a></div>
+            <div class="bd flush t-wrap"><table class="t">
+                <thead><tr><th>Link</th><th>Clicks</th><th>Orders</th><th>Sales</th></tr></thead>
+                <tbody>
+                {% for r in links %}<tr><td><a href="{% url 'dashboard:link_edit' r.link.pk %}"><strong>/go/{{ r.link.slug }}</strong></a><br><small class="text-3">{{ r.link.source }}{% if r.link.note %} · {{ r.link.note }}{% endif %}</small></td>
+                    <td>{{ r.link.clicks }}</td><td>{{ r.orders }}</td><td>KES {{ r.revenue|floatformat:0|intcomma }}</td></tr>
+                {% empty %}<tr><td colspan="4"><div class="empty-d"><i class="fa-solid fa-link"></i>Make a short link for your Instagram bio, a TikTok creator or a WhatsApp broadcast — you'll see its clicks and sales here. <a href="{% url 'dashboard:link_add' %}">Make one</a>.</div></td></tr>{% endfor %}
+                </tbody></table></div>
+        </div>
+
+        <div class="card-d mb-3">
+            <div class="hd"><h3><i class="fa-solid fa-rss text-green me-1"></i> Product feeds for ads</h3></div>
+            <div class="bd">
+                <p class="text-3 mb-3" style="font-size:.84rem">Your products, prices, photos and stock — kept up to date automatically. Paste each link once; the platforms re-read it every day.</p>
+                {% for name, icon, url, how in feeds %}
+                <div class="mb-3">
+                    <label class="lbl"><i class="{{ icon }} me-1"></i> {{ name }}</label>
+                    <div class="d-flex gap-2"><input class="inp" readonly value="{{ url }}" onclick="this.select()">
+                        <button class="btn-d sm" type="button" data-copy="{{ url }}"><i class="fa-regular fa-copy"></i> Copy</button></div>
+                    <small class="help">{{ how }}</small>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-5">
+        <form method="post" class="card-d mb-3">{% csrf_token %}
+            <div class="hd"><h3><i class="fa-solid fa-plug text-green me-1"></i> Connect your ad accounts</h3></div>
+            <div class="bd">
+                {% if form.errors %}<div class="flash-d error"><i class="fa-solid fa-circle-exclamation"></i><span>Please check the highlighted fields.</span></div>{% endif %}
+                {% for f in form %}
+                {% if f.name == 'referral_enabled' %}<hr style="border-color:var(--d-line)"><h3 style="font-size:.95rem" class="mb-3"><i class="fa-solid fa-gift text-green me-1"></i> Refer-a-friend</h3>{% endif %}
+                {% if f.field.widget.input_type == 'checkbox' %}
+                <div class="mb-3"><label class="d-flex align-items-center gap-2" style="cursor:pointer">{{ f }} <span>{{ f.label }}</span></label></div>
+                {% else %}{% include 'dashboard/_field.html' %}{% endif %}
+                {% endfor %}
+                <div class="flash-d info"><i class="fa-solid fa-shield-halved"></i><span>Visitors see a short cookie notice; ad tags only load if they accept (Kenya Data Protection Act).</span></div>
+                <button class="btn-d primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+            </div>
+        </form>
+
+        <div class="card-d mb-3">
+            <div class="hd"><h3><i class="fa-solid fa-gift text-green me-1"></i> Refer-a-friend results</h3></div>
+            <div class="bd">
+                <div class="d-flex justify-content-between mb-2"><span class="text-3">Customers with an invite code</span><strong>{{ referral.codes }}</strong></div>
+                <div class="d-flex justify-content-between mb-2"><span class="text-3">Orders from invited friends</span><strong>{{ referral.orders }}</strong></div>
+                <div class="d-flex justify-content-between"><span class="text-3">Glow Points given as thanks</span><strong>{{ referral.points|intcomma }}</strong></div>
+                <small class="help mt-2 d-block">Customers find their invite link on their account page. Friends get {{ shop.referral_discount_percent }}% off their first order; the customer earns {{ shop.referral_points }} points when it's delivered.</small>
+            </div>
+        </div>
+
+        <div class="card-d">
+            <div class="hd"><h3><i class="fa-solid fa-envelope text-green me-1"></i> Recent emails</h3><a class="btn-d sm" href="{% url 'dashboard:campaigns' %}">All</a></div>
+            <div class="bd">
+                {% for c in campaigns %}<div class="d-flex justify-content-between mb-2"><a href="{% url 'dashboard:campaign' c.pk %}">{{ c.subject }}</a><span class="text-3" style="font-size:.8rem">{% if c.sent_at %}sent to {{ c.sent_count }}{% else %}draft{% endif %}</span></div>
+                {% empty %}<p class="text-3 mb-0">No emails yet. <a href="{% url 'dashboard:campaign_add' %}">Write the first one</a>.</p>{% endfor %}
+                <small class="help mt-2 d-block">Bag reminders go out automatically when the daily <code>send_bag_reminders</code> task runs (see README).</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('click', e => {
+    const b = e.target.closest('[data-copy]');
+    if (!b) return;
+    navigator.clipboard.writeText(b.dataset.copy).then(() => { const h = b.innerHTML; b.innerHTML = '<i class="fa-solid fa-check"></i> Copied'; setTimeout(() => b.innerHTML = h, 1500); });
+});
+</script>
+{% endblock %}
