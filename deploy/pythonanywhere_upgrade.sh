@@ -15,7 +15,8 @@
 #   3. Fills in .env: keeps anything already there; adds the M-Pesa keys from the old settings file,
 #      a new SECRET_KEY, DEBUG=False and your domains (keys are never printed)
 #   4. Installs requirements, creates the new database tables
-#   5. Imports the old customers, products, orders, reviews, coupons and blog posts, then runs setup_shop
+#   5. Runs setup_shop, then imports the old customers, products (into the matching new categories),
+#      orders, reviews, coupons and blog posts
 #   6. Collects static files, points the WSGI file at the new settings and reloads the site
 #
 # If anything goes wrong, the old site is untouched in the backup folder.
@@ -97,7 +98,8 @@ echo "4/6  Installing requirements and creating tables"
 pip install -q -r requirements.txt
 python manage.py migrate --noinput
 
-echo "5/6  Importing the old shop's data"
+echo "5/6  Setting up the shop, then importing the old shop's data"
+python manage.py setup_shop   # first, so old products land in the new categories
 if [ -f "$BACKUP/db.sqlite3" ]; then
     if [ -d "$BACKUP/media" ]; then
         python manage.py import_old_shop "$BACKUP/db.sqlite3" --media "$BACKUP/media"
@@ -107,7 +109,6 @@ if [ -f "$BACKUP/db.sqlite3" ]; then
 else
     echo "     No db.sqlite3 in the backup — skipped"
 fi
-python manage.py setup_shop
 
 echo "6/6  Static files, WSGI file and reload"
 python manage.py collectstatic --noinput -v0

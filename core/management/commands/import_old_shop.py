@@ -38,6 +38,11 @@ STATUS = {
 }
 TOPIC = {"supplements": "supplements", "nutrition": "nutrition", "wellness": "wellness", "lifestyle": "wellness",
          "product": "news", "tips": "wellness", "research": "supplements"}
+# Old category names → the matching category in the new shop
+CATEGORY_ALIASES = {"brain health": "Brain & Focus", "joint health": "Joint & Bone", "bone health": "Joint & Bone",
+                    "skin health": "Skin, Hair & Nails", "hair & skin": "Skin, Hair & Nails",
+                    "weight loss": "Weight Management", "sleep": "Sleep & Stress", "stress": "Sleep & Stress",
+                    "energy": "Energy & Vitality", "immunity": "Immune Support", "digestion": "Digestive Health"}
 # Words in an old category name that tell us which department it belongs to
 SKINCARE_WORDS = ("skin", "face", "mask", "serum", "cream", "beauty", "cleanser", "toner", "moistur", "sun")
 TEA_WORDS = ("tea", "infusion", "herbal drink")
@@ -148,8 +153,12 @@ class Command(BaseCommand):
 
     def import_categories(self):
         mapping, created = {}, 0
+        used = {r["category_id"] for r in self.rows("store_product")}
         for r in self.rows("store_category"):
-            cat = Category.objects.filter(name__iexact=r["name"]).first()
+            if r["id"] not in used:
+                continue  # empty old categories (e.g. "General") aren't brought across
+            name = CATEGORY_ALIASES.get(r["name"].strip().lower(), r["name"])
+            cat = Category.objects.filter(name__iexact=name).first()
             if not cat:
                 cat = Category.objects.create(name=r["name"], department=self.department_for(r["name"]),
                                               description=r.get("description") or "",
