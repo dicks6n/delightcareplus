@@ -1,0 +1,8 @@
+<a href="{{ post.get_absolute_url }}" class="blog-card">
+    <div class="cover">{% if post.cover %}<img src="{{ post.cover.url }}" alt="" loading="lazy">{% else %}<i class="fa-solid fa-leaf"></i>{% endif %}</div>
+    <div class="bd">
+        <span class="tp">{{ post.get_topic_display }} · {{ post.read_minutes }} min read</span>
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.excerpt|default:post.body|truncatechars:110 }}</p>
+    </div>
+</a>

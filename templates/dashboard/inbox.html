@@ -1,0 +1,115 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Inbox{% endblock %}
+{% block content %}
+<div class="d-head"><div><h1>Message Inbox</h1><p>Live chats from your shop. New messages also show on the bell.</p></div></div>
+<div class="card-d inbox" id="inbox">
+    <div class="list">
+        <div class="p-3 border-bottom" style="border-color:var(--d-line)!important">
+            <input class="inp w-100 mb-2" id="q" placeholder="Search name, phone, message">
+            <div class="d-flex gap-1">
+                <button class="btn-d sm primary js-st" data-st="open">Open</button><button class="btn-d sm js-st" data-st="closed">Resolved</button><button class="btn-d sm js-st" data-st="all">All</button>
+            </div>
+        </div>
+        <div class="items" id="items"><div class="empty-d"><i class="fa-solid fa-spinner fa-spin"></i></div></div>
+    </div>
+    <div class="thread" id="thread"><div class="empty-d m-auto"><i class="fa-solid fa-comments"></i>Choose a conversation</div></div>
+    <aside class="info" id="info"><div class="empty-d"><i class="fa-regular fa-user"></i>Customer details</div></aside>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+    const { esc, post, toast, kes } = DCP;
+    let status = 'open', active = parseInt('{{ open_id|default:0 }}', 10) || null, lastId = 0, lastDate = null, tList, tThread, tq;
+    const QUICK = [
+        "Hi! 👋 Thanks for reaching out — how can I help?",
+        "Let me check your order — one moment please.",
+        "Your order has been dispatched and is on its way 🚚",
+        "You can pay with M-Pesa at checkout — a PIN prompt comes to your phone.",
+        "Delivery in Nairobi takes 1–2 days, other towns 2–4 days.",
+        "For best results, use it every day for at least 4–6 weeks.",
+        "Thank you for shopping with Delight Care Plus 💚",
+    ];
+    function list() {
+        fetch(`/chat/inbox/?status=${status}&q=${encodeURIComponent(document.getElementById('q').value)}`).then(r => r.json()).then(d => {
+            const el = document.getElementById('items');
+            el.innerHTML = d.conversations.length ? d.conversations.map(c => `
+                <div class="cv ${c.id === active ? 'on' : ''} ${c.unread ? 'unread' : ''}" data-id="${c.id}">
+                    <div class="av">${esc((c.name || 'G')[0])}</div>
+                    <div class="mn"><div class="nm"><span class="text-truncate">${esc(c.name)}${c.guest ? ' <span class="pill amber">Guest</span>' : ''}</span><small>${esc(c.time)}</small></div><div class="ls">${esc(c.last)}</div></div>
+                    ${c.unread ? `<span class="un">${c.unread}</span>` : ''}
+                </div>`).join('') : '<div class="empty-d"><i class="fa-solid fa-inbox"></i>No conversations</div>';
+        }).catch(() => {}).finally(() => { clearTimeout(tList); tList = setTimeout(list, 8000); });
+    }
+    document.getElementById('items').addEventListener('click', e => { const c = e.target.closest('.cv'); if (c) open(parseInt(c.dataset.id, 10)); });
+    document.querySelectorAll('.js-st').forEach(b => b.addEventListener('click', () => {
+        status = b.dataset.st;
+        document.querySelectorAll('.js-st').forEach(x => x.classList.toggle('primary', x === b));
+        list();
+    }));
+    document.getElementById('q').addEventListener('input', () => { clearTimeout(tq); tq = setTimeout(list, 300); });
+
+    function bubble(m) {
+        let h = '';
+        if (m.date !== lastDate) { lastDate = m.date; h += `<div class="day">${esc(m.date)}</div>`; }
+        return h + `<div class="bub ${m.is_staff ? 'staff' : 'cust'}">${esc(m.body)}<span class="t">${m.is_staff ? esc(m.sender || 'You') + ' · ' : ''}${esc(m.time)}${m.is_staff ? (m.is_read ? ' ✓✓' : ' ✓') : ''}</span></div>`;
+    }
+    function append(msgs) {
+        const box = document.getElementById('msgs');
+        if (!box || !msgs.length) return;
+        box.insertAdjacentHTML('beforeend', msgs.map(bubble).join(''));
+        lastId = msgs[msgs.length - 1].id;
+        box.scrollTop = box.scrollHeight;
+    }
+    function open(id) {
+        active = id; lastId = 0; lastDate = null;
+        document.getElementById('inbox').classList.add('show-thread');
+        history.replaceState(null, '', `?c=${id}`);
+        fetch(`/chat/inbox/${id}/`).then(r => r.json()).then(d => {
+            const c = d.conversation;
+            document.getElementById('thread').innerHTML = `
+                <div class="hd" style="padding:12px 16px;border-bottom:1px solid var(--d-line);display:flex;align-items:center;gap:10px">
+                    <button class="btn-d sm d-md-none" id="back"><i class="fa-solid fa-arrow-left"></i></button>
+                    <div class="flex-grow-1"><strong class="text-white">${esc(c.name)}</strong><br><small class="text-3">${esc(c.contact || 'No contact details')}</small></div>
+                    <button class="btn-d sm" id="toggle">${c.status === 'open' ? '<i class="fa-solid fa-check"></i> Resolve' : '<i class="fa-solid fa-rotate-left"></i> Reopen'}</button>
+                </div>
+                <div class="msgs" id="msgs"></div>
+                <div class="quick">${QUICK.map(q => `<button type="button" data-q="${esc(q)}">${esc(q.length > 40 ? q.slice(0, 38) + '…' : q)}</button>`).join('')}</div>
+                <form class="reply" id="reply"><textarea class="inp" id="rt" rows="1" maxlength="1000" placeholder="Reply… (Enter to send)"></textarea><button class="btn-d primary" type="submit"><i class="fa-solid fa-paper-plane"></i></button></form>`;
+            document.getElementById('info').innerHTML = `
+                <div class="text-center mb-3"><div class="cv" style="border:0;justify-content:center;cursor:default"><div class="av" style="width:56px;height:56px;font-size:1.3rem">${esc((c.name || 'G')[0])}</div></div>
+                <strong class="text-white">${esc(c.name)}</strong><br><small class="text-3">${c.guest ? 'Guest visitor' : 'Registered customer'}</small></div>
+                <div class="kv"><span>Contact</span><strong>${esc(c.contact || '—')}</strong></div>
+                <div class="kv"><span>Started</span><strong>${esc(c.started)}</strong></div>
+                ${c.page ? `<div class="kv"><span>From page</span><strong><a href="${esc(c.page)}" target="_blank">${esc(c.page)}</a></strong></div>` : ''}
+                ${c.orders.length ? '<h6 class="mt-3 text-3" style="font-size:.7rem;text-transform:uppercase;letter-spacing:.1em">Recent orders</h6>' + c.orders.map(o => `<div class="kv"><a href="${esc(o.url)}">${esc(o.number)}</a><strong>${esc(o.status)} · ${kes(o.total)}</strong></div>`).join('') : ''}`;
+            append(d.messages);
+            const rt = document.getElementById('rt');
+            document.querySelectorAll('.quick button').forEach(b => b.addEventListener('click', () => { rt.value = b.dataset.q; rt.focus(); }));
+            rt.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+            document.getElementById('reply').addEventListener('submit', e => { e.preventDefault(); send(); });
+            document.getElementById('back').addEventListener('click', () => document.getElementById('inbox').classList.remove('show-thread'));
+            document.getElementById('toggle').addEventListener('click', () => post(`/chat/inbox/${id}/status/`, { status: c.status === 'open' ? 'closed' : 'open' }).then(r => { toast(r.status === 'closed' ? 'Marked resolved ✅' : 'Reopened'); open(id); list(); }));
+            rt.focus();
+            poll();
+            list();
+        });
+    }
+    function poll() {
+        clearTimeout(tThread);
+        const id = active;
+        tThread = setTimeout(() => fetch(`/chat/inbox/${id}/?after=${lastId}`).then(r => r.json()).then(d => { if (id === active) append(d.messages); }).finally(() => { if (id === active) poll(); }), 4000);
+    }
+    function send() {
+        const rt = document.getElementById('rt');
+        const body = rt.value.trim();
+        if (!body) return;
+        rt.value = '';
+        post(`/chat/inbox/${active}/reply/`, { body }).then(d => { if (!d.ok) throw new Error(d.error); if (d.message.id > lastId) append([d.message]); list(); })
+            .catch(err => { rt.value = body; toast(err.message || 'Not sent', 'err'); });
+    }
+    list();
+    if (active) open(active);
+})();
+</script>
+{% endblock %}

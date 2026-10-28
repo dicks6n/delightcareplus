@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Order {{ order.number }} — Delight Care Plus{% endblock %}
+
+{% block content %}
+<div class="container-xl page-hero pb-2">
+    {% if is_new %}
+    <div class="text-center mb-4" id="celebrate">
+        <div class="phone-anim" style="animation:none;"><i class="fa-solid fa-circle-check"></i></div>
+        <h1 class="display-serif">Thank you, {{ order.first_name }}!</h1>
+        <p class="text-2 mx-auto">
+            {% if order.is_paid %}Payment received — we're packing your order now.
+            {% elif order.payment_method == 'cod' %}Your order is confirmed. Pay when it arrives.
+            {% else %}We're confirming your payment and will email you shortly.{% endif %}
+            {% if order.email %}A receipt is on its way to <strong class="text-white">{{ order.email }}</strong>.{% endif %}
+        </p>
+    </div>
+    {% endif %}
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-2">
+        <div><span class="eyebrow">Order</span><h2 class="mt-1 mb-0">{{ order.number }}</h2><span class="text-3" style="font-size:.85rem;">Placed {{ order.created_at|date:"M j, Y · H:i" }}</span></div>
+        <span class="status-pill st-{{ order.status }}">{{ order.get_status_display }}</span>
+    </div>
+</div>
+
+<div class="container-xl pb-5">
+    <div class="bag">
+        <div class="d-flex flex-column gap-3">
+            {% if order.status != 'CANCELLED' and order.status != 'REFUNDED' %}
+            <section class="glass pad">
+                <h5 class="mb-0">Tracking</h5>
+                <div class="track-bar">
+                    <div class="progress-line" style="width: {% widthratio order.progress_step 4 80 %}%"></div>
+                    {% with s=order.progress_step %}
+                    <div class="track-step done"><div class="dot"><i class="fa-solid fa-receipt"></i></div>Placed</div>
+                    <div class="track-step {% if s >= 1 %}done{% endif %}"><div class="dot"><i class="fa-solid fa-wallet"></i></div>Confirmed</div>
+                    <div class="track-step {% if s >= 2 %}done{% endif %}"><div class="dot"><i class="fa-solid fa-box"></i></div>Packed</div>
+                    <div class="track-step {% if s >= 3 %}done{% endif %}"><div class="dot"><i class="fa-solid fa-truck-fast"></i></div>On the way</div>
+                    <div class="track-step {% if s >= 4 %}done{% endif %}"><div class="dot"><i class="fa-solid fa-house"></i></div>Delivered</div>
+                    {% endwith %}
+                </div>
+                {% if order.courier or order.tracking_number or order.estimated_delivery %}
+                <div class="row g-2 mt-3" style="font-size:.86rem;">
+                    {% if order.courier %}<div class="col-sm-4"><span class="text-3">Courier</span><br><strong>{{ order.courier }}</strong></div>{% endif %}
+                    {% if order.tracking_number %}<div class="col-sm-4"><span class="text-3">Tracking no.</span><br><strong>{{ order.tracking_number }}</strong></div>{% endif %}
+                    {% if order.estimated_delivery %}<div class="col-sm-4"><span class="text-3">Expected</span><br><strong>{{ order.estimated_delivery|date:"D, M j" }}</strong></div>{% endif %}
+                </div>
+                {% endif %}
+            </section>
+            {% else %}
+            <div class="flash error"><i class="fa-solid fa-ban"></i><span>This order was {{ order.get_status_display|lower }}{% if order.cancellation_reason %} — “{{ order.cancellation_reason }}”{% endif %}.
+                {% if order.paid_at %} Your refund is being processed.{% endif %}</span></div>
+            {% endif %}
+
+            <section class="glass">
+                {% for item in order.items.all %}
+                <div class="bag-line">
+                    {% if item.product and item.product.image %}<img src="{{ item.product.image.url }}" alt="">{% else %}<img src="{% static 'img/placeholder.png' %}" alt="">{% endif %}
+                    <div>
+                        {% if item.brand_name %}<div class="p-brand">{{ item.brand_name }}</div>{% endif %}
+                        {% if item.product %}<a href="{{ item.product.get_absolute_url }}" class="nm">{{ item.product_name }}</a>{% else %}<span class="nm">{{ item.product_name }}</span>{% endif %}
+                        <div class="sub">{{ item.variant_label }} · {{ item.quantity }} × KES {{ item.unit_price|floatformat:0 }}</div>
+                        {% if order.status == 'DELIVERED' and item.product %}<a class="see-all mt-1" style="font-size:.8rem;" href="{{ item.product.get_absolute_url }}#reviews"><i class="fa-regular fa-star"></i> Write a review</a>{% endif %}
+                    </div>
+                    <div class="lt">KES {{ item.total|floatformat:0 }}</div>
+                </div>
+                {% endfor %}
+            </section>
+
+            {% if order.events.all %}
+            <section class="glass pad">
+                <h5 class="mb-3">History</h5>
+                <ul class="timeline">
+                    {% for e in order.events.all %}<li><strong class="text-white">{{ e.get_status_display }}</strong>{% if e.note and 'Note:' not in e.note %} — {{ e.note }}{% endif %}<small>{{ e.created_at|date:"M j, H:i" }}</small></li>{% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+        </div>
+
+        <aside class="glass glass-green summary">
+            <h5 class="mb-3">Summary</h5>
+            <div class="sum-row"><span>Items</span><strong>KES {{ order.subtotal|floatformat:0 }}</strong></div>
+            {% if order.discount %}<div class="sum-row green"><span>Discount{% if order.coupon_code %} ({{ order.coupon_code }}){% endif %}</span><strong>− KES {{ order.discount|floatformat:0 }}</strong></div>{% endif %}
+            {% if order.points_redeemed %}<div class="sum-row green"><span>Glow Points</span><strong>− KES {{ order.points_redeemed }}</strong></div>{% endif %}
+            <div class="sum-row"><span>Delivery ({{ order.get_delivery_method_display }})</span><strong>{% if order.delivery_fee %}KES {{ order.delivery_fee|floatformat:0 }}{% else %}FREE{% endif %}</strong></div>
+            <div class="sum-total"><span>Total</span><strong>KES {{ order.total|floatformat:0 }}</strong></div>
+            <div class="sum-row"><span>Payment</span><strong>{{ order.get_payment_method_display }}</strong></div>
+            {% if order.payment_reference %}<div class="sum-row"><span>Reference</span><strong>{{ order.payment_reference }}</strong></div>{% endif %}
+            {% if order.points_earned %}<div class="sum-row"><span>Glow Points earned</span><strong class="text-warning">+{{ order.points_earned }}</strong></div>{% endif %}
+
+            <hr style="border-color:var(--line)">
+            <p class="text-2 mb-1" style="font-size:.86rem;"><strong class="text-white">{{ order.full_name }}</strong> · {{ order.phone }}</p>
+            <p class="text-3" style="font-size:.84rem;">{% if order.delivery_method == 'pickup' %}<i class="fa-solid fa-store me-1"></i>{{ order.pickup_station }}, {{ order.city }}{% else %}<i class="fa-solid fa-location-dot me-1"></i>{{ order.address }}, {{ order.city }}{% endif %}</p>
+
+            <div class="d-flex flex-column gap-2 mt-3 no-print">
+                {% if order.status == 'PENDING' or order.status == 'FAILED' %}{% if order.payment_method != 'cod' %}
+                <a href="{% url 'orders:pay' order.number %}" class="btn-glow btn-block"><i class="fa-solid fa-wallet"></i> Complete payment</a>
+                {% endif %}{% endif %}
+                <form method="post" action="{% url 'orders:reorder' order.number %}">{% csrf_token %}<button class="btn-soft btn-block" type="submit"><i class="fa-solid fa-rotate-right"></i> Buy again</button></form>
+                <button class="btn-ghost btn-block" type="button" data-chat-open="Hi, I need help with order {{ order.number }}"><i class="fa-regular fa-comment"></i> Get help</button>
+                <button class="btn-ghost btn-block" type="button" onclick="window.print()"><i class="fa-solid fa-print"></i> Print receipt</button>
+                {% if order.can_cancel %}
+                <details class="mt-1">
+                    <summary class="link-btn danger" style="list-style:none;cursor:pointer;"><i class="fa-solid fa-xmark"></i> Cancel this order</summary>
+                    <form method="post" action="{% url 'orders:cancel' order.number %}" class="mt-2" onsubmit="return confirm('Cancel order {{ order.number }}?')">
+                        {% csrf_token %}
+                        <select name="reason" class="input mb-2" aria-label="Reason">
+                            <option>I changed my mind</option><option>I ordered the wrong item</option><option>I found it cheaper elsewhere</option>
+                            <option>Delivery takes too long</option><option>Payment problems</option><option>Other</option>
+                        </select>
+                        <button class="btn-ghost btn-block" type="submit" style="color:#fca5a5;">Confirm cancellation</button>
+                    </form>
+                </details>
+                {% endif %}
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if is_new and order.is_paid %}
+<script>
+    // Small celebration
+    (function () {
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const colors = ['#a8d990', '#90bc79', '#f2c94c', '#ffffff'];
+        for (let i = 0; i < 60; i++) {
+            const c = document.createElement('div');
+            c.style.cssText = `position:fixed;top:-12px;left:${Math.random()*100}vw;width:8px;height:12px;background:${colors[i%4]};border-radius:2px;z-index:4000;pointer-events:none;transition:transform ${2+Math.random()*2}s linear, opacity 3s;`;
+            document.body.appendChild(c);
+            requestAnimationFrame(() => { c.style.transform = `translateY(105vh) rotate(${Math.random()*720}deg)`; c.style.opacity = '.3'; });
+            setTimeout(() => c.remove(), 4500);
+        }
+    })();
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Our brands — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl page-hero"><span class="eyebrow">Our collections</span><h1 class="display-serif">Three collections. One ritual.</h1>
+    <p>We work with brands from three of the world's great beauty cultures — and bring them to Kenya, genuine and fresh.</p></div>
+<div class="container-xl pb-5 d-flex flex-column gap-4">
+    {% for b in brands %}
+    <a href="{{ b.get_absolute_url }}" class="brand-tile" style="--accent: {{ b.accent_color }}; min-height: 260px;">
+        {% if b.banner %}<img class="bg" src="{{ b.banner.url }}" alt="" loading="lazy">{% endif %}
+        <span class="flag">{{ b.flag }}</span>
+        <h3 style="font-size:2rem;">{{ b.name }}</h3>
+        <p style="max-width:640px;">{{ b.story|default:b.tagline|truncatewords:40 }}</p>
+        <span class="see-all mt-3">Shop {{ b.n }} product{{ b.n|pluralize }} <i class="fa-solid fa-arrow-right"></i></span>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

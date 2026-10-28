@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Your routine — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl page-hero pb-2 text-center">
+    <span class="eyebrow"><i class="fa-solid fa-wand-magic-sparkles"></i> Made for you</span>
+    <h1 class="display-serif">Your personal routine</h1>
+    <p class="mx-auto">For {% if skin %}<strong class="text-white">{{ skin|lower }} skin</strong>{% endif %}{% if chosen_concerns %} focused on {% for c in chosen_concerns %}<strong class="text-white">{{ c.name|lower }}</strong>{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}.</p>
+</div>
+
+<div class="container-xl pb-5" style="max-width:980px;">
+    {% if routine %}
+    <form method="post" action="{% url 'catalog:routine_add' %}">
+        {% csrf_token %}
+        {% if am %}
+        <section class="glass mb-3">
+            <div class="pad pb-0"><h4><i class="fa-solid fa-sun text-warning me-2"></i>Morning</h4></div>
+            {% for r in am %}{% include 'catalog/_routine_step.html' %}{% endfor %}
+        </section>
+        {% endif %}
+        {% if pm %}
+        <section class="glass mb-3">
+            <div class="pad pb-0"><h4><i class="fa-solid fa-moon text-info me-2"></i>Evening</h4><p class="text-3 mb-0" style="font-size:.85rem;">Same cleanser, serum and moisturiser — add the mask 2–3 times a week.</p></div>
+            {% for r in pm %}{% if r.step == 'mask' %}{% include 'catalog/_routine_step.html' %}{% endif %}{% endfor %}
+        </section>
+        {% endif %}
+        {% if inside %}
+        <section class="glass mb-3">
+            <div class="pad pb-0"><h4><i class="fa-solid fa-capsules text-green me-2"></i>Beauty from within</h4></div>
+            {% for r in inside %}{% include 'catalog/_routine_step.html' %}{% endfor %}
+        </section>
+        {% endif %}
+
+        <div class="glass glass-green pad-lg d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <div class="text-3" style="font-size:.85rem;">{{ routine|length }} products</div>
+                <div class="h3 mb-0">KES {{ total|floatformat:0 }} <small class="text-green fs-6">− KES {{ discount|floatformat:0 }} routine discount</small></div>
+            </div>
+            <button class="btn-glow" type="submit"><i class="fa-solid fa-bag-shopping"></i> Add my routine — save 5%</button>
+        </div>
+    </form>
+    <p class="text-center mt-3"><a href="{% url 'catalog:routine' %}"><i class="fa-solid fa-rotate-left"></i> Start again</a> · <button class="link-btn" data-chat-open="Hi! Can an expert check my routine?">Ask an expert to check it</button></p>
+    {% else %}
+    <div class="glass empty-state"><div class="ic"><i class="fa-solid fa-flask"></i></div><h3>We're still stocking up</h3><p>We couldn't build a full routine from what's in stock right now. Chat with us and we'll recommend products personally.</p>
+        <button class="btn-glow" data-chat-open="Hi! Can you recommend a routine for me?">Ask an expert</button></div>
+    {% endif %}
+</div>
+{% endblock %}

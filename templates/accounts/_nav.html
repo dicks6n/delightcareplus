@@ -1,0 +1,8 @@
+<nav class="glass pad acct-nav">
+    <div class="mb-3"><strong class="text-white">{{ user.get_full_name|default:user.username }}</strong><br><small class="text-3">{{ user.email }}</small></div>
+    <a href="{% url 'accounts:orders' %}" class="{% if active == 'orders' %}on{% endif %}"><i class="fa-solid fa-box"></i> My orders</a>
+    <a href="{% url 'catalog:wishlist' %}"><i class="fa-regular fa-heart"></i> Wishlist</a>
+    <a href="{% url 'accounts:profile' %}" class="{% if active == 'profile' %}on{% endif %}"><i class="fa-solid fa-user-gear"></i> Details &amp; points</a>
+    <a href="{% url 'catalog:routine' %}"><i class="fa-solid fa-wand-magic-sparkles"></i> Routine Finder</a>
+    <a href="{% url 'accounts:logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out</a>
+</nav>

@@ -1,0 +1,12 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h2 style="margin:0 0 8px;">Your order is on its way 🚚</h2>
+<p style="color:#4b5563;line-height:1.6;">Good news, {{ order.full_name }} — order <strong>{{ order.number }}</strong> has left our store.</p>
+<table role="presentation" cellpadding="0" cellspacing="0" style="background:#f6f8f5;border-radius:12px;padding:14px 18px;font-size:14px;width:100%;">
+  {% if order.courier %}<tr><td style="padding:4px 0;color:#6b7280;">Courier</td><td align="right"><strong>{{ order.courier }}</strong></td></tr>{% endif %}
+  {% if order.tracking_number %}<tr><td style="padding:4px 0;color:#6b7280;">Tracking number</td><td align="right"><strong>{{ order.tracking_number }}</strong></td></tr>{% endif %}
+  {% if order.estimated_delivery %}<tr><td style="padding:4px 0;color:#6b7280;">Expected</td><td align="right"><strong>{{ order.estimated_delivery|date:"l, M j" }}</strong></td></tr>{% endif %}
+  <tr><td style="padding:4px 0;color:#6b7280;">Delivering to</td><td align="right">{{ order.city }}</td></tr>
+</table>
+{% url 'orders:detail' order.number as path %}{% include "emails/_button.html" with url=site_url|add:path label="Track your order" %}
+{% endblock %}

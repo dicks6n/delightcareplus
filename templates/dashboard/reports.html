@@ -1,0 +1,36 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<div class="d-head"><div><h1>Reports</h1><p>{{ d_from|date:"M j, Y" }} – {{ d_to|date:"M j, Y" }} · paid orders only</p></div>
+    <form class="filters-d mb-0" method="get">
+        <input class="inp" type="date" name="from" value="{{ d_from|date:'Y-m-d' }}" aria-label="From"><input class="inp" type="date" name="to" value="{{ d_to|date:'Y-m-d' }}" aria-label="To">
+        <button class="btn-d">Update</button><a class="btn-d" href="?from={{ d_from|date:'Y-m-d' }}&to={{ d_to|date:'Y-m-d' }}&export=csv"><i class="fa-solid fa-file-csv"></i> CSV</a>
+    </form></div>
+<div class="kpis">
+    <div class="card-d kpi"><div class="lbl">Revenue</div><div class="val">KES {{ totals.revenue|default:0|floatformat:0|intcomma }}</div><div class="sub">incl. KES {{ totals.delivery|default:0|floatformat:0|intcomma }} delivery</div></div>
+    <div class="card-d kpi"><div class="lbl">Orders</div><div class="val">{{ totals.n }}</div><div class="sub">{{ totals.units }} units sold</div></div>
+    <div class="card-d kpi"><div class="lbl">Average order</div><div class="val">KES {{ totals.aov|floatformat:0|intcomma }}</div></div>
+    <div class="card-d kpi"><div class="lbl">Discounts given</div><div class="val">KES {{ totals.discount|default:0|floatformat:0|intcomma }}</div></div>
+</div>
+<div class="card-d mb-3"><div class="hd"><h3>Revenue by day</h3></div><div class="bd"><canvas id="rc" height="90"></canvas></div></div>
+<div class="row g-3">
+    <div class="col-xl-6"><div class="card-d h-100"><div class="hd"><h3>Top products</h3></div><div class="bd flush t-wrap"><table class="t"><thead><tr><th>Product</th><th>Units</th><th>Revenue</th></tr></thead><tbody>
+        {% for r in by_product %}<tr><td>{{ r.product_name }}<br><small class="text-3">{{ r.brand_name }}</small></td><td>{{ r.units }}</td><td class="pri">KES {{ r.revenue|floatformat:0|intcomma }}</td></tr>{% empty %}<tr><td colspan="3"><div class="empty-d">No sales in this period.</div></td></tr>{% endfor %}
+    </tbody></table></div></div></div>
+    <div class="col-xl-6 d-flex flex-column gap-3">
+        <div class="card-d"><div class="hd"><h3>By brand</h3></div><div class="bd">{% for r in by_brand %}<div class="kv"><span>{{ r.brand_name|default:"No brand" }} · {{ r.units }} units</span><strong>KES {{ r.revenue|floatformat:0|intcomma }}</strong></div>{% empty %}<span class="text-3">—</span>{% endfor %}</div></div>
+        <div class="card-d"><div class="hd"><h3>By department</h3></div><div class="bd">{% for r in by_dept %}<div class="kv"><span>{{ r.variant__product__category__department__name|default:"Other" }} · {{ r.units }} units</span><strong>KES {{ r.revenue|floatformat:0|intcomma }}</strong></div>{% empty %}<span class="text-3">—</span>{% endfor %}</div></div>
+        <div class="card-d"><div class="hd"><h3>Top towns</h3></div><div class="bd">{% for r in by_city %}<div class="kv"><span>{{ r.city }} · {{ r.n }} orders</span><strong>KES {{ r.t|floatformat:0|intcomma }}</strong></div>{% empty %}<span class="text-3">—</span>{% endfor %}</div></div>
+        <div class="card-d"><div class="hd"><h3>Coupons used</h3></div><div class="bd">{% for r in coupons %}<div class="kv"><span>{{ r.coupon_code }} · {{ r.n }}×</span><strong>− KES {{ r.d|floatformat:0|intcomma }}</strong></div>{% empty %}<span class="text-3">No coupons used.</span>{% endfor %}</div></div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+if (window.Chart) new Chart(document.getElementById('rc'), { type: 'bar',
+    data: { labels: {{ chart_labels|safe }}, datasets: [{ data: {{ chart_values|safe }}, backgroundColor: 'rgba(144,188,121,.7)', borderRadius: 6 }] },
+    options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: 'rgba(238,243,236,.45)' }, grid: { display: false } }, y: { ticks: { color: 'rgba(238,243,236,.45)' }, grid: { color: 'rgba(255,255,255,.05)' }, beginAtZero: true } } } });
+</script>
+{% endblock %}

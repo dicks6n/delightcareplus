@@ -1,0 +1,6 @@
+<div class="mb-3 {{ cls }}">
+    <label class="lbl" for="{{ f.id_for_label }}">{{ f.label }}{% if f.field.required %} *{% endif %}</label>
+    {{ f }}
+    {% if f.help_text %}<small class="help">{{ f.help_text }}</small>{% endif %}
+    {{ f.errors }}
+</div>

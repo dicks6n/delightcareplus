@@ -1,0 +1,7 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h2 style="margin:0 0 8px;">Delivered! 💚</h2>
+<p style="color:#4b5563;line-height:1.6;">Hi {{ order.full_name }}, order <strong>{{ order.number }}</strong> has been delivered. We hope you love it!</p>
+<p style="color:#4b5563;line-height:1.6;">Would you take a minute to review what you bought? It really helps other shoppers.</p>
+{% url 'orders:detail' order.number as path %}{% include "emails/_button.html" with url=site_url|add:path label="Leave a review" %}
+{% endblock %}

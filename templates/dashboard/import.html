@@ -1,0 +1,42 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Bulk import{% endblock %}
+{% block content %}
+<div class="d-head"><div><h1>Bulk import products</h1><p>Add or update hundreds of products at once from Excel / Google Sheets.</p></div>
+    <a href="{% url 'dashboard:import_template' %}" class="btn-d"><i class="fa-solid fa-download"></i> Download template</a></div>
+<div class="row g-3">
+    <div class="col-xl-7">
+        <form method="post" enctype="multipart/form-data" class="card-d">
+            {% csrf_token %}
+            <div class="hd"><h3>Upload</h3></div>
+            <div class="bd">
+                <div class="mb-3"><label class="lbl">1. Product spreadsheet (.csv)</label>{{ form.csv_file }}<small class="help">In Excel: File → Save As → CSV UTF-8.</small></div>
+                <div class="mb-3"><label class="lbl">2. Photos (.zip) — optional</label>{{ form.images_zip }}<small class="help">Put all photos in one folder, zip it. The <code>image</code> column must match the file names (e.g. <code>vitamin-c-serum.jpg</code>).</small></div>
+                <label class="d-flex gap-2 align-items-center mb-3">{{ form.update_existing }} Update products that already exist (same name + brand)</label>
+                <button class="btn-d primary" type="submit"><i class="fa-solid fa-upload"></i> Import</button>
+            </div>
+        </form>
+        {% if report %}
+        <div class="card-d mt-3"><div class="hd"><h3>Result</h3></div><div class="bd">
+            <div class="kv"><span>Added</span><strong>{{ report.created }}</strong></div>
+            <div class="kv"><span>Updated</span><strong>{{ report.updated }}</strong></div>
+            {% for e in report.errors %}<div class="flash-d error mt-2 mb-0"><i class="fa-solid fa-triangle-exclamation"></i><span>{{ e }}</span></div>{% endfor %}
+            <a href="{% url 'dashboard:products' %}" class="btn-d mt-3">See products</a>
+        </div></div>
+        {% endif %}
+    </div>
+    <div class="col-xl-5">
+        <div class="card-d"><div class="hd"><h3>Columns</h3></div><div class="bd" style="font-size:.84rem;">
+            <p class="text-2">Only <strong>name</strong> and <strong>price</strong> are required. New brands, departments, categories and concerns are created automatically.</p>
+            <div class="d-flex flex-wrap gap-1">{% for c in columns %}<code class="pill gray">{{ c }}</code>{% endfor %}</div>
+            <ul class="text-3 mt-3 ps-3">
+                <li><code>form</code>: capsules, tablets, powder, liquid, gummies, serum, mask, cream, cleanser, toner, tea, other</li>
+                <li><code>routine_step</code>: cleanse, tone, treat, mask, moisturise, protect, supplement, tea</li>
+                <li><code>concerns</code>: separate with ; e.g. <em>Acne; Dark spots</em></li>
+                <li><code>benefits</code>: one per line inside the cell</li>
+                <li><code>is_best_seller</code> / <code>is_featured</code>: 1 or 0</li>
+            </ul>
+            <p class="text-3 mb-0">Tip: Export your current products first to see the exact format.</p>
+        </div></div>
+    </div>
+</div>
+{% endblock %}

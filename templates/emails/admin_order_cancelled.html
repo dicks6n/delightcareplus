@@ -1,0 +1,7 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h2 style="margin:0 0 8px;">Order {{ order.number }} was cancelled</h2>
+<p style="color:#4b5563;line-height:1.6;">{{ order.full_name }} · KES {{ order.total|floatformat:0 }}{% if order.cancellation_reason %}<br>Reason: “{{ order.cancellation_reason }}”{% endif %}</p>
+{% if order.paid_at %}<p style="color:#b91c1c;"><strong>This order was paid — a refund is needed.</strong></p>{% endif %}
+{% url 'dashboard:order' order.number as path %}{% include "emails/_button.html" with url=site_url|add:path label="Open in dashboard" %}
+{% endblock %}

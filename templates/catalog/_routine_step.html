@@ -1,0 +1,12 @@
+{% load static %}
+<div class="routine-step">
+    <input type="hidden" name="product" value="{{ r.product.id }}">
+    <span class="num">{{ forloop.counter }}</span>
+    <a href="{{ r.product.get_absolute_url }}">{% if r.product.image %}<img src="{{ r.product.image.url }}" alt="">{% else %}<img src="{% static 'img/placeholder.png' %}" alt="">{% endif %}</a>
+    <div>
+        <div class="p-brand">{{ r.label }} · {{ r.when }}</div>
+        <a href="{{ r.product.get_absolute_url }}" class="text-white fw-semibold">{{ r.product.name }}</a>
+        <div class="text-3" style="font-size:.8rem;">{{ r.product.brand.flag }} {{ r.product.brand.name }}{% if r.product.short_description %} · {{ r.product.short_description|truncatechars:70 }}{% endif %}</div>
+    </div>
+    <strong class="pr">KES {{ r.product.price|floatformat:0 }}</strong>
+</div>

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Verify your product — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl py-5" style="max-width:720px;">
+    <div class="text-center">
+        <div class="phone-anim" style="animation:none;"><i class="fa-solid fa-shield-halved"></i></div>
+        <h1 class="display-serif">Is my product genuine?</h1>
+        <p class="text-2">Every box we sell carries a batch / lot number (usually printed on the bottom or near the expiry date). Enter it below to see where it came from and when it expires.</p>
+    </div>
+    <form method="get" class="d-flex gap-2 mt-4">
+        <input class="input" name="code" value="{{ code }}" placeholder="e.g. KR24-0156" style="text-transform:uppercase;" aria-label="Batch code" autofocus>
+        <button class="btn-glow" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Verify</button>
+    </form>
+
+    {% if searched %}
+        {% if batch %}
+        <div class="verify-result {% if batch.is_expired %}bad{% else %}ok{% endif %}">
+            <div class="d-flex gap-3 align-items-center flex-wrap">
+                {% if batch.product.image %}<img src="{{ batch.product.image.url }}" alt="" style="width:96px;height:96px;object-fit:cover;border-radius:16px;">{% endif %}
+                <div>
+                    {% if batch.is_expired %}
+                    <h4 class="mb-1" style="color:#fca5a5;"><i class="fa-solid fa-triangle-exclamation"></i> Genuine — but expired</h4>
+                    <p class="text-2 mb-0">This batch passed its expiry date. Please don't use it — chat with us and we'll help.</p>
+                    {% else %}
+                    <h4 class="mb-1 text-green"><i class="fa-solid fa-circle-check"></i> Genuine Delight Care Plus stock</h4>
+                    <p class="text-2 mb-0">This batch was imported and sold by us.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row g-3 mt-2" style="font-size:.9rem;">
+                <div class="col-sm-6"><span class="text-3">Product</span><br><a href="{{ batch.product.get_absolute_url }}" class="text-white fw-semibold">{{ batch.product.name }}</a></div>
+                <div class="col-sm-6"><span class="text-3">Collection</span><br><strong>{{ batch.product.brand.flag }} {{ batch.product.brand.name }}</strong></div>
+                <div class="col-sm-4"><span class="text-3">Batch</span><br><strong>{{ batch.code }}</strong></div>
+                {% if batch.manufactured_on %}<div class="col-sm-4"><span class="text-3">Made</span><br><strong>{{ batch.manufactured_on|date:"M Y" }}</strong></div>{% endif %}
+                <div class="col-sm-4"><span class="text-3">Expires</span><br><strong>{{ batch.expiry_date|date:"M Y" }}</strong></div>
+            </div>
+        </div>
+        {% else %}
+        <div class="verify-result bad">
+            <h4 class="mb-1"><i class="fa-solid fa-circle-question"></i> We couldn't find “{{ code }}”</h4>
+            <p class="text-2">Double-check the code (letters O and 0 are easy to mix up). If you bought it elsewhere, it may not be from our stock.</p>
+            <button class="btn-ghost" data-chat-open="Hi, I couldn't verify batch code {{ code }} — can you help?"><i class="fa-regular fa-comment"></i> Ask us to check</button>
+        </div>
+        {% endif %}
+    {% endif %}
+
+    <div class="row g-3 mt-4">
+        <div class="col-md-4"><div class="glass pad h-100 text-center"><i class="fa-solid fa-barcode text-green fs-3"></i><div class="fw-semibold mt-2">Every batch logged</div><small class="text-3">Codes and expiry dates are recorded when stock arrives</small></div></div>
+        <div class="col-md-4"><div class="glass pad h-100 text-center"><i class="fa-regular fa-calendar-check text-green fs-3"></i><div class="fw-semibold mt-2">Know your expiry</div><small class="text-3">See exactly when your batch expires before you use it</small></div></div>
+        <div class="col-md-4"><div class="glass pad h-100 text-center"><i class="fa-regular fa-comments text-green fs-3"></i><div class="fw-semibold mt-2">Not sure? Ask us</div><small class="text-3">Send a photo of the box in the chat and we'll check it</small></div></div>
+    </div>
+</div>
+{% endblock %}

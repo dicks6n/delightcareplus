@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+    <div class="container-xl">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6" data-hero-copy>
+                <span class="eyebrow"><i class="fa-solid fa-leaf me-1"></i> France · Japan · USA — delivered in Kenya</span>
+                <h1 class="display-serif">Beauty that starts <span class="text-gradient">from within.</span></h1>
+                <p class="lead">Genuine supplements, serums, face masks and wellness teas — batch-coded, delivered to your door, paid with M-Pesa.</p>
+                <div class="d-flex gap-2 flex-wrap mt-4">
+                    <a href="{% url 'catalog:shop' %}" class="btn-glow"><i class="fa-solid fa-bag-shopping"></i> Shop now</a>
+                    <a href="{% url 'catalog:routine' %}" class="btn-ghost"><i class="fa-solid fa-wand-magic-sparkles"></i> Find my routine</a>
+                </div>
+                <div class="hero-stats">
+                    <div><strong>🇫🇷 🇯🇵 🇺🇸</strong><span>3 collections</span></div>
+                    <div><strong><i class="fa-solid fa-shield-halved text-green"></i></strong><span>Batch codes you can check</span></div>
+                    <div><strong><i class="fa-solid fa-truck-fast text-green"></i></strong><span>Delivery countrywide</span></div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-visual" aria-hidden="true" data-hero-stage>
+                    <div class="orb"></div>
+                    {% for p in hero_pool|slice:":3" %}
+                    <a class="hero-product p{{ forloop.counter }}" href="{{ p.url }}" tabindex="-1" data-depth="{% cycle '1' '0.6' '0.8' %}">
+                        <div class="hp-float"><img src="{{ p.img }}" alt=""></div>
+                    </a>
+                    {% endfor %}
+                    <div class="hero-tag" style="left:0; bottom:14%;"><i class="fa-solid fa-shield-halved"></i><div><strong>Verify any product</strong><br><span class="text-3">Scan the batch code</span></div></div>
+                    <div class="hero-tag" style="right:0; top:46%;"><i class="fa-solid fa-mobile-screen-button"></i><div><strong>M-Pesa checkout</strong><br><span class="text-3">PIN prompt on your phone</span></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{ hero_pool|json_script:"heroPool" }}
+
+<!-- ================= BANNER SLIDESHOW (Seller Center → Home banners) ================= -->
+{% if banners %}
+<section class="section-sm pb-0">
+    <div class="container-xl">
+        <div class="banner-show" data-banner-show aria-roledescription="carousel" aria-label="Offers">
+            {% for b in banners %}
+            <a href="{{ b.link }}" class="banner-slide{% if forloop.first %} is-active{% endif %}" aria-roledescription="slide"
+               aria-label="{{ forloop.counter }} of {{ banners|length }}: {{ b.title }}"{% if not forloop.first %} aria-hidden="true" tabindex="-1"{% endif %}>
+                <img src="{{ b.image.url }}" alt="" class="banner-img"{% if not forloop.first %} loading="lazy"{% endif %}>
+                <div class="banner-copy">
+                    <h2>{{ b.title }}</h2>
+                    {% if b.subtitle %}<p>{{ b.subtitle }}</p>{% endif %}
+                    <span class="btn-glow">{{ b.button_text }} <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </a>
+            {% endfor %}
+            {% if banners|length > 1 %}
+            <button type="button" class="banner-nav prev" data-dir="-1" aria-label="Previous slide"><i class="fa-solid fa-chevron-left"></i></button>
+            <button type="button" class="banner-nav next" data-dir="1" aria-label="Next slide"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="banner-dots">
+                {% for b in banners %}<button type="button" class="{% if forloop.first %}on{% endif %}" data-go="{{ forloop.counter0 }}" aria-label="Go to slide {{ forloop.counter }}"><span></span></button>{% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ================= BRANDS ================= -->
+{% if brands %}
+<section class="section-sm">
+    <div class="container-xl">
+        <div class="section-head" data-reveal>
+            <div><span class="eyebrow">Our collections</span><h2>Three collections. <span>One ritual.</span></h2></div>
+            <a href="{% url 'catalog:brands' %}" class="see-all">All brands <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="brand-strip" data-reveal-group>
+            {% for b in brands %}
+            <a href="{{ b.get_absolute_url }}" class="brand-tile" style="--accent: {{ b.accent_color }};">
+                {% if b.banner %}<img class="bg" src="{{ b.banner.url }}" alt="" loading="lazy">{% endif %}
+                <span class="flag">{{ b.flag }}</span>
+                <h3>{{ b.name }}</h3>
+                <p>{{ b.tagline }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ================= DEPARTMENTS ================= -->
+<section class="section-sm">
+    <div class="container-xl">
+        <div class="section-head" data-reveal>
+            <div><span class="eyebrow">Shop by need</span><h2>What are you <span>looking for?</span></h2></div>
+        </div>
+        <div class="dept-grid" data-reveal-group>
+            {% for dept in departments %}
+                {% for cat in dept.categories.all %}{% if cat.is_active %}
+                <a href="{{ cat.get_absolute_url }}" class="dept-tile">
+                    <div class="ic"><i class="{{ cat.icon }}"></i></div>
+                    <strong>{{ cat.name }}</strong>
+                    <small>{{ dept.name }}</small>
+                </a>
+                {% endif %}{% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ================= BEST SELLERS ================= -->
+{% if best_sellers %}
+<section class="section">
+    <div class="container-xl">
+        <div class="section-head" data-reveal>
+            <div><span class="eyebrow">Loved in Kenya</span><h2>Best <span>sellers</span></h2><p>The products our customers reorder again and again.</p></div>
+            <a href="{% url 'catalog:shop' %}?sort=popular" class="see-all">See all <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="p-grid" data-reveal-group>
+            {% for product in best_sellers %}{% include 'partials/product_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ================= ROUTINE FINDER BAND ================= -->
+<section class="section-sm">
+    <div class="container-xl">
+        <div class="feature-band">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7">
+                    <span class="eyebrow">New · only at Delight Care Plus</span>
+                    <h2 class="display-serif mt-2">Your personal routine in 60 seconds.</h2>
+                    <p class="text-2 mb-4">Tell us your skin type and goals. We'll build a morning, evening and inside-out routine from our France, Japan and USA collections — with <strong class="text-green">5% off</strong> when you add it all.</p>
+                    <a href="{% url 'catalog:routine' %}" class="btn-glow"><i class="fa-solid fa-wand-magic-sparkles"></i> Start the Routine Finder</a>
+                </div>
+                <div class="col-lg-5">
+                    <div class="row g-2">
+                        <div class="col-6"><div class="glass pad text-center"><i class="fa-solid fa-sun text-green fs-3"></i><div class="mt-2 fw-semibold">AM routine</div><small class="text-3">Cleanse · Serum · Protect</small></div></div>
+                        <div class="col-6"><div class="glass pad text-center"><i class="fa-solid fa-moon text-green fs-3"></i><div class="mt-2 fw-semibold">PM routine</div><small class="text-3">Cleanse · Treat · Mask</small></div></div>
+                        <div class="col-6"><div class="glass pad text-center"><i class="fa-solid fa-capsules text-green fs-3"></i><div class="mt-2 fw-semibold">Inside-out</div><small class="text-3">Daily supplement</small></div></div>
+                        <div class="col-6"><div class="glass pad text-center"><i class="fa-solid fa-mug-hot text-green fs-3"></i><div class="mt-2 fw-semibold">Ritual</div><small class="text-3">Wellness tea</small></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= SKINCARE ================= -->
+{% if skincare %}
+<section class="section">
+    <div class="container-xl">
+        <div class="section-head" data-reveal>
+            <div><span class="eyebrow">Glow edit</span><h2>Serums, masks <span>&amp; skincare</span></h2></div>
+            <a href="{% url 'catalog:department' 'skincare' %}" class="see-all">All skincare <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="p-grid" data-reveal-group>{% for product in skincare %}{% include 'partials/product_card.html' %}{% endfor %}</div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ================= ON SALE ================= -->
+{% if on_sale %}
+<section class="section-sm">
+    <div class="container-xl">
+        <div class="section-head" data-reveal>
+            <div><span class="eyebrow" style="color:var(--gold)">Limited time</span><h2>Today's <span>deals</span></h2></div>
+            <a href="{% url 'catalog:shop' %}?on_sale=1" class="see-all">All deals <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="p-grid" data-reveal-group>{% for product in on_sale %}{% include 'partials/product_card.html' %}{% endfor %}</div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ================= TRUST: VERIFY ================= -->
+<section class="section">
+    <div class="container-xl">
+        <div class="row g-4 align-items-stretch" data-reveal-group>
+            <div class="col-lg-6">
+                <div class="glass glass-green pad-lg h-100">
+                    <i class="fa-solid fa-shield-halved fs-1 text-green"></i>
+                    <h3 class="mt-3">Fake products are everywhere. <span class="text-green">Ours aren't.</span></h3>
+                    <p class="text-2">Every box we sell has a batch code. Type it in and see exactly where it came from and when it expires — before you put it on your skin.</p>
+                    <form action="{% url 'catalog:verify' %}" method="get" class="d-flex gap-2 mt-3">
+                        <input class="input" name="code" placeholder="Enter batch code, e.g. KR24-0156" aria-label="Batch code">
+                        <button class="btn-glow" type="submit">Verify</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="glass pad-lg h-100">
+                    <i class="fa-solid fa-calendar-check fs-1 text-green"></i>
+                    <h3 class="mt-3">Never run out of your <span class="text-green">daily essentials.</span></h3>
+                    <p class="text-2">We know how long each supplement lasts. A few days before yours runs out, we'll send a friendly reminder with one-tap reorder — and you earn <strong>Glow Points</strong> on every order.</p>
+                    <div class="d-flex gap-3 flex-wrap mt-3 text-2" style="font-size:.88rem;">
+                        <span><i class="fa-solid fa-check text-green me-1"></i> Refill reminders</span>
+                        <span><i class="fa-solid fa-check text-green me-1"></i> 1 point per KES 100</span>
+                        <span><i class="fa-solid fa-check text-green me-1"></i> Points = cash off</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= TEA ================= -->
+{% if teas %}
+<section class="section-sm">
+    <div class="container-xl">
+        <div class="section-head" data-reveal>
+            <div><span class="eyebrow">Daily rituals</span><h2>Wellness <span>teas</span></h2></div>
+            <a href="{% url 'catalog:department' 'tea' %}" class="see-all">All teas <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="p-grid" data-reveal-group>{% for product in teas %}{% include 'partials/product_card.html' %}{% endfor %}</div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ================= NEW ARRIVALS ================= -->
+{% if new_arrivals %}
+<section class="section">
+    <div class="container-xl">
+        <div class="section-head" data-reveal>
+            <div><span class="eyebrow">Just landed</span><h2>New <span>arrivals</span></h2></div>
+            <a href="{% url 'catalog:shop' %}?sort=newest" class="see-all">See all <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="rail" data-reveal-group>{% for product in new_arrivals %}{% include 'partials/product_card.html' %}{% endfor %}</div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ================= RECENTLY VIEWED ================= -->
+{% if recently_viewed %}
+<section class="section-sm">
+    <div class="container-xl">
+        <div class="section-head" data-reveal><div><h2>Pick up where you <span>left off</span></h2></div></div>
+        <div class="p-grid" data-reveal-group>{% for product in recently_viewed %}{% include 'partials/product_card.html' %}{% endfor %}</div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ================= TESTIMONIALS ================= -->
+{% if testimonials %}
+<section class="section">
+    <div class="container-xl">
+        <div class="section-head" data-reveal><div><span class="eyebrow">Real customers</span><h2>What Kenya <span>is saying</span></h2></div></div>
+        <div class="row g-3" data-reveal-group>
+            {% for t in testimonials %}
+            <div class="col-md-6 col-lg-4">
+                <div class="glass testimonial">
+                    <div class="stars mb-2">{% include 'partials/stars.html' with value=t.rating %}</div>
+                    <p>“{{ t.quote }}”</p>
+                    <strong>{{ t.name }}</strong>{% if t.location %} <span class="text-3">· {{ t.location }}</span>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ================= JOURNAL ================= -->
+{% if posts %}
+<section class="section-sm">
+    <div class="container-xl">
+        <div class="section-head" data-reveal>
+            <div><span class="eyebrow">Wellness journal</span><h2>Learn from <span>the experts</span></h2></div>
+            <a href="{% url 'blog:list' %}" class="see-all">All articles <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="row g-3" data-reveal-group>
+            {% for post in posts %}
+            <div class="col-md-4">{% include 'blog/_card.html' %}</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}
+
+{% block head %}
+<script>
+    // Hide animated parts until Motion is ready, so they don't flash before animating in.
+    // If Motion never loads, they're shown again after 2.5s (see motion-home.js / the fallback below).
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('motion-pending');
+        setTimeout(function () { document.documentElement.classList.remove('motion-pending'); }, 2500);
+    }
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/motion@12.23.24/dist/motion.js"></script>
+<script src="{% static 'js/motion-home.js' %}?v=1"></script>
+{% endblock %}

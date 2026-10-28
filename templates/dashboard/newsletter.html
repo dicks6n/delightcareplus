@@ -1,0 +1,10 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Newsletter{% endblock %}
+{% block content %}
+<div class="d-head"><div><h1>Newsletter</h1><p>{{ page_obj.paginator.count }} footer sign-ups · {{ members }} members opted in. Export and import into Mailchimp, Brevo or Google Contacts.</p></div>
+    <a href="?export=csv" class="btn-d primary"><i class="fa-solid fa-file-csv"></i> Export all emails</a></div>
+<div class="card-d"><div class="bd flush t-wrap"><table class="t"><thead><tr><th>Email</th><th>Since</th></tr></thead><tbody>
+{% for s in page_obj %}<tr><td>{{ s.email }}</td><td>{{ s.created_at|date:"M j, Y" }}</td></tr>{% empty %}<tr><td colspan="2"><div class="empty-d">No sign-ups yet.</div></td></tr>{% endfor %}
+</tbody></table></div></div>
+{% include 'partials/pager.html' %}
+{% endblock %}

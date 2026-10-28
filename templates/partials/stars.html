@@ -1,0 +1,1 @@
+{% spaceless %}{% for i in "12345" %}{% if value >= forloop.counter %}<i class="fa-solid fa-star"></i>{% elif value >= forloop.counter|add:"-0.5" %}<i class="fa-solid fa-star-half-stroke"></i>{% else %}<i class="fa-solid fa-star off"></i>{% endif %}{% endfor %}{% endspaceless %}

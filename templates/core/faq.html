@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}FAQ — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl page-hero"><h1 class="display-serif">Frequently asked questions</h1><p>Can't find your answer? <button class="link-btn text-green" data-chat-open="">Chat with us</button>.</p></div>
+<div class="container-xl pb-5" style="max-width:860px;">
+    <div class="glass pad-lg faq">
+        <details open><summary>Are your products genuine?</summary><p>Yes. Every batch we stock is logged with its batch code and expiry date. You can check the code on your box on our <a href="{% url 'catalog:verify' %}">Verify Product</a> page.</p></details>
+        <details><summary>How much is delivery?</summary><p>It depends on your town, whether you pick up from a station or want door delivery, and the parcel weight. You'll see the exact price in your bag before paying. <a href="{% url 'core:policy' 'delivery' %}">See all delivery prices</a>.</p></details>
+        <details><summary>How do I pay with M-Pesa?</summary><p>Choose M-Pesa at checkout. We send a payment prompt to your phone — enter your PIN and you're done. The page updates automatically when the payment arrives.</p></details>
+        <details><summary>Can I pay on delivery?</summary><p>{% if shop.pay_on_delivery %}Yes — choose “Pay on delivery” at checkout and pay the rider with cash or M-Pesa when your parcel arrives.{% else %}Not at the moment. Please pay with M-Pesa or Airtel Money.{% endif %}</p></details>
+        <details><summary>How do Glow Points work?</summary><p>Members earn 1 Glow Point for every KES 100 spent, credited when the order is delivered. Each point is worth KES 1 and can pay up to 20% of a future order.</p></details>
+        <details><summary>What are refill reminders?</summary><p>For supplements and teas, we know how many days one pack lasts. A few days before yours runs out, we send a short email with a one-tap reorder link.</p></details>
+        <details><summary>Can I cancel my order?</summary><p>Yes, until it's packed and shipped. Open the order from “My orders” (or Track order) and tap Cancel. If you'd already paid, we refund you.</p></details>
+        <details><summary>Are supplements safe for me?</summary><p>Our supplements are food supplements, not medicines. If you're pregnant, breastfeeding, have a medical condition or take medication, please check with your doctor before starting a new supplement.</p></details>
+    </div>
+</div>
+{% endblock %}

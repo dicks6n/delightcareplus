@@ -1,0 +1,27 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}Customers{% endblock %}
+{% block content %}
+<div class="d-head"><div><h1>Customers</h1><p>Everyone with an account, their orders and spend.</p></div><a href="?{{ querystring }}&export=csv" class="btn-d"><i class="fa-solid fa-file-csv"></i> Export</a></div>
+<form class="filters-d" method="get">
+    <input class="inp" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Name, email or phone">
+    <select class="inp" name="sort" onchange="this.form.submit()">
+        <option value="-date_joined">Newest</option><option value="-spent" {% if request.GET.sort == '-spent' %}selected{% endif %}>Top spenders</option>
+        <option value="-orders_n" {% if request.GET.sort == '-orders_n' %}selected{% endif %}>Most orders</option><option value="-last_order" {% if request.GET.sort == '-last_order' %}selected{% endif %}>Recently ordered</option>
+    </select>
+    <button class="btn-d" type="submit">Search</button>
+</form>
+<div class="card-d"><div class="bd flush t-wrap"><table class="t">
+    <thead><tr><th>Customer</th><th>Phone</th><th>Town</th><th>Orders</th><th>Spent</th><th>Last order</th><th>Joined</th></tr></thead>
+    <tbody>
+    {% for c in page_obj %}
+    <tr onclick="location.href='{% url 'dashboard:customer' c.pk %}'" style="cursor:pointer">
+        <td><strong>{{ c.get_full_name|default:c.username }}</strong><br><small class="text-3">{{ c.email }}</small></td>
+        <td>{{ c.profile.phone|default:"—" }}</td><td>{{ c.profile.city|default:"—" }}</td>
+        <td>{{ c.orders_n }}</td><td class="pri">KES {{ c.spent|default:0|floatformat:0|intcomma }}</td>
+        <td>{% if c.last_order %}{{ c.last_order|naturaltime }}{% else %}—{% endif %}</td><td>{{ c.date_joined|date:"M j, Y" }}</td>
+    </tr>
+    {% empty %}<tr><td colspan="7"><div class="empty-d"><i class="fa-solid fa-users"></i>No customers yet.</div></td></tr>{% endfor %}
+    </tbody></table></div></div>
+{% include 'partials/pager.html' %}
+{% endblock %}

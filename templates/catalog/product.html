@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }}{% if product.brand %} by {{ product.brand.name }}{% endif %} — Delight Care Plus{% endblock %}
+{% block description %}{{ product.short_description|default:product.description|truncatechars:155 }}{% endblock %}
+{% block og_title %}{{ product.name }}{% endblock %}
+{% block og_image %}{% if product.image %}{{ request.scheme }}://{{ request.get_host }}{{ product.image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+{% block head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ product.name|escapejs }}",
+  {% if product.image %}"image": "{{ request.scheme }}://{{ request.get_host }}{{ product.image.url }}",{% endif %}
+  "description": "{{ product.short_description|default:product.description|truncatechars:300|escapejs }}",
+  {% if product.brand %}"brand": {"@type": "Brand", "name": "{{ product.brand.name|escapejs }}"},{% endif %}
+  {% if rating.count %}"aggregateRating": {"@type": "AggregateRating", "ratingValue": "{{ rating.avg }}", "reviewCount": "{{ rating.count }}"},{% endif %}
+  "offers": {"@type": "Offer", "priceCurrency": "KES", "price": "{{ product.price|floatformat:0 }}",
+             "availability": "https://schema.org/{% if product.in_stock %}InStock{% else %}OutOfStock{% endif %}"}
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container-xl pt-4 pb-5">
+    {% include 'partials/crumbs.html' %}
+
+    {% if product.is_sample and user.is_staff %}
+    <div class="flash warning"><i class="fa-solid fa-circle-info"></i><span>This is a <strong>sample product</strong> created by the setup script. Edit it with your real details or delete it from the Seller Center.</span>
+        <a href="{% url 'dashboard:product_edit' product.pk %}" class="btn-soft btn-sm-pill ms-auto">Edit</a></div>
+    {% endif %}
+
+    <div class="pdp mt-3">
+        <!-- Gallery -->
+        <div class="gallery">
+            <div class="gallery-main" id="galleryMain">
+                {% if gallery %}<img src="{{ gallery.0.url }}" alt="{{ product.name }}" id="mainImg">{% else %}<img src="{% static 'img/placeholder.png' %}" alt="">{% endif %}
+                <div class="p-badges">
+                    {% if product.discount_percent %}<span class="p-badge sale">-{{ product.discount_percent }}%</span>{% endif %}
+                    {% if product.is_best_seller %}<span class="p-badge best"><i class="fa-solid fa-crown"></i> Best seller</span>{% endif %}
+                </div>
+            </div>
+            {% if gallery|length > 1 %}
+            <div class="thumbs">
+                {% for img in gallery %}
+                <button type="button" class="{% if forloop.first %}active{% endif %}" data-src="{{ img.url }}" aria-label="Photo {{ forloop.counter }}"><img src="{{ img.url }}" alt=""></button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Buy box -->
+        <div>
+            {% if product.brand %}
+            <a href="{{ product.brand.get_absolute_url }}" class="pdp-brand">{{ product.brand.flag }} {{ product.brand.name }} <span class="text-3">collection</span></a>
+            {% endif %}
+            <h1>{{ product.name }}</h1>
+            <div class="pdp-rating">
+                {% if rating.count %}
+                <a href="#reviews" class="d-flex align-items-center gap-2 text-3"><span class="stars">{% include 'partials/stars.html' with value=rating.avg %}</span> {{ rating.avg }} · {{ rating.count }} review{{ rating.count|pluralize }}</a>
+                {% else %}<a href="#reviews" class="text-3">Be the first to review</a>{% endif %}
+                {% if product.size_label %}<span>· {{ product.size_label }}</span>{% endif %}
+            </div>
+
+            <div class="pdp-price">
+                <strong id="pdpPrice">KES {{ variants.0.price|default:product.price|floatformat:0 }}</strong>
+                {% if product.discount_percent %}<del>KES {{ product.compare_price|floatformat:0 }}</del><span class="save-pill">Save KES {{ product.savings|floatformat:0 }}</span>{% endif %}
+            </div>
+            {% if product.short_description %}<p class="pdp-short">{{ product.short_description }}</p>{% endif %}
+
+            {% if concerns %}
+            <div class="chip-row">{% for c in concerns %}<a class="chip" href="{{ c.get_absolute_url }}">{{ c.emoji }} {{ c.name }}</a>{% endfor %}</div>
+            {% endif %}
+
+            {% if product.in_stock %}
+            <form class="js-add" action="{% url 'cart:add' %}" method="post" id="buyForm">
+                {% csrf_token %}
+                <input type="hidden" name="product" value="{{ product.id }}">
+                {% if variants|length > 1 %}
+                <div class="opt-label">Choose size</div>
+                <div class="variants">
+                    {% for v in variants %}
+                    <label class="{% if v.stock <= 0 %}disabled{% endif %}">
+                        <input type="radio" name="variant" value="{{ v.id }}" data-price="{{ v.price|floatformat:0 }}" {% if forloop.first %}checked{% endif %} {% if v.stock <= 0 %}disabled{% endif %}>
+                        {{ v.label }}<small>KES {{ v.price|floatformat:0 }}</small>
+                    </label>
+                    {% endfor %}
+                </div>
+                {% elif variants %}
+                <input type="hidden" name="variant" value="{{ variants.0.id }}">
+                {% endif %}
+
+                <div class="buy-row">
+                    <div class="qty"><button type="button" data-step="-1" aria-label="Less">−</button><input name="quantity" value="1" max="{{ product.stock }}" inputmode="numeric" aria-label="Quantity"><button type="button" data-step="1" aria-label="More">+</button></div>
+                    <button type="submit" class="btn-glow"><i class="fa-solid fa-bag-shopping"></i> Add to bag</button>
+                    <button type="submit" name="buy_now" value="1" class="btn-soft"><i class="fa-solid fa-bolt"></i> Buy now</button>
+                </div>
+            </form>
+            {% if product.low_stock %}<p class="p-low mt-2 mb-0"><i class="fa-solid fa-fire"></i> Hurry — only {{ product.stock }} left in stock</p>{% endif %}
+            {% else %}
+            <div class="glass pad mt-3" id="notify">
+                <strong><i class="fa-regular fa-bell text-green me-1"></i> Sold out — we're restocking</strong>
+                <p class="text-2 mb-2" style="font-size:.88rem;">Leave your email and we'll tell you the moment it's back.</p>
+                <form class="d-flex gap-2" id="notifyForm" action="{% url 'catalog:stock_alert' product.pk %}" method="post">
+                    {% csrf_token %}
+                    <input class="input" type="email" name="email" required placeholder="you@email.com" value="{{ user.email|default:'' }}" aria-label="Email">
+                    <button class="btn-glow" type="submit">Notify me</button>
+                </form>
+                <div class="msg-line mt-2"></div>
+            </div>
+            {% endif %}
+
+            <div class="d-flex gap-3 mt-3 flex-wrap" style="font-size:.85rem;">
+                <button type="button" class="link-btn js-wish {% if product.id in wishlist_ids %}on{% endif %}" data-id="{{ product.id }}"><i class="fa-{% if product.id in wishlist_ids %}solid{% else %}regular{% endif %} fa-heart"></i> Save</button>
+                <button type="button" class="link-btn js-compare" data-id="{{ product.id }}"><i class="fa-solid fa-code-compare"></i> Compare</button>
+                <a class="link-btn" href="https://wa.me/?text={{ product.name|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Share</a>
+                <button type="button" class="link-btn" data-chat-open="Hi! I have a question about {{ product.name }}"><i class="fa-regular fa-comment"></i> Ask an expert</button>
+            </div>
+
+            {% if product.days_supply %}
+            <div class="supply-card">
+                <div class="ring" style="--pct: 100%;"><span>{{ product.days_supply }}</span></div>
+                <p><strong>One pack lasts about {{ product.days_supply }} days</strong> ({{ product.daily_servings }} a day).
+                    We'll remind you before it runs out so you never break your routine.</p>
+            </div>
+            {% endif %}
+
+            {% if product.badges %}
+            <div class="badge-row">{% for icon, label in product.badges %}<span class="trust-badge"><i class="{{ icon }}"></i> {{ label }}</span>{% endfor %}</div>
+            {% endif %}
+
+            <div class="auth-card">
+                <i class="fa-solid fa-shield-halved"></i>
+                <div>
+                    <strong class="text-white">Authentic product</strong>
+                    {% if batch %}· Current batch expires <strong class="text-white">{{ batch.expiry_date|date:"M Y" }}</strong>{% endif %}<br>
+                    Check the batch code on your box at <a href="{% url 'catalog:verify' %}">Verify Product</a>.
+                </div>
+            </div>
+
+            <div class="assure">
+                <div><i class="fa-solid fa-truck-fast"></i>Delivery countrywide</div>
+                <div><i class="fa-solid fa-mobile-screen-button"></i>Pay with M-Pesa</div>
+                <div><i class="fa-solid fa-rotate-left"></i>Easy returns</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Frequently bought together -->
+    {% if together %}
+    <section class="section-sm">
+        <div class="glass pad-lg">
+            <h3 class="mb-3">Frequently bought together</h3>
+            <form action="{% url 'catalog:routine_add' %}" method="post" class="d-flex flex-wrap align-items-center gap-4">
+                {% csrf_token %}
+                <div class="together">
+                    <div class="tg-item">{% if product.image %}<img src="{{ product.image.url }}" alt="">{% endif %}<div>This item</div></div>
+                    <input type="hidden" name="product" value="{{ product.id }}">
+                    {% for p in together %}
+                    <span class="plus">+</span>
+                    <a class="tg-item" href="{{ p.get_absolute_url }}">{% if p.image %}<img src="{{ p.image.url }}" alt="">{% endif %}<div>{{ p.name|truncatechars:34 }}</div><strong class="text-white">KES {{ p.price|floatformat:0 }}</strong></a>
+                    <input type="hidden" name="product" value="{{ p.id }}">
+                    {% endfor %}
+                </div>
+                <button class="btn-glow" type="submit"><i class="fa-solid fa-bag-shopping"></i> Add all {{ together|length|add:1 }} to bag</button>
+            </form>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Details tabs -->
+    <section class="section-sm">
+        <div class="glass pad-lg">
+            <div class="tabs-x" role="tablist">
+                <button class="active" data-tab="desc" role="tab">Description</button>
+                {% if product.benefit_list %}<button data-tab="benefits" role="tab">Benefits</button>{% endif %}
+                {% if product.ingredients %}<button data-tab="ingredients" role="tab">Ingredients</button>{% endif %}
+                {% if product.how_to_use %}<button data-tab="use" role="tab">How to use</button>{% endif %}
+                <button data-tab="delivery" role="tab">Delivery</button>
+            </div>
+            <div class="tab-pane-x active" data-pane="desc">{{ product.description|default:product.short_description|linebreaks }}
+                {% if product.skin_type %}<p><strong class="text-white">Suitable for:</strong> {{ product.skin_type }}</p>{% endif %}
+            </div>
+            {% if product.benefit_list %}<div class="tab-pane-x" data-pane="benefits"><ul>{% for b in product.benefit_list %}<li>{{ b }}</li>{% endfor %}</ul></div>{% endif %}
+            {% if product.ingredients %}<div class="tab-pane-x" data-pane="ingredients">{{ product.ingredients|linebreaks }}</div>{% endif %}
+            {% if product.how_to_use %}<div class="tab-pane-x" data-pane="use">{{ product.how_to_use|linebreaks }}
+                <p class="text-3" style="font-size:.82rem;">Supplements are not a substitute for a balanced diet. If you're pregnant, breastfeeding or on medication, check with your doctor first.</p></div>{% endif %}
+            <div class="tab-pane-x" data-pane="delivery">
+                <p>We deliver anywhere in Kenya. Pick up from a station near you for less, or have it brought to your door. Prices depend on your town and parcel weight — you'll see the exact amount before you pay.</p>
+                <a href="{% url 'core:policy' 'delivery' %}">See delivery prices →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews -->
+    <section class="section-sm" id="reviews">
+        <div class="glass pad-lg">
+            <h3 class="mb-4">Customer reviews</h3>
+            <div class="reviews-top">
+                <div class="text-center">
+                    <div class="big-score">{% if rating.count %}{{ rating.avg }}{% else %}–{% endif %}</div>
+                    <div class="stars my-2" style="font-size:1rem;">{% include 'partials/stars.html' with value=rating.avg %}</div>
+                    <div class="text-3" style="font-size:.85rem;">{{ rating.count }} review{{ rating.count|pluralize }}</div>
+                </div>
+                <div>
+                    {% for row in breakdown %}
+                    <div class="bar-row"><span>{{ row.stars }} ★</span><div class="track"><div class="fill" style="width: {{ row.percent }}%"></div></div><span>{{ row.count }}</span></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'catalog:review' product.slug %}" class="glass pad mt-4">
+                {% csrf_token %}
+                <strong>{% if user_review %}Update your review{% else %}Write a review{% endif %}</strong>
+                {% if has_bought %}<span class="verified ms-2" style="font-size:.8rem;"><i class="fa-solid fa-circle-check"></i> Verified purchase</span>{% endif %}
+                <div class="star-pick d-flex mt-2 mb-2" role="radiogroup" aria-label="Your rating">
+                    {% for n in "54321" %}
+                    <input type="radio" id="rs{{ n }}" name="rating" value="{{ n }}" {% if user_review and user_review.rating|stringformat:"d" == n %}checked{% endif %} required>
+                    <label for="rs{{ n }}" title="{{ n }} stars"><i class="fa-solid fa-star"></i></label>
+                    {% endfor %}
+                </div>
+                <div class="field"><input name="title" maxlength="120" placeholder="Headline — e.g. My skin is glowing!" value="{{ user_review.title|default:'' }}"></div>
+                <div class="field"><textarea name="comment" rows="3" maxlength="2000" placeholder="What did you like? How long did you use it?">{{ user_review.comment|default:'' }}</textarea></div>
+                <button class="btn-glow" type="submit">{% if user_review %}Update{% else %}Post{% endif %} review</button>
+            </form>
+            {% else %}
+            <p class="text-2 mt-4"><a href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}%23reviews">Log in</a> to write a review.</p>
+            {% endif %}
+
+            <div class="mt-3">
+                {% for r in reviews %}
+                <div class="review">
+                    <div class="who"><span class="stars">{% include 'partials/stars.html' with value=r.rating %}</span>
+                        <strong class="text-white">{{ r.user.first_name|default:r.user.username }}</strong>
+                        {% if r.is_verified_buyer %}<span class="verified"><i class="fa-solid fa-circle-check"></i> Verified buyer</span>{% endif %}
+                        <span>{{ r.created_at|date:"M j, Y" }}</span></div>
+                    {% if r.title %}<h6>{{ r.title }}</h6>{% endif %}
+                    {% if r.comment %}<p>{{ r.comment }}</p>{% endif %}
+                </div>
+                {% empty %}
+                <p class="text-3 mb-0">No reviews yet — tried it? Tell others what you think. 🌿</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {% if same_brand %}
+    <section class="section-sm">
+        <div class="section-head"><div><h2>More from <span>{{ product.brand.name }}</span></h2></div><a class="see-all" href="{{ product.brand.get_absolute_url }}">View brand <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="p-grid">{% for product in same_brand %}{% include 'partials/product_card.html' %}{% endfor %}</div>
+    </section>
+    {% endif %}
+
+    {% if related %}
+    <section class="section-sm">
+        <div class="section-head"><div><h2>You may also <span>like</span></h2></div></div>
+        <div class="p-grid">{% for product in related %}{% include 'partials/product_card.html' %}{% endfor %}</div>
+    </section>
+    {% endif %}
+</div>
+
+{% if product.in_stock %}
+<div class="sticky-buy only-mobile" id="stickyBuy">
+    {% if product.image %}<img src="{{ product.image.url }}" alt="">{% endif %}
+    <div class="nm"><span class="text-3">{{ product.name|truncatechars:30 }}</span><strong>KES {{ product.price|floatformat:0 }}</strong></div>
+    <button class="btn-glow btn-sm-pill" type="button" onclick="document.querySelector('#buyForm button[type=submit]').click()"><i class="fa-solid fa-bag-shopping"></i> Add</button>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+    // Gallery thumbs + hover zoom
+    const main = document.getElementById('mainImg');
+    document.querySelectorAll('.thumbs button').forEach(b => b.addEventListener('click', () => {
+        document.querySelectorAll('.thumbs button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        if (main) main.src = b.dataset.src;
+    }));
+    const gm = document.getElementById('galleryMain');
+    if (gm && main && window.matchMedia('(hover: hover)').matches) {
+        gm.addEventListener('mousemove', e => {
+            const r = gm.getBoundingClientRect();
+            main.style.transformOrigin = `${(e.clientX - r.left) / r.width * 100}% ${(e.clientY - r.top) / r.height * 100}%`;
+            gm.classList.add('zoom');
+        });
+        gm.addEventListener('mouseleave', () => gm.classList.remove('zoom'));
+    }
+
+    // Variant price
+    document.querySelectorAll('input[name=variant][data-price]').forEach(r => r.addEventListener('change', () => {
+        document.getElementById('pdpPrice').textContent = 'KES ' + Number(r.dataset.price).toLocaleString('en-KE');
+    }));
+
+    // Tabs
+    document.querySelectorAll('.tabs-x button').forEach(b => b.addEventListener('click', () => {
+        document.querySelectorAll('.tabs-x button').forEach(x => x.classList.toggle('active', x === b));
+        document.querySelectorAll('.tab-pane-x').forEach(p => p.classList.toggle('active', p.dataset.pane === b.dataset.tab));
+    }));
+
+    // Sticky add-to-bag on mobile once the buy box scrolls away
+    const buy = document.getElementById('buyForm'), sticky = document.getElementById('stickyBuy');
+    if (buy && sticky && 'IntersectionObserver' in window) {
+        new IntersectionObserver(([e]) => sticky.classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top < 0)).observe(buy);
+    }
+
+    // Back-in-stock form
+    const nf = document.getElementById('notifyForm');
+    if (nf) nf.addEventListener('submit', e => {
+        e.preventDefault();
+        DCP.post(nf.action, new FormData(nf)).then(d => {
+            const m = nf.parentElement.querySelector('.msg-line');
+            m.className = 'msg-line mt-2 ' + (d.ok ? 'ok' : 'err');
+            m.textContent = d.message;
+        });
+    });
+})();
+</script>
+{% endblock %}

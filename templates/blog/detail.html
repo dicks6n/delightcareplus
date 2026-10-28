@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }} — Delight Care Plus Journal{% endblock %}
+{% block description %}{{ post.excerpt|default:post.body|truncatechars:155 }}{% endblock %}
+{% block og_image %}{% if post.cover %}{{ request.scheme }}://{{ request.get_host }}{{ post.cover.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+{% block content %}
+<article class="container-xl py-5" style="max-width:820px;">
+    <nav class="crumbs"><a href="{% url 'core:home' %}">Home</a><span class="sep">/</span><a href="{% url 'blog:list' %}">Journal</a><span class="sep">/</span><span>{{ post.get_topic_display }}</span></nav>
+    <h1 class="display-serif mt-2">{{ post.title }}</h1>
+    <p class="text-3">{{ post.published_at|date:"F j, Y" }} · {{ post.read_minutes }} min read{% if post.author %} · by {{ post.author.first_name|default:"Delight Care Plus" }}{% endif %}</p>
+    {% if post.cover %}<img src="{{ post.cover.url }}" alt="" class="w-100 my-4" style="border-radius:22px;max-height:440px;object-fit:cover;">{% endif %}
+    <div class="prose">{{ post.body|linebreaks }}</div>
+    <div class="d-flex gap-2 mt-4 flex-wrap">
+        <a class="btn-ghost btn-sm-pill" href="https://wa.me/?text={{ post.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Share</a>
+        <button class="btn-ghost btn-sm-pill" data-chat-open="Hi! I read “{{ post.title }}” and have a question">Ask an expert</button>
+    </div>
+</article>
+{% if products %}
+<section class="container-xl pb-4">
+    <div class="section-head"><div><h2>Shop this <span>article</span></h2></div></div>
+    <div class="p-grid">{% for product in products %}{% include 'partials/product_card.html' %}{% endfor %}</div>
+</section>
+{% endif %}
+{% if more %}
+<section class="container-xl pb-5">
+    <div class="section-head"><div><h2>Keep <span>reading</span></h2></div></div>
+    <div class="row g-3">{% for post in more %}<div class="col-md-4">{% include 'blog/_card.html' %}</div>{% endfor %}</div>
+</section>
+{% endif %}
+{% endblock %}

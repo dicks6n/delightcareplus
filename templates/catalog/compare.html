@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Compare products — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl page-hero pb-2"><h1 class="display-serif">Compare</h1><p>Side by side — up to 4 products.</p></div>
+<div class="container-xl pb-5">
+    {% if products %}
+    <div class="glass pad" style="overflow-x:auto;">
+        <table class="compare-table">
+            <tr><th></th>{% for p in products %}<td><a href="{{ p.get_absolute_url }}">{% if p.image %}<img src="{{ p.image.url }}" alt="">{% else %}<img src="{% static 'img/placeholder.png' %}" alt="">{% endif %}</a>
+                <div class="mt-2"><a class="text-white fw-semibold" href="{{ p.get_absolute_url }}">{{ p.name }}</a></div>
+                <button class="link-btn js-compare mt-1" data-id="{{ p.id }}" onclick="setTimeout(()=>location.reload(),400)"><i class="fa-solid fa-xmark"></i> Remove</button></td>{% endfor %}</tr>
+            <tr><th>Price</th>{% for p in products %}<td><strong class="text-white">KES {{ p.price|floatformat:0 }}</strong>{% if p.discount_percent %} <del class="text-3">{{ p.compare_price|floatformat:0 }}</del>{% endif %}</td>{% endfor %}</tr>
+            <tr><th>Brand</th>{% for p in products %}<td>{{ p.brand.flag }} {{ p.brand.name|default:"—" }}</td>{% endfor %}</tr>
+            <tr><th>Rating</th>{% for p in products %}<td>{% with r=p.rating_summary %}{% if r.count %}<span class="stars">{% include 'partials/stars.html' with value=r.avg %}</span> {{ r.avg }} ({{ r.count }}){% else %}—{% endif %}{% endwith %}</td>{% endfor %}</tr>
+            <tr><th>Type</th>{% for p in products %}<td>{{ p.get_form_display }}{% if p.size_label %} · {{ p.size_label }}{% endif %}</td>{% endfor %}</tr>
+            <tr><th>Lasts</th>{% for p in products %}<td>{% if p.days_supply %}{{ p.days_supply }} days{% else %}—{% endif %}</td>{% endfor %}</tr>
+            <tr><th>Price / day</th>{% for p in products %}<td>{% if p.days_supply %}KES {% widthratio p.price p.days_supply 1 %}{% else %}—{% endif %}</td>{% endfor %}</tr>
+            <tr><th>Good for</th>{% for p in products %}<td>{% for c in p.concerns.all %}<span class="chip mb-1">{{ c.emoji }} {{ c.name }}</span> {% empty %}—{% endfor %}</td>{% endfor %}</tr>
+            <tr><th>Skin type</th>{% for p in products %}<td>{{ p.skin_type|default:"—" }}</td>{% endfor %}</tr>
+            <tr><th>Badges</th>{% for p in products %}<td>{% for icon, label in p.badges %}<span class="trust-badge mb-1"><i class="{{ icon }}"></i> {{ label }}</span> {% empty %}—{% endfor %}</td>{% endfor %}</tr>
+            <tr><th>Key benefits</th>{% for p in products %}<td>{% for b in p.benefit_list|slice:":4" %}<div>• {{ b }}</div>{% empty %}—{% endfor %}</td>{% endfor %}</tr>
+            <tr><th></th>{% for p in products %}<td>{% if p.in_stock %}<form class="js-add" action="{% url 'cart:add' %}" method="post">{% csrf_token %}<input type="hidden" name="product" value="{{ p.id }}"><button class="btn-glow btn-sm-pill" type="submit">Add to bag</button></form>{% else %}<span class="text-3">Sold out</span>{% endif %}</td>{% endfor %}</tr>
+        </table>
+    </div>
+    {% else %}
+    <div class="glass empty-state"><div class="ic"><i class="fa-solid fa-code-compare"></i></div><h3>Nothing to compare yet</h3><p>Hover a product and tap <i class="fa-solid fa-code-compare"></i> to add it here.</p><a href="{% url 'catalog:shop' %}" class="btn-glow">Browse products</a></div>
+    {% endif %}
+</div>
+{% endblock %}

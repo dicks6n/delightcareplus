@@ -1,0 +1,127 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}{% if product %}Edit {{ product.name }}{% else %}Add product{% endif %}{% endblock %}
+{% block content %}
+<div class="d-head">
+    <div><a href="{% url 'dashboard:products' %}" class="text-3" style="font-size:.82rem;"><i class="fa-solid fa-arrow-left"></i> Products</a>
+        <h1 class="mt-1">{% if product %}{{ product.name }}{% else %}Add a product{% endif %}</h1></div>
+    {% if product %}
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{{ product.get_absolute_url }}" target="_blank" class="btn-d"><i class="fa-solid fa-eye"></i> View in shop</a>
+        <form method="post" action="{% url 'dashboard:product_infographic' product.pk %}" title="Draws a poster with the pack, benefits and concerns — like marketplace product images"
+              data-confirm="Create an infographic from this product's name, benefits and concerns? It becomes the main photo; your current photo moves to the gallery.">{% csrf_token %}<button class="btn-d" type="submit"><i class="fa-solid fa-wand-magic-sparkles"></i> Create infographic</button></form>
+        <form method="post" action="{% url 'dashboard:product_duplicate' product.pk %}">{% csrf_token %}<button class="btn-d" type="submit"><i class="fa-regular fa-copy"></i> Duplicate</button></form>
+        <form method="post" action="{% url 'dashboard:product_delete' product.pk %}" data-confirm="Delete {{ product.name }}? This cannot be undone.">{% csrf_token %}<button class="btn-d danger" type="submit"><i class="fa-regular fa-trash-can"></i> Delete</button></form>
+    </div>
+    {% endif %}
+</div>
+
+{% if form.errors or formset.errors %}<div class="flash-d error"><i class="fa-solid fa-circle-exclamation"></i><span>Please fix the highlighted fields.</span></div>{% endif %}
+
+<form method="post" enctype="multipart/form-data" class="form-grid">
+    {% csrf_token %}
+    <div class="d-flex flex-column gap-3">
+        <div class="card-d"><div class="hd"><h3>Basics</h3></div><div class="bd">
+            {% include 'dashboard/_field.html' with f=form.name %}
+            <div class="row">
+                <div class="col-md-6">{% include 'dashboard/_field.html' with f=form.brand %}</div>
+                <div class="col-md-6">{% include 'dashboard/_field.html' with f=form.category %}</div>
+                <div class="col-md-4">{% include 'dashboard/_field.html' with f=form.form %}</div>
+                <div class="col-md-4">{% include 'dashboard/_field.html' with f=form.size_label %}</div>
+                <div class="col-md-4">{% include 'dashboard/_field.html' with f=form.sku %}</div>
+            </div>
+            {% include 'dashboard/_field.html' with f=form.short_description %}
+            {% include 'dashboard/_field.html' with f=form.description %}
+        </div></div>
+
+        <div class="card-d"><div class="hd"><h3>Details customers love</h3></div><div class="bd">
+            <div class="row">
+                <div class="col-md-6">{% include 'dashboard/_field.html' with f=form.benefits %}</div>
+                <div class="col-md-6">{% include 'dashboard/_field.html' with f=form.how_to_use %}</div>
+                <div class="col-md-8">{% include 'dashboard/_field.html' with f=form.ingredients %}</div>
+                <div class="col-md-4">{% include 'dashboard/_field.html' with f=form.skin_type %}</div>
+            </div>
+        </div></div>
+
+        <div class="card-d"><div class="hd"><h3>Photos</h3></div><div class="bd">
+            {% include 'dashboard/_field.html' with f=form.image %}
+            <label class="lbl">More photos (choose several)</label>
+            <input class="form-control mb-2" type="file" name="gallery" accept="image/*" multiple>
+            {% if product and product.images.all %}
+            <div class="gallery-edit mt-2">
+                {% for img in product.images.all %}<div class="g"><img src="{{ img.image.url }}" alt=""><label><input type="checkbox" name="remove_image" value="{{ img.id }}"> remove</label></div>{% endfor %}
+            </div>
+            {% endif %}
+            <small class="help">Square photos (1:1) on a light background look best. 1200×1200 px is ideal.</small>
+        </div></div>
+
+        <div class="card-d"><div class="hd"><h3>Sizes / options</h3><small class="text-3">e.g. 30ml & 50ml, or 1 box & 3 boxes</small></div><div class="bd">
+            {{ formset.management_form }}
+            <div class="t-wrap"><table class="t">
+                <thead><tr><th>Label</th><th>Price</th><th>Old price</th><th>Stock</th><th>Order</th><th>Delete</th></tr></thead>
+                <tbody>
+                {% for vf in formset %}
+                <tr>{% for hidden in vf.hidden_fields %}{{ hidden }}{% endfor %}
+                    <td>{{ vf.label }}{{ vf.label.errors }}</td><td>{{ vf.price }}{{ vf.price.errors }}</td><td>{{ vf.compare_price }}</td><td>{{ vf.stock }}</td><td style="width:90px">{{ vf.sort_order }}</td><td>{% if vf.instance.pk %}{{ vf.DELETE }}{% endif %}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table></div>
+            <small class="help">Leave empty to sell one standard size at the main price. Save to add another row.</small>
+        </div></div>
+
+        <div class="card-d"><div class="hd"><h3>Routine Finder, concerns &amp; badges</h3></div><div class="bd">
+            <label class="lbl">Good for (concerns)</label>
+            <div class="chk-grid mb-3">{% for c in concerns %}<label><input type="checkbox" class="form-check-input" name="concerns" value="{{ c.id }}" {% if c.id in selected_concerns %}checked{% endif %}> {{ c.emoji }} {{ c.name }}</label>{% endfor %}</div>
+            <div class="row">
+                <div class="col-md-4 mb-3"><label class="lbl">Routine step</label><select class="form-select" name="routine_step">{% for k, v in routine_steps %}<option value="{{ k }}" {% if product.routine_step == k %}selected{% endif %}>{{ v|default:"— not in routines —" }}</option>{% endfor %}</select></div>
+                <div class="col-md-4 mb-3"><label class="lbl">Servings per pack</label><input class="form-control" type="number" min="0" name="servings_per_pack" value="{{ product.servings_per_pack|default:0 }}"><small class="help">60 capsules, 20 tea bags… 0 = skip</small></div>
+                <div class="col-md-4 mb-3"><label class="lbl">Servings per day</label><input class="form-control" type="number" min="1" name="daily_servings" value="{{ product.daily_servings|default:1 }}"><small class="help">Used for “lasts X days” &amp; refill reminders</small></div>
+            </div>
+            <div class="chk-grid">
+                <label><input type="checkbox" class="form-check-input" name="is_vegan" {% if product.is_vegan %}checked{% endif %}> 🌱 Vegan</label>
+                <label><input type="checkbox" class="form-check-input" name="is_halal" {% if product.is_halal %}checked{% endif %}> 🌙 Halal</label>
+                <label><input type="checkbox" class="form-check-input" name="is_cruelty_free" {% if product.is_cruelty_free %}checked{% endif %}> 🐰 Cruelty-free</label>
+                <label><input type="checkbox" class="form-check-input" name="is_fragrance_free" {% if product.is_fragrance_free %}checked{% endif %}> 🍃 Fragrance-free</label>
+            </div>
+        </div></div>
+
+        {% if product %}
+        <div class="card-d" id="batches"><div class="hd"><h3>Batches &amp; expiry</h3><small class="text-3">Customers verify these codes on the Verify page</small></div><div class="bd">
+            {% for b in batches %}<div class="kv"><span><strong class="text-white">{{ b.code }}</strong> · {{ b.quantity }} units{% if b.supplier %} · {{ b.supplier }}{% endif %}</span><strong class="{% if b.is_expired %}text-danger{% endif %}">Expires {{ b.expiry_date|date:"M j, Y" }}</strong></div>
+            {% empty %}<p class="text-3">No batches yet. Add one when stock arrives.</p>{% endfor %}
+        </div></div>
+        {% endif %}
+    </div>
+
+    <div class="side">
+        <div class="card-d"><div class="hd"><h3>Price &amp; stock</h3></div><div class="bd">
+            {% include 'dashboard/_field.html' with f=form.price %}
+            {% include 'dashboard/_field.html' with f=form.compare_price %}
+            {% include 'dashboard/_field.html' with f=form.stock %}
+            {% include 'dashboard/_field.html' with f=form.weight_grams %}
+        </div></div>
+        <div class="card-d"><div class="hd"><h3>Visibility</h3></div><div class="bd d-flex flex-column gap-2">
+            {% for f in form %}{% if f.name in "is_active is_featured is_best_seller is_new" %}
+            <label class="d-flex align-items-center gap-2" style="cursor:pointer">{{ f }} <span>{{ f.label }}</span></label>
+            {% endif %}{% endfor %}
+        </div></div>
+        <button class="btn-d primary w-100 justify-content-center" type="submit" style="padding:13px"><i class="fa-solid fa-floppy-disk"></i> Save product</button>
+        {% if not product %}<button class="btn-d w-100 justify-content-center" type="submit" name="save_and_new" value="1">Save &amp; add another</button>{% endif %}
+    </div>
+</form>
+
+{% if product %}
+<form method="post" action="{% url 'dashboard:batch_add' product.pk %}" class="card-d mt-3">
+    {% csrf_token %}
+    <div class="hd"><h3>Add a batch (stock delivery)</h3></div>
+    <div class="bd row g-2 align-items-end">
+        <div class="col-md-3"><label class="lbl">Batch / lot code *</label><input class="inp w-100" name="code" required></div>
+        <div class="col-md-2"><label class="lbl">Expiry *</label><input class="inp w-100" type="date" name="expiry_date" required></div>
+        <div class="col-md-2"><label class="lbl">Made on</label><input class="inp w-100" type="date" name="manufactured_on"></div>
+        <div class="col-md-1"><label class="lbl">Qty</label><input class="inp w-100" type="number" name="quantity" min="0" value="0"></div>
+        <div class="col-md-2"><label class="lbl">Supplier</label><input class="inp w-100" name="supplier"></div>
+        <div class="col-md-2"><label class="d-flex gap-2 align-items-center mb-2" style="font-size:.78rem"><input type="checkbox" class="form-check-input" name="add_to_stock" checked> add qty to stock</label><button class="btn-d primary w-100" type="submit">Add batch</button></div>
+    </div>
+</form>
+{% endif %}
+{% endblock %}

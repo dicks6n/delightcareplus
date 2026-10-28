@@ -1,0 +1,70 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}Orders{% endblock %}
+{% block content %}
+<div class="d-head">
+    <div><h1>Orders</h1><p>Confirm payments, pack, ship and track every order.</p></div>
+    <a href="?{{ querystring }}&export=csv" class="btn-d"><i class="fa-solid fa-file-csv"></i> Export CSV</a>
+</div>
+<nav class="tabs-d">
+    {% for key, label, n in tabs %}<a href="?tab={{ key }}" class="{% if tab == key %}on{% endif %}">{{ label }}<span>{{ n }}</span></a>{% endfor %}
+</nav>
+<form class="filters-d" method="get">
+    <input type="hidden" name="tab" value="{{ tab }}">
+    <input class="inp" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Search number, name, phone, product, M-Pesa code">
+    <select class="inp" name="payment"><option value="">Any payment</option>{% for k, v in payment_choices %}<option value="{{ k }}" {% if request.GET.payment == k %}selected{% endif %}>{{ v }}</option>{% endfor %}</select>
+    <input class="inp" type="date" name="from" value="{{ request.GET.from|default:'' }}" aria-label="From">
+    <input class="inp" type="date" name="to" value="{{ request.GET.to|default:'' }}" aria-label="To">
+    <button class="btn-d" type="submit"><i class="fa-solid fa-filter"></i> Filter</button>
+</form>
+
+<form method="post" action="{% url 'dashboard:order_bulk' %}" id="bulkForm">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+    <div class="bulkbar" id="bulkBar">
+        <strong><span id="selN">0</span> selected</strong>
+        <select class="inp" name="status" required>
+            <option value="">Move to…</option>
+            <option value="PAID">Paid (confirm payment)</option><option value="PROCESSING">Processing</option>
+            <option value="PACKED">Packed</option><option value="SHIPPED">Shipped</option>
+            <option value="OUT_FOR_DELIVERY">Out for delivery</option><option value="DELIVERED">Delivered</option>
+            <option value="CANCELLED">Cancelled</option>
+        </select>
+        <button class="btn-d primary sm" type="submit">Apply</button>
+        <small class="text-3">Customers are emailed for payment, shipping, delivery and cancellation.</small>
+    </div>
+    <div class="card-d">
+        <div class="bd flush t-wrap">
+            <table class="t">
+                <thead><tr><th><input type="checkbox" class="form-check-input" id="selAll" aria-label="Select all"></th><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Delivery</th><th>Status</th><th>Placed</th></tr></thead>
+                <tbody>
+                {% for o in page_obj %}
+                <tr>
+                    <td><input type="checkbox" class="form-check-input sel" name="orders" value="{{ o.number }}" aria-label="Select {{ o.number }}"></td>
+                    <td><a href="{% url 'dashboard:order' o.number %}"><strong>{{ o.number }}</strong></a></td>
+                    <td>{{ o.full_name }}<br><small class="text-3">{{ o.phone }}</small></td>
+                    <td><small>{% for i in o.items.all|slice:":2" %}{{ i.product_name|truncatechars:26 }} ×{{ i.quantity }}<br>{% endfor %}{% if o.items.all|length > 2 %}+{{ o.items.all|length|add:"-2" }} more{% endif %}</small></td>
+                    <td class="pri">KES {{ o.total|floatformat:0|intcomma }}</td>
+                    <td>{{ o.get_payment_method_display }}{% if o.payment_reference %}<br><small class="text-3">{{ o.payment_reference }}</small>{% endif %}</td>
+                    <td>{{ o.city }}<br><small class="text-3">{{ o.get_delivery_method_display }}</small></td>
+                    <td><span class="pill st-{{ o.status }}">{{ o.get_status_display }}</span></td>
+                    <td><small>{{ o.created_at|date:"M j, H:i" }}</small></td>
+                </tr>
+                {% empty %}<tr><td colspan="9"><div class="empty-d"><i class="fa-solid fa-receipt"></i>No orders here.</div></td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+{% include 'partials/pager.html' %}
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+    const boxes = [...document.querySelectorAll('.sel')], bar = document.getElementById('bulkBar');
+    function upd() { const n = boxes.filter(b => b.checked).length; document.getElementById('selN').textContent = n; bar.classList.toggle('show', n > 0); }
+    boxes.forEach(b => b.addEventListener('change', upd));
+    document.getElementById('selAll').addEventListener('change', e => { boxes.forEach(b => b.checked = e.target.checked); upd(); });
+})();
+</script>
+{% endblock %}

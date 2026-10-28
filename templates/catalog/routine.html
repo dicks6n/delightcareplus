@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Routine Finder — Delight Care Plus{% endblock %}
+{% block description %}Answer 4 quick questions and get a personal skincare, supplement and tea routine — with 5% off.{% endblock %}
+{% block content %}
+<div class="container-xl py-5" style="max-width:860px;">
+    <div class="text-center mb-4">
+        <span class="eyebrow"><i class="fa-solid fa-wand-magic-sparkles"></i> Routine Finder</span>
+        <h1 class="display-serif mt-2">Let's build your routine</h1>
+        <p class="text-2 mx-auto" style="max-width:560px;">4 quick questions. We'll match you with products from our France, Japan and USA collections — and give you <strong class="text-green">5% off</strong> when you add the whole routine.</p>
+    </div>
+    <form method="get" class="glass glass-green pad-lg" id="quiz">
+        <input type="hidden" name="go" value="1">
+        <div class="quiz-progress"><div id="qbar" style="width:25%"></div></div>
+
+        <div class="quiz-step active" data-step="1">
+            <h3 class="mb-1">What would you like to improve?</h3>
+            <p class="text-3 mb-3">Pick up to 3.</p>
+            <div class="quiz-options">
+                {% for c in concerns %}
+                <label class="quiz-opt"><input type="checkbox" name="concern" value="{{ c.id }}"><span><em>{{ c.emoji|default:"✨" }}</em>{{ c.name }}</span></label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="quiz-step" data-step="2">
+            <h3 class="mb-3">How does your skin usually feel?</h3>
+            <div class="quiz-options">
+                {% for key, label, emoji in skin_types %}
+                <label class="quiz-opt"><input type="radio" name="skin" value="{{ key }}" {% if forloop.first %}checked{% endif %}><span><em>{{ emoji }}</em>{{ label }}</span></label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="quiz-step" data-step="3">
+            <h3 class="mb-3">Which beauty culture speaks to you?</h3>
+            <div class="quiz-options">
+                {% for key, label in origins %}
+                <label class="quiz-opt"><input type="radio" name="origin" value="{{ key }}" {% if forloop.first %}checked{% endif %}><span>{{ label }}</span></label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="quiz-step" data-step="4">
+            <h3 class="mb-3">What's your budget for the full routine?</h3>
+            <div class="quiz-options">
+                {% for key, label, cap in budgets %}
+                <label class="quiz-opt"><input type="radio" name="budget" value="{{ key }}" {% if forloop.counter == 2 %}checked{% endif %}><span>{{ label }}</span></label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn-ghost" id="qBack" style="visibility:hidden"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <button type="button" class="btn-glow" id="qNext">Next <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+    const steps = [...document.querySelectorAll('.quiz-step')];
+    let i = 0;
+    const next = document.getElementById('qNext'), back = document.getElementById('qBack'), bar = document.getElementById('qbar');
+    function show() {
+        steps.forEach((s, n) => s.classList.toggle('active', n === i));
+        bar.style.width = ((i + 1) / steps.length * 100) + '%';
+        back.style.visibility = i ? 'visible' : 'hidden';
+        next.innerHTML = i === steps.length - 1 ? '<i class="fa-solid fa-wand-magic-sparkles"></i> Show my routine' : 'Next <i class="fa-solid fa-arrow-right"></i>';
+    }
+    // max 3 concerns
+    document.querySelectorAll('input[name=concern]').forEach(cb => cb.addEventListener('change', () => {
+        const on = document.querySelectorAll('input[name=concern]:checked');
+        if (on.length > 3) { cb.checked = false; DCP.toast('Pick up to 3 — focus works best!', 'err'); }
+    }));
+    next.addEventListener('click', () => {
+        if (i === 0 && !document.querySelector('input[name=concern]:checked')) { DCP.toast('Choose at least one goal', 'err'); return; }
+        if (i === steps.length - 1) { document.getElementById('quiz').submit(); return; }
+        i++; show();
+    });
+    back.addEventListener('click', () => { i = Math.max(0, i - 1); show(); });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h2 style="margin:0 0 8px;">It's back! {{ product.name }} 🎉</h2>
+<p style="color:#4b5563;line-height:1.6;">You asked us to tell you when <strong>{{ product.name }}</strong> was back in stock. It's here — but stock is limited.</p>
+{% include "emails/_button.html" with url=site_url|add:product.get_absolute_url label="Get it now" %}
+{% endblock %}

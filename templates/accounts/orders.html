@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My orders — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl page-hero pb-2"><h1 class="display-serif">My orders</h1></div>
+<div class="container-xl pb-5">
+    <div class="acct">
+        {% include 'accounts/_nav.html' with active='orders' %}
+        <div>
+            <div class="chip-row mb-3">
+                <a href="?" class="chip {% if not status %}active{% endif %}">All</a>
+                <a href="?status=active" class="chip {% if status == 'active' %}active{% endif %}">In progress</a>
+                <a href="?status=delivered" class="chip {% if status == 'delivered' %}active{% endif %}">Delivered</a>
+                <a href="?status=cancelled" class="chip {% if status == 'cancelled' %}active{% endif %}">Cancelled</a>
+            </div>
+            {% for order in orders %}
+            <div class="glass order-card">
+                <div class="top">
+                    <div><strong class="text-white">{{ order.number }}</strong> <span class="text-3" style="font-size:.82rem;">· {{ order.created_at|date:"M j, Y" }} · {{ order.item_count }} item{{ order.item_count|pluralize }}</span></div>
+                    <span class="status-pill st-{{ order.status }}">{{ order.get_status_display }}</span>
+                </div>
+                <div class="thumbs-row">
+                    {% for item in order.items.all|slice:":5" %}{% if item.product and item.product.image %}<img src="{{ item.product.image.url }}" alt="{{ item.product_name }}" title="{{ item.product_name }}">{% endif %}{% endfor %}
+                </div>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <strong>KES {{ order.total|floatformat:0 }}</strong>
+                    <div class="d-flex gap-2 flex-wrap">
+                        {% if order.status == 'PENDING' or order.status == 'FAILED' %}{% if order.payment_method != 'cod' %}<a href="{% url 'orders:pay' order.number %}" class="btn-glow btn-sm-pill">Pay now</a>{% endif %}{% endif %}
+                        <a href="{{ order.get_absolute_url }}" class="btn-ghost btn-sm-pill">Track &amp; details</a>
+                        <form method="post" action="{% url 'orders:reorder' order.number %}">{% csrf_token %}<button class="btn-soft btn-sm-pill" type="submit"><i class="fa-solid fa-rotate-right"></i> Buy again</button></form>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="glass empty-state">
+                <div class="ic"><i class="fa-solid fa-box-open"></i></div>
+                <h3>No orders {% if status %}here{% else %}yet{% endif %}</h3>
+                <p>When you order, you'll track every step right here.</p>
+                <a href="{% url 'catalog:shop' %}" class="btn-glow">Start shopping</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h2 style="margin:0 0 8px;">Payment received ✅</h2>
+<p style="color:#4b5563;line-height:1.6;">Hi {{ order.full_name }}, we've received <strong>KES {{ order.total|floatformat:0 }}</strong> for order <strong>{{ order.number }}</strong>{% if order.payment_reference %} (ref {{ order.payment_reference }}){% endif %}. We're getting it ready now.</p>
+{% include "emails/_items.html" %}
+{% url 'orders:detail' order.number as path %}{% include "emails/_button.html" with url=site_url|add:path label="View your order" %}
+{% endblock %}

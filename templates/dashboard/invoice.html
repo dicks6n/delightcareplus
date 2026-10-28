@@ -1,0 +1,41 @@
+{% load static humanize %}<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Invoice {{ order.number }}</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:0;padding:32px;font-size:13px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #2d5016;padding-bottom:16px}
+.top img{height:56px}
+h1{margin:0;font-size:22px;color:#2d5016}
+table{width:100%;border-collapse:collapse;margin-top:18px}
+th{text-align:left;background:#f1f5ef;padding:8px;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+td{padding:8px;border-bottom:1px solid #e5e7eb}
+.r{text-align:right}.tot td{border:0;padding:4px 8px}.grand td{font-size:16px;font-weight:bold;border-top:2px solid #111}
+.box{border:1px solid #e5e7eb;border-radius:8px;padding:12px;width:48%}
+.row{display:flex;justify-content:space-between;gap:4%;margin-top:18px}
+.muted{color:#6b7280}.btn{position:fixed;top:12px;right:12px;padding:10px 16px;background:#2d5016;color:#fff;border:0;border-radius:8px;cursor:pointer}
+@media print{.btn{display:none}body{padding:0}}
+</style></head>
+<body>
+<button class="btn" onclick="window.print()">Print</button>
+<div class="top">
+    <div><img src="{% static 'img/logo-dark.svg' %}" alt="Delight Care Plus"><div><strong>Delight Care Plus</strong></div><div class="muted">{{ shop.support_phone }} · {{ shop.support_email }}</div></div>
+    <div style="text-align:right"><h1>INVOICE / PACKING SLIP</h1><div><strong>{{ order.number }}</strong></div><div class="muted">{{ order.created_at|date:"M j, Y H:i" }}</div>
+        <div>Status: <strong>{{ order.get_status_display }}</strong></div></div>
+</div>
+<div class="row">
+    <div class="box"><div class="muted">DELIVER TO</div><strong>{{ order.full_name }}</strong><br>{{ order.phone }}<br>{% if order.delivery_method == 'pickup' %}Pickup: {{ order.pickup_station }}{% else %}{{ order.address }}{% endif %}<br>{{ order.city }}{% if order.notes %}<br><em>Note: {{ order.notes }}</em>{% endif %}</div>
+    <div class="box"><div class="muted">PAYMENT</div><strong>{{ order.get_payment_method_display }}</strong><br>{% if order.payment_reference %}Ref: {{ order.payment_reference }}<br>{% endif %}{% if order.paid_at %}Paid {{ order.paid_at|date:"M j, Y" }}{% elif order.payment_method == 'cod' %}<strong>COLLECT KES {{ order.total|floatformat:0|intcomma }} ON DELIVERY</strong>{% else %}Not paid yet{% endif %}<br>Parcel ≈ {{ order.parcel_weight_kg }} kg</div>
+</div>
+<table>
+    <thead><tr><th>✓</th><th>Product</th><th>Size</th><th class="r">Qty</th><th class="r">Price</th><th class="r">Total</th></tr></thead>
+    <tbody>{% for i in order.items.all %}<tr><td>☐</td><td>{{ i.product_name }}<br><span class="muted">{{ i.brand_name }}</span></td><td>{{ i.variant_label }}</td><td class="r">{{ i.quantity }}</td><td class="r">{{ i.unit_price|floatformat:0|intcomma }}</td><td class="r">{{ i.total|floatformat:0|intcomma }}</td></tr>{% endfor %}</tbody>
+</table>
+<table style="width:320px;margin-left:auto">
+    <tr class="tot"><td>Subtotal</td><td class="r">KES {{ order.subtotal|floatformat:0|intcomma }}</td></tr>
+    {% if order.discount %}<tr class="tot"><td>Discount</td><td class="r">− KES {{ order.discount|floatformat:0|intcomma }}</td></tr>{% endif %}
+    {% if order.points_redeemed %}<tr class="tot"><td>Glow Points</td><td class="r">− KES {{ order.points_redeemed }}</td></tr>{% endif %}
+    <tr class="tot"><td>Delivery</td><td class="r">KES {{ order.delivery_fee|floatformat:0|intcomma }}</td></tr>
+    <tr class="grand"><td>Total</td><td class="r">KES {{ order.total|floatformat:0|intcomma }}</td></tr>
+</table>
+<p class="muted" style="margin-top:30px;text-align:center">Thank you for shopping with Delight Care Plus 🌿 · Verify your product's batch code at our website.</p>
+<script>window.addEventListener('load', () => setTimeout(() => window.print(), 400));</script>
+</body></html>

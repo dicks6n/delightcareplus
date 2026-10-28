@@ -1,0 +1,10 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h2 style="margin:0 0 8px;">New order {{ order.number }}</h2>
+<p style="color:#4b5563;font-size:14px;line-height:1.6;">
+<strong>{{ order.full_name }}</strong> · {{ order.phone }}{% if order.email %} · {{ order.email }}{% endif %}<br>
+{{ order.address }}, {{ order.city }}<br>
+Payment: <strong>{{ order.get_payment_method_display }}</strong>{% if order.notes %}<br>Notes: {{ order.notes }}{% endif %}</p>
+{% include "emails/_items.html" %}
+{% url 'dashboard:order' order.number as path %}{% include "emails/_button.html" with url=site_url|add:path label="Open in dashboard" %}
+{% endblock %}
