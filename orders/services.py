@@ -26,6 +26,13 @@ def log_event(order, status, note="", user=None):
 
 
 @transaction.atomic
+def _attribution(request):
+    """Which ad, post or link brought this customer (see marketing/attribution.py)."""
+    from marketing.attribution import get
+    a = get(request)
+    return {"source": a.get("source", "")[:60], "medium": a.get("medium", "")[:60], "campaign": a.get("campaign", "")[:100]}
+
+
 def create_order(request, summary, details, payment_method):
     order = Order.objects.create(
         user=request.user if request.user.is_authenticated else None,
@@ -46,6 +53,7 @@ def create_order(request, summary, details, payment_method):
         parcel_weight_kg=summary["weight_kg"],
         total=summary["total"],
         payment_method=payment_method,
+        **_attribution(request),
     )
     OrderItem.objects.bulk_create([
         OrderItem(
@@ -199,6 +207,8 @@ def change_status(order, new_status, user=None, note="", courier="", tracking=""
         schedule_refills(order)
     if new_status == "DELIVERED":
         award_points(order)
+        from marketing.referrals import reward
+        reward(order)
     if new_status in ("CANCELLED", "REFUNDED"):
         restore_stock(order)
         refund_points(order)

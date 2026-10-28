@@ -1,0 +1,18 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{% if obj %}Edit link{% else %}New tracked link{% endif %}{% endblock %}
+{% block content %}
+<div class="d-head"><div><a href="{% url 'dashboard:links' %}" class="text-3" style="font-size:.82rem;"><i class="fa-solid fa-arrow-left"></i> Tracked links</a>
+    <h1 class="mt-1">{% if obj %}/go/{{ obj.slug }}{% else %}New tracked link{% endif %}</h1></div></div>
+<form method="post" class="card-d" style="max-width:860px">{% csrf_token %}
+    <div class="bd">
+        {% if obj %}<div class="flash-d info"><i class="fa-solid fa-link"></i><span>Share: <strong>{{ base }}/go/{{ obj.slug }}</strong> · {{ obj.clicks }} clicks so far</span></div>{% endif %}
+        <div class="row">{% for f in form %}<div class="col-md-6">{% include 'dashboard/_field.html' %}</div>{% endfor %}</div>
+        <div class="flash-d info"><i class="fa-solid fa-lightbulb"></i><span>Ideas: <em>ig-bio</em> (instagram · bio), <em>tiktok-jane</em> (tiktok · influencer), <em>wa-broadcast-dec</em> (whatsapp · broadcast), <em>flyer-cbd</em> (print · flyer).</span></div>
+        <div class="d-flex gap-2 mt-2">
+            <button class="btn-d primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+            <a href="{% url 'dashboard:links' %}" class="btn-d">Cancel</a>
+            {% if obj %}<button class="btn-d danger ms-auto" type="submit" name="delete" value="1" onclick="return confirm('Delete this link? It will stop working.')"><i class="fa-regular fa-trash-can"></i> Delete</button>{% endif %}
+        </div>
+    </div>
+</form>
+{% endblock %}

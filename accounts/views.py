@@ -84,6 +84,7 @@ def signup_view(request):
             user.profile.marketing_opt_in = bool(request.POST.get("newsletter"))
             user.profile.save()
             _finish_login(request, user)
+            request.session["track_events"] = [{"event": "CompleteRegistration"}]
             send("Welcome to Delight Care Plus 🌿", "emails/welcome.html", {"user": user}, [user.email])
             messages.success(request, f"Welcome, {user.first_name}! Your account is ready.")
             return redirect(safe_next(request, reverse("core:home")))
@@ -157,6 +158,7 @@ def profile(request):
     from .models import points_balance
     return render(request, "accounts/profile.html", {
         "profile": p,
+        "referral": _referral(request, user),
         "points": points_balance(user),
         "history": user.points.all()[:10],
         "skin_types": ["", "Normal", "Dry", "Oily", "Combination", "Sensitive"],
@@ -194,3 +196,22 @@ def my_orders(request):
     if status in groups:
         orders = orders.filter(status__in=groups[status])
     return render(request, "accounts/orders.html", {"orders": orders, "status": status})
+
+
+def _referral(request, user):
+    """The customer's refer-a-friend link and how it's going (None if the shop has it switched off)."""
+    from urllib.parse import quote
+
+    from core.models import SiteSettings
+    from marketing.referrals import coupon_for
+    shop = SiteSettings.load()
+    if not shop.referral_enabled:
+        return None
+    coupon = coupon_for(user)
+    link = request.build_absolute_uri(f"/?ref={coupon.code}")
+    message = (f"I shop my supplements and skincare at Delight Care Plus 🌿 Here's {shop.referral_discount_percent}% off "
+               f"your first order: {link}")
+    friends = Order.objects.filter(coupon_code__iexact=coupon.code).exclude(status__in=["CANCELLED", "FAILED"])
+    return {"code": coupon.code, "link": link, "whatsapp": "https://wa.me/?text=" + quote(message),
+            "percent": shop.referral_discount_percent, "points": shop.referral_points,
+            "friends": friends.count(), "rewarded": friends.filter(referral_rewarded=True).count()}

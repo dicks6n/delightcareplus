@@ -1,0 +1,21 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}Email campaigns{% endblock %}
+{% block content %}
+<div class="d-head">
+    <div><h1><i class="fa-solid fa-envelope text-green me-2"></i>Email campaigns</h1>
+        <p>Send news, launches and offers to people who asked for them: {{ sizes.subscribers }} newsletter subscribers, {{ sizes.customers }} customers who opted in.</p></div>
+    <a href="{% url 'dashboard:campaign_add' %}" class="btn-d primary"><i class="fa-solid fa-plus"></i> New email</a>
+</div>
+<div class="card-d"><div class="bd flush t-wrap"><table class="t">
+    <thead><tr><th>Subject</th><th>To</th><th>Status</th><th>Orders</th><th>Sales</th><th></th></tr></thead>
+    <tbody>
+    {% for c in rows %}
+    <tr><td><a href="{% url 'dashboard:campaign' c.pk %}"><strong>{{ c.subject }}</strong></a></td>
+        <td>{{ c.get_audience_display }}</td>
+        <td>{% if c.sent_at %}<span class="pill green">Sent to {{ c.sent_count }}</span> <small class="text-3">{{ c.sent_at|date:"M j, H:i" }}</small>{% else %}<span class="pill gray">Draft</span>{% endif %}</td>
+        <td>{{ c.orders }}</td><td>KES {{ c.revenue|floatformat:0|intcomma }}</td>
+        <td><a class="btn-d sm" href="{% url 'dashboard:campaign' c.pk %}">Open</a></td></tr>
+    {% empty %}<tr><td colspan="6"><div class="empty-d"><i class="fa-solid fa-envelope"></i>No emails yet. A new-arrivals email with 4 products and a coupon is a great first one. <a href="{% url 'dashboard:campaign_add' %}">Write it</a>.</div></td></tr>{% endfor %}
+    </tbody></table></div></div>
+{% endblock %}

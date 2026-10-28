@@ -75,6 +75,22 @@ class SiteSettings(models.Model):
     chat_enabled = models.BooleanField(default=True)
     store_open = models.BooleanField(default=True, help_text="Turn off to pause checkout (holiday mode)")
     closed_message = models.CharField(max_length=200, blank=True, default="We're taking a short break — orders reopen soon!")
+
+    # Marketing & advertising (Seller Center → Marketing)
+    meta_pixel_id = models.CharField("Meta (Facebook/Instagram) Pixel ID", max_length=30, blank=True,
+                                     help_text="From Meta Events Manager, e.g. 1234567890123456")
+    tiktok_pixel_id = models.CharField("TikTok Pixel ID", max_length=40, blank=True,
+                                       help_text="From TikTok Ads Manager → Events, e.g. CABCDE12345")
+    ga4_id = models.CharField("Google Analytics 4 ID", max_length=30, blank=True, help_text="e.g. G-ABC123XYZ")
+    google_site_verification = models.CharField(max_length=100, blank=True,
+                                                help_text="Google Search Console 'HTML tag' code (only the content=\"…\" part)")
+    facebook_domain_verification = models.CharField(max_length=100, blank=True,
+                                                    help_text="Meta Business 'meta tag' code (only the content=\"…\" part)")
+    feed_brand = models.CharField("Brand name in product feeds", max_length=60, blank=True, default="Delight Care Plus",
+                                  help_text="Ad catalogs (Meta, TikTok, Google) need a brand for every product")
+    referral_enabled = models.BooleanField("Refer-a-friend on", default=True)
+    referral_discount_percent = models.PositiveIntegerField(default=10, help_text="% off a friend's first order")
+    referral_points = models.PositiveIntegerField(default=200, help_text="Glow Points the customer earns when their friend's order is delivered")
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:

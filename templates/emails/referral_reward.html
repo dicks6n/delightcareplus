@@ -1,0 +1,7 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h2 style="margin:0 0 8px;">Thank you, {{ user.first_name|default:"friend" }}! 🎁</h2>
+<p style="color:#4b5563;line-height:1.6;">A friend you invited just received their first order — so you've earned <strong>{{ points }} Glow Points</strong>. That's KES {{ points }} off your next order.</p>
+<p style="color:#4b5563;line-height:1.6;">Keep sharing your link: every friend's first order earns you more.</p>
+{% include "emails/_button.html" with url=site_url|add:"/account/" label="See my points" %}
+{% endblock %}

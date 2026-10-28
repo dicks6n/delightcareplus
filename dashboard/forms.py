@@ -85,7 +85,7 @@ class CouponForm(StyledMixin, forms.ModelForm):
     class Meta:
         model = Coupon
         fields = ["code", "description", "discount_type", "value", "min_order_amount", "max_uses",
-                  "valid_from", "valid_until", "is_active"]
+                  "valid_from", "valid_until", "first_order_only", "is_active"]
         widgets = {
             "valid_from": forms.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
             "valid_until": forms.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
@@ -122,10 +122,51 @@ class PostForm(StyledMixin, forms.ModelForm):
         }
 
 
+MARKETING_FIELDS = ["meta_pixel_id", "tiktok_pixel_id", "ga4_id", "google_site_verification",
+                    "facebook_domain_verification", "feed_brand", "referral_enabled", "referral_discount_percent",
+                    "referral_points"]
+
+
 class SiteSettingsForm(StyledMixin, forms.ModelForm):
     class Meta:
         model = SiteSettings
-        exclude = ["updated_at"]
+        exclude = ["updated_at"] + MARKETING_FIELDS
+
+
+class MarketingSettingsForm(StyledMixin, forms.ModelForm):
+    class Meta:
+        model = SiteSettings
+        fields = MARKETING_FIELDS
+
+    def clean_meta_pixel_id(self):
+        v = self.cleaned_data["meta_pixel_id"].strip()
+        if v and not v.isdigit():
+            raise forms.ValidationError("A Meta Pixel ID is only numbers.")
+        return v
+
+    def clean_tiktok_pixel_id(self):
+        v = self.cleaned_data["tiktok_pixel_id"].strip()
+        if v and not v.isalnum():
+            raise forms.ValidationError("A TikTok Pixel ID is letters and numbers only.")
+        return v.upper()
+
+    def clean_ga4_id(self):
+        v = self.cleaned_data["ga4_id"].strip().upper()
+        if v and not (v.startswith("G-") and v[2:].isalnum()):
+            raise forms.ValidationError("A Google Analytics 4 ID looks like G-ABC123XYZ.")
+        return v
+
+    def _token(self, name):
+        v = self.cleaned_data[name].strip()
+        if v and not all(c.isalnum() or c in "-_" for c in v):
+            raise forms.ValidationError("Paste only the code inside content=\"…\".")
+        return v
+
+    def clean_google_site_verification(self):
+        return self._token("google_site_verification")
+
+    def clean_facebook_domain_verification(self):
+        return self._token("facebook_domain_verification")
 
 
 class ImportForm(forms.Form):

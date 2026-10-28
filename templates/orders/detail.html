@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static marketing %}
 {% block title %}Order {{ order.number }} — Delight Care Plus{% endblock %}
 
 {% block content %}
+{% if is_new %}{% track_purchase order %}{% endif %}
 <div class="container-xl page-hero pb-2">
     {% if is_new %}
     <div class="text-center mb-4" id="celebrate">

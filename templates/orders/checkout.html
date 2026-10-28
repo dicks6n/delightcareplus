@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static marketing %}
 
 {% block title %}Checkout — Delight Care Plus{% endblock %}
 
 {% block content %}
+{% track_checkout summary %}
 <div class="container-xl page-hero pb-2">
     <div class="steps">
         <a class="st on" href="{% url 'cart:page' %}"><b><i class="fa-solid fa-check"></i></b> Bag</a><span class="ln"></span>

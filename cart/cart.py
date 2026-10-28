@@ -36,6 +36,14 @@ class Cart:
     def _save(self):
         self.session[SESSION_KEY] = self.data
         self.session.modified = True
+        if getattr(self.user, "is_authenticated", False):
+            # Members' bags are also saved to their account: they follow them to other devices,
+            # and power the "you left something in your bag" reminder.
+            from marketing.models import SavedBag
+            if self.data:
+                SavedBag.objects.update_or_create(user=self.user, defaults={"items": self.data, "reminded_at": None})
+            else:
+                SavedBag.objects.filter(user=self.user).delete()
 
     def add(self, variant, quantity=1):
         key = str(variant.id)
@@ -65,7 +73,7 @@ class Cart:
         coupon = Coupon.objects.filter(code__iexact=code.strip()).first()
         if not coupon:
             return False, "That coupon code doesn't exist."
-        ok, msg = coupon.check_valid(self.summary()["subtotal"])
+        ok, msg = coupon.check_valid(self.summary()["subtotal"], self.user)
         if ok:
             self.session[COUPON_KEY] = coupon.code
             self.session.modified = True
@@ -126,7 +134,7 @@ class Cart:
         if code:
             coupon = Coupon.objects.filter(code__iexact=code).first()
             if coupon:
-                ok, msg = coupon.check_valid(subtotal)
+                ok, msg = coupon.check_valid(subtotal, self.user)
                 if ok:
                     discount = coupon.discount_for(subtotal)
                 else:

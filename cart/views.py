@@ -45,17 +45,20 @@ def add(request):
         return redirect(safe_next(request, variant.product.get_absolute_url()))
 
     cart = Cart(request)
-    cart.add(variant, int_or(request.POST.get("quantity"), 1))
+    qty = int_or(request.POST.get("quantity"), 1)
+    cart.add(variant, qty)
+    # For ad tracking (AddToCart events) in static/js/tracking.js
+    item = {"id": str(variant.product_id), "name": variant.product.name, "price": float(variant.price), "quantity": qty}
 
     if request.POST.get("buy_now"):
         url = "/orders/checkout/"
         if is_ajax(request):
-            return JsonResponse({"ok": True, "redirect": url, "cart_count": cart.count})
+            return JsonResponse({"ok": True, "redirect": url, "cart_count": cart.count, "item": item})
         return redirect(url)
 
     msg = f"{variant.product.name} added to your bag"
     if is_ajax(request):
-        return JsonResponse({"ok": True, "message": msg, "cart_count": cart.count})
+        return JsonResponse({"ok": True, "message": msg, "cart_count": cart.count, "item": item})
     messages.success(request, msg)
     return redirect(safe_next(request, "/cart/"))
 

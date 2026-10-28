@@ -1,0 +1,25 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h1 style="margin:0 0 14px;font-size:26px;line-height:1.25;color:#0f1a12;">{{ campaign.heading }}</h1>
+{% for para in paragraphs %}<p style="color:#4b5563;line-height:1.65;margin:0 0 14px;">{{ para|linebreaksbr }}</p>{% endfor %}
+{% if campaign.coupon %}
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:18px 0;border:2px dashed #c9a45c;border-radius:12px;">
+  <tr><td style="padding:14px 22px;font-size:15px;color:#1f2937;">Use code <strong style="font-size:18px;letter-spacing:1px;color:#2d5016;">{{ campaign.coupon.code }}</strong>{% if campaign.coupon.description %}<br><span style="color:#6b7280;font-size:13px;">{{ campaign.coupon.description }}</span>{% endif %}</td></tr>
+</table>
+{% endif %}
+{% if products %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 6px;">
+  {% for row in products|slice:":6" %}{% if forloop.counter0|divisibleby:2 %}<tr>{% endif %}
+    <td width="50%" valign="top" style="padding:6px;">
+      <a href="{{ row.url }}" style="text-decoration:none;color:#1f2937;display:block;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+        {% if row.image %}<img src="{{ row.image }}" alt="{{ row.p.name }}" width="100%" style="display:block;width:100%;height:auto;">{% endif %}
+        <div style="padding:10px 12px;font-size:14px;line-height:1.4;"><strong>{{ row.p.name }}</strong><br>
+          <span style="color:#2d5016;font-weight:bold;">KES {{ row.p.price|floatformat:0 }}</span>
+          {% if row.p.discount_percent %}<span style="color:#9ca3af;text-decoration:line-through;font-size:12px;"> KES {{ row.p.compare_price|floatformat:0 }}</span>{% endif %}</div>
+      </a>
+    </td>
+  {% if forloop.counter|divisibleby:2 or forloop.last %}</tr>{% endif %}{% endfor %}
+</table>
+{% endif %}
+{% include "emails/_button.html" with url=button_url label=campaign.button_text %}
+{% endblock %}

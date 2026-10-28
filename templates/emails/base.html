@@ -17,6 +17,8 @@
       Questions? WhatsApp us on <a href="https://wa.me/{{ whatsapp }}" style="color:#2d5016;">+{{ whatsapp }}</a>
       or reply to <a href="mailto:{{ support_email }}" style="color:#2d5016;">{{ support_email }}</a>.<br>
       <a href="{{ site_url }}" style="color:#2d5016;">{{ site_url }}</a>
+      {% if unsubscribe_url %}<br>You're getting this because you signed up for offers from Delight Care Plus.
+      <a href="{{ unsubscribe_url }}" style="color:#6b7280;">Unsubscribe</a>{% endif %}
     </td></tr>
   </table>
 </td></tr>
