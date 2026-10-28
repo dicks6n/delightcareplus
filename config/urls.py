@@ -3,6 +3,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from orders import views as order_views
+
 admin.site.site_header = "Delight Care Plus — Admin"
 admin.site.site_title = "Delight Care Plus"
 admin.site.index_title = "Store management"
@@ -17,6 +19,8 @@ urlpatterns = [
     path("blog/", include("blog.urls")),
     path("manage/", include("dashboard.urls")),   # staff dashboard (separate from Django admin)
     path("django-admin/", admin.site.urls),
+    # The old site's M-Pesa callback address, so payments still confirm if Safaricom or .env uses it
+    path("mpesa/callback/", order_views.mpesa_callback),
 ]
 
 if settings.DEBUG:
