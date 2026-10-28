@@ -1,0 +1,9 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Stock alerts{% endblock %}
+{% block content %}
+<div class="d-head"><div><h1>Waiting for restock</h1><p>Customers who asked to be told when a product is back. When you set stock above 0 they're emailed automatically.</p></div></div>
+<div class="card-d"><div class="bd flush t-wrap"><table class="t"><thead><tr><th>Product</th><th>People waiting</th><th>Stock now</th><th></th></tr></thead><tbody>
+{% for r in rows %}<tr><td><strong>{{ r.product__name }}</strong></td><td><span class="pill amber">{{ r.n }}</span></td><td>{{ r.product__stock }}</td><td><a class="btn-d sm" href="{% url 'dashboard:product_edit' r.product__id %}">Restock</a></td></tr>
+{% empty %}<tr><td colspan="4"><div class="empty-d"><i class="fa-regular fa-bell"></i>Nobody is waiting — great stock management!</div></td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

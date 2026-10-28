@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl page-hero"><h1 class="display-serif">{{ title }}</h1></div>
+<div class="container-xl pb-5" style="max-width:900px;">
+    <div class="glass pad-lg prose">
+    {% if page == 'delivery' %}
+        <p>We deliver anywhere in Kenya. Like the big marketplaces, the price depends on three things:</p>
+        <ul><li><strong>Where you are</strong> — your town's delivery zone</li><li><strong>How you receive it</strong> — collect from a pickup station (cheaper) or door delivery</li><li><strong>Parcel weight</strong> — the price covers the first kg; each extra kg adds a little</li></ul>
+        <p>You always see the exact amount in your bag and at checkout before you pay.</p>
+        <div style="overflow-x:auto;">
+        <table class="compare-table mt-3">
+            <tr><th>Zone</th><th>Pickup station</th><th>Door delivery</th><th>Each extra kg</th><th>Usually arrives</th></tr>
+            {% for z in zones %}<tr><td><strong class="text-white">{{ z.name }}</strong><br><small class="text-3">{{ z.town_list|slice:":6"|join:", " }}{% if z.town_list|length > 6 %}…{% endif %}</small></td>
+                <td>{% if z.station_list %}KES {{ z.pickup_fee|floatformat:0 }}{% else %}—{% endif %}</td><td>KES {{ z.home_fee|floatformat:0 }}</td><td>KES {{ z.extra_kg_fee|floatformat:0 }}</td><td>{{ z.delivery_days }}</td></tr>{% endfor %}
+        </table>
+        </div>
+        {% if shop.free_delivery_over %}<p class="mt-3">🎉 <strong>Free delivery</strong> on orders of KES {{ shop.free_delivery_over|floatformat:0 }} or more.</p>{% endif %}
+    {% elif page == 'returns' %}
+        <p>We want you to love what you buy. If something's not right, tell us within <strong>7 days</strong> of delivery.</p>
+        <ul><li><strong>Wrong or damaged item:</strong> we replace it or refund you in full, including delivery.</li>
+            <li><strong>Unopened items:</strong> can be returned within 7 days for a refund (delivery not refunded).</li>
+            <li><strong>Opened skincare and supplements:</strong> for hygiene reasons we can't take these back unless they're faulty.</li></ul>
+        <p>Refunds go back to the M-Pesa or Airtel number you paid with, usually within 48 hours of approval. Start a return from the chat or WhatsApp with your order number.</p>
+    {% elif page == 'privacy' %}
+        <p>We collect only what we need to deliver your order and look after your account: your name, phone, email, delivery address and order history.</p>
+        <ul><li>We never sell your data.</li><li>Payment details are handled by Safaricom M-Pesa or Airtel — we don't see or store your PIN.</li>
+            <li>We use cookies to keep your bag, wishlist and login working.</li><li>You can ask us to delete your account and data at any time.</li></ul>
+        <p>Questions? Email {{ shop.support_email }}.</p>
+    {% else %}
+        <p>By using this website and placing orders you agree to these terms.</p>
+        <ul><li>Prices are in Kenyan Shillings and may change without notice; the price at checkout is the price you pay.</li>
+            <li>An order is confirmed once payment is received (or, for pay on delivery, once we confirm by phone).</li>
+            <li>Food supplements are not intended to diagnose, treat, cure or prevent any disease. Consult a doctor if you're pregnant, nursing or on medication.</li>
+            <li>We may cancel orders affected by stock or pricing errors and refund you in full.</li></ul>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}

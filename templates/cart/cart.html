@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your bag — Delight Care Plus{% endblock %}
+
+{% block content %}
+<div class="container-xl page-hero pb-2">
+    <div class="steps">
+        <span class="st on"><b>1</b> Bag</span><span class="ln"></span>
+        <span class="st"><b>2</b> Delivery &amp; payment</span><span class="ln"></span>
+        <span class="st"><b>3</b> Done</span>
+    </div>
+    <h1 class="display-serif">Your bag</h1>
+</div>
+
+<div class="container-xl pb-5">
+    {% if summary.lines %}
+    <div class="bag">
+        <div>
+            <div class="glass" id="bagLines">
+                {% for line in summary.lines %}
+                <div class="bag-line" data-variant="{{ line.variant.id }}">
+                    <a href="{{ line.product.get_absolute_url }}">
+                        {% if line.product.image %}<img src="{{ line.product.image.url }}" alt="{{ line.product.name }}">{% else %}<img src="{% static 'img/placeholder.png' %}" alt="">{% endif %}
+                    </a>
+                    <div>
+                        {% if line.product.brand %}<div class="p-brand">{{ line.product.brand.flag }} {{ line.product.brand.name }}</div>{% endif %}
+                        <a href="{{ line.product.get_absolute_url }}" class="nm">{{ line.product.name }}</a>
+                        <div class="sub">{{ line.variant.label }} · KES {{ line.unit_price|floatformat:0 }} each
+                            {% if line.product.days_supply %} · <i class="fa-regular fa-calendar"></i> {{ line.product.days_supply }}-day supply{% endif %}</div>
+                        <div class="d-flex align-items-center gap-3 mt-2 flex-wrap">
+                            <div class="qty">
+                                <button type="button" class="js-q" data-d="-1" aria-label="Less">−</button>
+                                <input value="{{ line.quantity }}" inputmode="numeric" aria-label="Quantity" class="js-qinput" max="{{ line.variant.stock }}">
+                                <button type="button" class="js-q" data-d="1" aria-label="More">+</button>
+                            </div>
+                            <button type="button" class="link-btn js-later" data-product="{{ line.product.id }}"><i class="fa-regular fa-heart"></i> Save for later</button>
+                            <button type="button" class="link-btn danger js-remove"><i class="fa-regular fa-trash-can"></i> Remove</button>
+                        </div>
+                    </div>
+                    <div class="lt" data-line-total>KES {{ line.total|floatformat:0 }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="d-flex justify-content-between mt-3 flex-wrap gap-2">
+                <a href="{% url 'catalog:shop' %}" class="see-all"><i class="fa-solid fa-arrow-left"></i> Continue shopping</a>
+                <button type="button" class="link-btn danger" id="clearBag"><i class="fa-regular fa-trash-can"></i> Empty bag</button>
+            </div>
+        </div>
+
+        <aside class="glass glass-green summary">
+            <h4 class="mb-3">Order summary</h4>
+
+            {% if summary.free_delivery_over and not summary.free_delivery %}
+            <div class="free-bar" id="freeBar">
+                <small>Add <strong class="text-white" data-to-free>KES {{ summary.to_free_delivery|floatformat:0 }}</strong> more for <strong class="text-green">free delivery</strong></small>
+                <div class="track"><div class="fill" style="width: {% widthratio summary.subtotal summary.free_delivery_over 100 %}%"></div></div>
+            </div>
+            {% endif %}
+
+            <div class="sum-row"><span>Items (<span data-count>{{ summary.count }}</span>)</span><strong data-subtotal>KES {{ summary.subtotal|floatformat:0 }}</strong></div>
+            <div class="sum-row green" data-discount-row {% if not summary.discount %}style="display:none"{% endif %}><span>Discount <span data-coupon-label>{% if summary.coupon %}({{ summary.coupon.code }}){% endif %}</span></span><strong data-discount>− KES {{ summary.discount|floatformat:0 }}</strong></div>
+            <div class="sum-row green" data-points-row {% if not summary.points_used %}style="display:none"{% endif %}><span>Glow Points</span><strong data-points>− KES {{ summary.points_used }}</strong></div>
+
+            <!-- Delivery estimate -->
+            <div class="field mt-2 mb-1">
+                <label for="cityPick">Delivery to</label>
+                <select id="cityPick" class="input">
+                    <option value="">Choose your town…</option>
+                    {% for zone, towns in zones %}
+                    <optgroup label="{{ zone.name }}">{% for t in towns %}<option value="{{ t }}" {% if t == summary.city %}selected{% endif %}>{{ t }}</option>{% endfor %}</optgroup>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="d-flex gap-2 mb-2" id="methodPick" style="font-size:.8rem;">
+                <label class="check"><input type="radio" name="dm" value="pickup" {% if summary.delivery_method == 'pickup' %}checked{% endif %}> Pickup station</label>
+                <label class="check"><input type="radio" name="dm" value="home" {% if summary.delivery_method != 'pickup' %}checked{% endif %}> To my door</label>
+            </div>
+            <div class="sum-row"><span>Delivery <small class="text-3" data-zone>{% if summary.zone %}· {{ summary.zone.delivery_days }}{% endif %}</small></span>
+                <strong data-delivery>{% if summary.free_delivery %}FREE{% elif summary.delivery_known %}KES {{ summary.delivery|floatformat:0 }}{% else %}Choose town{% endif %}</strong></div>
+
+            <div class="sum-total"><span>Total</span><strong data-total>KES {{ summary.total|floatformat:0 }}</strong></div>
+            <p class="text-3 mb-2" style="font-size:.74rem;">Final price — no hidden fees. Parcel ≈ <span data-weight>{{ summary.weight_kg }}</span> kg.</p>
+
+            <!-- Coupon -->
+            <div class="coupon-on" id="couponOn" {% if not summary.coupon %}style="display:none"{% endif %}>
+                <span><i class="fa-solid fa-ticket me-1"></i> <span data-coupon-code>{{ summary.coupon.code }}</span> applied</span>
+                <button type="button" class="link-btn" id="couponRemove">Remove</button>
+            </div>
+            <form class="coupon-box" id="couponForm" {% if summary.coupon %}style="display:none"{% endif %}>
+                <input class="input" name="code" placeholder="Coupon code" aria-label="Coupon code" maxlength="30">
+                <button class="btn-soft btn-sm-pill" type="submit">Apply</button>
+            </form>
+            <div class="msg-line" id="couponMsg"></div>
+
+            {% if user.is_authenticated %}
+                {% if summary.points_balance %}
+                <label class="points-box">
+                    <i class="fa-solid fa-star"></i>
+                    <span class="flex-grow-1">You have <strong>{{ summary.points_balance }} Glow Points</strong>. Use up to <strong>KES {{ summary.points_usable }}</strong> on this order.</span>
+                    <input type="checkbox" id="usePoints" class="form-check-input" {% if summary.points_used %}checked{% endif %} aria-label="Use Glow Points">
+                </label>
+                {% endif %}
+                <p class="text-3 mb-3" style="font-size:.78rem;"><i class="fa-solid fa-star text-warning"></i> You'll earn <strong class="text-white" data-earn>{{ summary.points_to_earn }}</strong> Glow Points on this order.</p>
+            {% else %}
+                <p class="text-3 mb-3" style="font-size:.78rem;"><i class="fa-solid fa-star text-warning"></i> <a href="{% url 'accounts:signup' %}?next=/cart/">Create an account</a> to earn <strong class="text-white">{{ summary.points_to_earn }} Glow Points</strong> on this order.</p>
+            {% endif %}
+
+            {% if shop.store_open %}
+            <a href="{% url 'orders:checkout' %}" class="btn-glow btn-block"><i class="fa-solid fa-lock"></i> Secure checkout</a>
+            {% else %}
+            <div class="flash warning"><i class="fa-solid fa-store-slash"></i><span>{{ shop.closed_message }}</span></div>
+            {% endif %}
+            <div class="pay-chips justify-content-center mt-3">
+                <span class="pay-logo">M-PESA</span><span class="pay-logo airtel">AIRTEL</span>{% if shop.pay_on_delivery %}<span class="pay-logo cod">CASH ON DELIVERY</span>{% endif %}
+            </div>
+        </aside>
+    </div>
+    {% else %}
+    <div class="glass empty-state">
+        <div class="ic"><i class="fa-solid fa-bag-shopping"></i></div>
+        <h3>Your bag is empty</h3>
+        <p>Not sure where to start? Our Routine Finder builds a personal routine in 60 seconds.</p>
+        <div class="d-flex gap-2 justify-content-center flex-wrap">
+            <a href="{% url 'catalog:shop' %}" class="btn-glow">Start shopping</a>
+            <a href="{% url 'catalog:routine' %}" class="btn-ghost"><i class="fa-solid fa-wand-magic-sparkles"></i> Find my routine</a>
+            {% if wishlist_count %}<a href="{% url 'catalog:wishlist' %}" class="btn-ghost"><i class="fa-regular fa-heart"></i> Wishlist ({{ wishlist_count }})</a>{% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if suggestions %}
+    <section class="section-sm">
+        <div class="section-head"><div><h2>Complete your <span>routine</span></h2></div></div>
+        <div class="p-grid">{% for product in suggestions %}{% include 'partials/product_card.html' %}{% endfor %}</div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+    const { post, kes, toast, setBadge } = DCP;
+    const q = s => document.querySelector(s);
+
+    function render(d) {
+        if (typeof d.count === 'number') { q('[data-count]').textContent = d.count; setBadge('cart', d.count); }
+        q('[data-subtotal]').textContent = kes(d.subtotal);
+        const dr = q('[data-discount-row]');
+        dr.style.display = d.discount > 0 ? '' : 'none';
+        q('[data-discount]').textContent = '− ' + kes(d.discount);
+        q('[data-coupon-label]').textContent = d.coupon ? `(${d.coupon})` : '';
+        const pr = q('[data-points-row]');
+        pr.style.display = d.points_used > 0 ? '' : 'none';
+        q('[data-points]').textContent = '− KES ' + d.points_used;
+        q('[data-delivery]').textContent = d.free_delivery ? 'FREE' : (d.delivery === null ? 'Choose town' : kes(d.delivery));
+        q('[data-zone]').textContent = d.delivery_days ? '· ' + d.delivery_days : '';
+        q('[data-total]').textContent = kes(d.total);
+        q('[data-weight]').textContent = d.weight_kg;
+        const earn = q('[data-earn]'); if (earn) earn.textContent = d.points_to_earn;
+        const tf = q('[data-to-free]'); if (tf) tf.textContent = kes(d.to_free_delivery);
+        if (!d.coupon) { q('#couponOn').style.display = 'none'; q('#couponForm').style.display = ''; }
+        if (d.count === 0) location.reload();
+    }
+
+    document.querySelectorAll('.bag-line').forEach(line => {
+        const id = line.dataset.variant;
+        const input = line.querySelector('.js-qinput');
+        let timer;
+        function setQty(n) {
+            n = Math.max(1, Math.min(parseInt(input.max || 99, 10) || 99, n));
+            input.value = n;
+            clearTimeout(timer);
+            timer = setTimeout(() => post(`/cart/update/${id}/`, { quantity: n }).then(d => {
+                line.querySelector('[data-line-total]').textContent = kes(d.line_total);
+                render(d);
+                if (d.coupon_error) toast(d.coupon_error, 'err');
+            }), 250);
+        }
+        line.querySelectorAll('.js-q').forEach(b => b.addEventListener('click', () => setQty((parseInt(input.value, 10) || 1) + parseInt(b.dataset.d, 10))));
+        input.addEventListener('change', () => setQty(parseInt(input.value, 10) || 1));
+        line.querySelector('.js-remove').addEventListener('click', () => {
+            line.classList.add('removing');
+            post(`/cart/remove/${id}/`).then(d => { setTimeout(() => line.remove(), 300); render(d); toast('Removed from your bag'); });
+        });
+        line.querySelector('.js-later').addEventListener('click', e => {
+            const pid = e.currentTarget.dataset.product;
+            post(`/shop/wishlist/${pid}/toggle/`).then(w => {
+                const done = () => post(`/cart/remove/${id}/`).then(d => { line.classList.add('removing'); setTimeout(() => line.remove(), 300); render(d); setBadge('wishlist', w.count); toast('Saved for later ❤️', 'ok', { url: '/shop/wishlist/', label: 'Wishlist →' }); });
+                if (!w.added) post(`/shop/wishlist/${pid}/toggle/`).then(done); else done();
+            });
+        });
+    });
+
+    const clear = q('#clearBag');
+    if (clear) clear.addEventListener('click', () => { if (confirm('Remove everything from your bag?')) post('/cart/clear/').then(() => location.reload()); });
+
+    const cf = q('#couponForm');
+    if (cf) cf.addEventListener('submit', e => {
+        e.preventDefault();
+        post('/cart/coupon/', new FormData(cf)).then(d => {
+            const m = q('#couponMsg');
+            m.className = 'msg-line ' + (d.ok ? 'ok' : 'err');
+            m.textContent = d.message;
+            if (d.ok) { q('[data-coupon-code]').textContent = d.coupon; q('#couponOn').style.display = ''; cf.style.display = 'none'; }
+            render(d);
+        });
+    });
+    const cr = q('#couponRemove');
+    if (cr) cr.addEventListener('click', () => post('/cart/coupon/remove/').then(d => { render(d); q('#couponMsg').textContent = ''; }));
+
+    const up = q('#usePoints');
+    if (up) up.addEventListener('change', () => post('/cart/points/', { on: up.checked ? '1' : '0' }).then(render));
+
+    function quote() {
+        const city = q('#cityPick').value;
+        const m = document.querySelector('input[name=dm]:checked');
+        if (!city) return;
+        fetch(`/cart/delivery/?city=${encodeURIComponent(city)}&method=${m ? m.value : 'home'}`).then(r => r.json()).then(d => {
+            render(d);
+            const pickup = document.querySelector('input[name=dm][value=pickup]');
+            pickup.disabled = !d.pickup_stations.length;
+            if (!d.pickup_stations.length) document.querySelector('input[name=dm][value=home]').checked = true;
+        });
+    }
+    const cp = q('#cityPick');
+    if (cp) { cp.addEventListener('change', quote); document.querySelectorAll('input[name=dm]').forEach(r => r.addEventListener('change', quote)); }
+})();
+</script>
+{% endblock %}

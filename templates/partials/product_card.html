@@ -1,0 +1,54 @@
+{% load static %}
+{% with rating=product.rating_summary %}
+<article class="p-card">
+    <a href="{{ product.get_absolute_url }}" class="p-media" aria-label="{{ product.name }}">
+        {# Grid shows the clean photo; hovering swaps to the main photo (the infographic for generated products) #}
+        {% with clean=product.showcase_image %}
+        {% if clean %}
+            <img src="{{ clean.url }}" alt="{{ product.name }}" loading="lazy" width="600" height="600">
+            {% if product.image and clean.name != product.image.name %}<img class="alt" src="{{ product.image.url }}" alt="" loading="lazy">{% endif %}
+        {% else %}
+            <img src="{% static 'img/placeholder.png' %}" alt="" loading="lazy">
+        {% endif %}
+        {% endwith %}
+        {% if product.brand %}<span class="p-origin">{{ product.brand.flag }} {{ product.brand.country }}</span>{% endif %}
+    </a>
+    <div class="p-badges">
+        {% if product.discount_percent %}<span class="p-badge sale">-{{ product.discount_percent }}%</span>{% endif %}
+        {% if product.is_best_seller %}<span class="p-badge best"><i class="fa-solid fa-crown"></i> Best seller</span>{% elif product.is_new %}<span class="p-badge new">New</span>{% endif %}
+        {% if product.is_sample and user.is_staff %}<span class="p-badge sample">Sample</span>{% endif %}
+    </div>
+    <div class="p-actions">
+        <button type="button" class="p-act js-wish {% if product.id in wishlist_ids %}on{% endif %}" data-id="{{ product.id }}"
+                aria-pressed="{% if product.id in wishlist_ids %}true{% else %}false{% endif %}" aria-label="Save {{ product.name }}">
+            <i class="fa-{% if product.id in wishlist_ids %}solid{% else %}regular{% endif %} fa-heart"></i>
+        </button>
+        <button type="button" class="p-act hide-until-hover js-qv" data-id="{{ product.id }}" aria-label="Quick view"><i class="fa-regular fa-eye"></i></button>
+        <button type="button" class="p-act hide-until-hover js-compare" data-id="{{ product.id }}" aria-label="Compare"><i class="fa-solid fa-code-compare"></i></button>
+    </div>
+    <div class="p-body">
+        {% if product.brand %}<span class="p-brand">{{ product.brand.name }}</span>{% endif %}
+        <a href="{{ product.get_absolute_url }}" class="p-name">{{ product.name }}</a>
+        <div class="p-meta">
+            {% if rating.count %}<span class="stars">{% include 'partials/stars.html' with value=rating.avg %}</span><span>({{ rating.count }})</span>{% endif %}
+            {% if product.size_label %}<span>{{ product.size_label }}</span>{% endif %}
+            {% if product.days_supply %}<span><i class="fa-regular fa-calendar"></i> {{ product.days_supply }}-day supply</span>{% endif %}
+        </div>
+        {% if product.low_stock %}<span class="p-low"><i class="fa-solid fa-fire"></i> Only {{ product.stock }} left</span>{% endif %}
+        <div class="p-price">
+            <strong>KES {{ product.price|floatformat:0 }}</strong>
+            {% if product.discount_percent %}<del>KES {{ product.compare_price|floatformat:0 }}</del>{% endif %}
+        </div>
+        {% if product.in_stock %}
+        <form class="js-add" action="{% url 'cart:add' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="product" value="{{ product.id }}">
+            {% with v=product.variants.all.0 %}{% if v %}<input type="hidden" name="variant" value="{{ v.id }}">{% endif %}{% endwith %}
+            <button type="submit" class="p-add"><i class="fa-solid fa-bag-shopping"></i> Add to bag</button>
+        </form>
+        {% else %}
+        <a href="{{ product.get_absolute_url }}#notify" class="p-add out"><i class="fa-regular fa-bell"></i> Notify me</a>
+        {% endif %}
+    </div>
+</article>
+{% endwith %}

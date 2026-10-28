@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Track your order — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl py-5" style="max-width:560px;">
+    <div class="glass glass-green pad-lg text-center">
+        <div class="phone-anim" style="animation:none;"><i class="fa-solid fa-truck-fast"></i></div>
+        <h1 class="display-serif h2">Track your order</h1>
+        <p class="text-2">Enter your order number (from your email or SMS) and the phone number you used.</p>
+        <form method="post" class="text-start mt-3">
+            {% csrf_token %}
+            <div class="field"><label>Order number</label><input name="number" placeholder="DCP-00012" required style="text-transform:uppercase;"></div>
+            <div class="field"><label>Phone number</label><input name="phone" inputmode="tel" placeholder="0712 345 678" required></div>
+            <button class="btn-glow btn-block" type="submit">Find my order</button>
+        </form>
+        {% if not user.is_authenticated %}<p class="text-3 mt-3 mb-0" style="font-size:.85rem;">Have an account? <a href="{% url 'accounts:login' %}?next={% url 'accounts:orders' %}">Log in</a> to see all your orders.</p>{% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h2 style="margin:0 0 8px;">Order {{ order.number }} cancelled</h2>
+<p style="color:#4b5563;line-height:1.6;">Hi {{ order.full_name }}, your order has been cancelled{% if order.cancellation_reason %}: <em>“{{ order.cancellation_reason }}”</em>{% endif %}.</p>
+{% if order.paid_at %}<p style="color:#4b5563;line-height:1.6;">You'd already paid, so we'll refund <strong>KES {{ order.total|floatformat:0 }}</strong> to {{ order.payment_phone|default:order.phone }}. If you don't see it within 48 hours, just reply to this email.</p>{% endif %}
+{% include "emails/_button.html" with url=site_url label="Continue shopping" %}
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h2 style="margin:0 0 8px;">Running low on {{ product.name }}? 🌿</h2>
+<p style="color:#4b5563;line-height:1.6;">Hi {{ order.full_name }}, based on your order {{ order.number }} your
+<strong>{{ product.name }}</strong> will run out in about 5 days. Keep your routine going without a break.</p>
+{% include "emails/_button.html" with url=site_url|add:product.get_absolute_url label="Reorder in one tap" %}
+<p style="color:#9ca3af;font-size:12px;">You're getting this because you bought this product from us. Don't want refill reminders? Reply "STOP".</p>
+{% endblock %}

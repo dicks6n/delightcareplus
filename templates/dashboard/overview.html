@@ -1,0 +1,132 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+<div class="d-head">
+    <div><h1>Good {% now "H" as h %}{% if h|add:0 < 12 %}morning{% elif h|add:0 < 17 %}afternoon{% else %}evening{% endif %}, {{ user.first_name|default:user.username }} 👋</h1>
+        <p>Here's how Delight Care Plus is doing.</p></div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'dashboard:product_add' %}" class="btn-d primary"><i class="fa-solid fa-plus"></i> Add product</a>
+        <a href="{% url 'dashboard:product_import' %}" class="btn-d"><i class="fa-solid fa-file-import"></i> Bulk import</a>
+    </div>
+</div>
+
+{% if sample_count %}
+<div class="flash-d warning"><i class="fa-solid fa-flask"></i>
+    <span>Your shop has <strong>{{ sample_count }} sample products</strong> with demo photos. Add your real products (or bulk-import them), then remove the samples.</span>
+    <form method="post" action="{% url 'dashboard:delete_samples' %}" class="ms-auto" data-confirm="Delete all {{ sample_count }} sample products? Your own products are not affected.">{% csrf_token %}<button class="btn-d sm danger" type="submit">Remove samples</button></form>
+</div>
+{% endif %}
+
+<div class="kpis">
+    <div class="card-d kpi"><div class="lbl">Today</div><div class="val">KES {{ s_today.revenue|floatformat:0|intcomma }}</div><div class="sub">{{ s_today.orders }} paid order{{ s_today.orders|pluralize }}</div></div>
+    <div class="card-d kpi"><div class="lbl">Last 7 days</div><div class="val">KES {{ s_7.revenue|floatformat:0|intcomma }}</div><div class="sub">{{ s_7.orders }} orders</div></div>
+    <div class="card-d kpi"><div class="lbl">Last 30 days</div><div class="val">KES {{ s_30.revenue|floatformat:0|intcomma }}</div>
+        <div class="sub">{% if growth is not None %}<span class="{% if growth >= 0 %}up{% else %}down{% endif %}"><i class="fa-solid fa-arrow-{% if growth >= 0 %}up{% else %}down{% endif %}"></i> {{ growth }}%</span> vs previous 30 days{% else %}{{ s_30.orders }} orders{% endif %}</div></div>
+    <div class="card-d kpi"><div class="lbl">Average order</div><div class="val">KES {{ s_30.aov|floatformat:0|intcomma }}</div><div class="sub">{{ customers_total }} customers · +{{ customers_new }} this month</div></div>
+</div>
+
+<div class="card-d mb-3">
+    <div class="hd"><h3><i class="fa-solid fa-list-check text-green me-2"></i>Needs your attention</h3></div>
+    <div class="bd todo">
+        <a href="{% url 'dashboard:orders' %}?tab=pending&payment=airtel" class="{% if to_do.confirm_payment %}hot{% endif %}"><strong>{{ to_do.confirm_payment }}</strong>Airtel payments to confirm</a>
+        <a href="{% url 'dashboard:orders' %}?tab=to_pack" class="{% if to_do.to_pack %}hot{% endif %}"><strong>{{ to_do.to_pack }}</strong>Orders to pack</a>
+        <a href="{% url 'dashboard:orders' %}?tab=to_ship" class="{% if to_do.to_ship %}hot{% endif %}"><strong>{{ to_do.to_ship }}</strong>Ready to ship</a>
+        <a href="{% url 'dashboard:inbox' %}" class="{% if to_do.unread_chats %}hot{% endif %}"><strong>{{ to_do.unread_chats }}</strong>Unread chats</a>
+        <a href="{% url 'dashboard:orders' %}?tab=pending"><strong>{{ to_do.awaiting_payment }}</strong>Awaiting payment</a>
+        <a href="{% url 'dashboard:orders' %}?tab=transit"><strong>{{ to_do.in_transit }}</strong>In transit</a>
+        <a href="{% url 'dashboard:contact_messages' %}" class="{% if to_do.contact_messages %}hot{% endif %}"><strong>{{ to_do.contact_messages }}</strong>Contact messages</a>
+        <a href="{% url 'dashboard:stock_alerts' %}"><strong>{{ stock_alert_count }}</strong>Waiting for restock</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-xl-8">
+        <div class="card-d h-100">
+            <div class="hd"><h3>Sales — last 30 days</h3><a href="{% url 'dashboard:reports' %}" class="btn-d sm">Full report</a></div>
+            <div class="bd"><canvas id="salesChart" height="110" aria-label="Sales chart"></canvas></div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card-d h-100">
+            <div class="hd"><h3>Top products (30 days)</h3></div>
+            <div class="bd bar-list">
+                {% for p in top_products %}
+                <div class="row-b"><div><div class="text-white text-truncate">{{ p.product_name }}</div><small class="text-3">{{ p.brand_name }} · {{ p.qty }} sold</small></div><strong class="text-end">KES {{ p.revenue|floatformat:0|intcomma }}</strong></div>
+                {% empty %}<div class="empty-d"><i class="fa-solid fa-chart-simple"></i>Sales will show here</div>{% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-8">
+        <div class="card-d">
+            <div class="hd"><h3>Latest orders</h3><a href="{% url 'dashboard:orders' %}" class="btn-d sm">All orders</a></div>
+            <div class="bd flush t-wrap">
+                <table class="t">
+                    <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th><th>When</th></tr></thead>
+                    <tbody>
+                    {% for o in recent_orders %}
+                    <tr onclick="location.href='{% url 'dashboard:order' o.number %}'" style="cursor:pointer">
+                        <td><a href="{% url 'dashboard:order' o.number %}"><strong>{{ o.number }}</strong></a></td>
+                        <td>{{ o.full_name }}<br><small class="text-3">{{ o.city }}</small></td>
+                        <td class="pri">KES {{ o.total|floatformat:0|intcomma }}</td>
+                        <td>{{ o.get_payment_method_display }}</td>
+                        <td><span class="pill st-{{ o.status }}">{{ o.get_status_display }}</span></td>
+                        <td><small>{{ o.created_at|naturaltime }}</small></td>
+                    </tr>
+                    {% empty %}<tr><td colspan="6"><div class="empty-d"><i class="fa-solid fa-receipt"></i>No orders yet — share your shop link on WhatsApp &amp; Instagram!</div></td></tr>{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 d-flex flex-column gap-3">
+        <div class="card-d">
+            <div class="hd"><h3><i class="fa-solid fa-warehouse text-warning me-2"></i>Low stock</h3><a href="{% url 'dashboard:products' %}?stock=low" class="btn-d sm">View</a></div>
+            <div class="bd">
+                {% for p in low_stock %}<div class="kv"><span class="text-truncate">{{ p.name }}</span><strong class="{% if p.stock == 0 %}text-danger{% endif %}">{{ p.stock }} left</strong></div>
+                {% empty %}<div class="text-3">All products are well stocked 👍</div>{% endfor %}
+            </div>
+        </div>
+        <div class="card-d">
+            <div class="hd"><h3><i class="fa-regular fa-calendar-xmark text-danger me-2"></i>Expiring in 90 days</h3><a href="{% url 'dashboard:crud' 'batches' %}" class="btn-d sm">Batches</a></div>
+            <div class="bd">
+                {% for b in expiring %}<div class="kv"><span class="text-truncate">{{ b.product.name }} <small class="text-3">{{ b.code }}</small></span><strong>{{ b.expiry_date|date:"M j, Y" }}</strong></div>
+                {% empty %}<div class="text-3">Nothing expiring soon.</div>{% endfor %}
+            </div>
+        </div>
+        <div class="card-d">
+            <div class="hd"><h3>Sales by brand</h3></div>
+            <div class="bd bar-list">
+                {% for b in by_brand %}<div class="row-b"><div class="text-white">{{ b.brand_name|default:"No brand" }}</div><strong class="text-end">KES {{ b.revenue|floatformat:0|intcomma }}</strong></div>
+                {% empty %}<div class="text-3">No sales yet.</div>{% endfor %}
+                {% for p in by_payment %}<div class="kv"><span>{{ p.label }}</span><strong>{{ p.n }} · KES {{ p.t|floatformat:0|intcomma }}</strong></div>{% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function () {
+    const el = document.getElementById('salesChart');
+    if (!el || !window.Chart) return;
+    const ctx = el.getContext('2d');
+    const grad = ctx.createLinearGradient(0, 0, 0, 260);
+    grad.addColorStop(0, 'rgba(168,217,144,.35)');
+    grad.addColorStop(1, 'rgba(168,217,144,0)');
+    new Chart(ctx, {
+        type: 'line',
+        data: { labels: {{ chart_labels|safe }}, datasets: [{ data: {{ chart_values|safe }}, borderColor: '#a8d990', backgroundColor: grad, fill: true, tension: .35, pointRadius: 0, pointHoverRadius: 5, borderWidth: 2 }] },
+        options: {
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => 'KES ' + Math.round(c.parsed.y).toLocaleString('en-KE') } } },
+            scales: {
+                x: { ticks: { color: 'rgba(238,243,236,.45)', maxTicksLimit: 8 }, grid: { display: false } },
+                y: { ticks: { color: 'rgba(238,243,236,.45)', callback: v => 'KES ' + Number(v).toLocaleString('en-KE') }, grid: { color: 'rgba(255,255,255,.05)' }, beginAtZero: true }
+            }
+        }
+    });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Page not found — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl py-5"><div class="glass empty-state"><div class="ic"><i class="fa-solid fa-leaf"></i></div><h1 class="h2">We couldn't find that page</h1><p>It may have moved — try searching, or head back to the shop.</p>
+<div class="d-flex gap-2 justify-content-center flex-wrap"><a href="{% url 'core:home' %}" class="btn-glow">Go home</a><a href="{% url 'catalog:shop' %}" class="btn-ghost">Browse products</a></div></div></div>
+{% endblock %}

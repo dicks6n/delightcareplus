@@ -1,0 +1,11 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h2 style="margin:0 0 8px;color:#1f2937;">Thank you, {{ order.full_name }}! 🌿</h2>
+<p style="color:#4b5563;line-height:1.6;">We've received order <strong>{{ order.number }}</strong>.
+{% if order.payment_method == "mpesa" %}As soon as your M-Pesa payment is confirmed we'll start packing.
+{% elif order.payment_method == "airtel" %}We'll confirm your Airtel Money payment shortly and then start packing.
+{% else %}You'll pay when your order arrives. We'll call you on {{ order.phone }} to confirm delivery.{% endif %}</p>
+{% include "emails/_items.html" %}
+<p style="color:#4b5563;font-size:14px;"><strong>Delivering to:</strong> {{ order.address }}, {{ order.city }}</p>
+{% url 'orders:detail' order.number as path %}{% include "emails/_button.html" with url=site_url|add:path label="Track your order" %}
+{% endblock %}

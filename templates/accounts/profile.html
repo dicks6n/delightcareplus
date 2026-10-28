@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}My account — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl page-hero pb-2"><h1 class="display-serif">My account</h1></div>
+<div class="container-xl pb-5">
+    <div class="acct">
+        {% include 'accounts/_nav.html' with active='profile' %}
+        <div class="d-flex flex-column gap-3">
+            <section class="glass glass-green pad d-flex align-items-center gap-3 flex-wrap">
+                <i class="fa-solid fa-star fs-1" style="color:var(--gold)"></i>
+                <div class="flex-grow-1"><span class="eyebrow" style="color:var(--gold)">Glow Points</span>
+                    <h2 class="mb-0">{{ points }} <small class="text-3 fs-6">= KES {{ points }} off</small></h2>
+                    <small class="text-3">Earn 1 point per KES 100 on delivered orders. Use them at checkout (up to 20% of your bag).</small></div>
+            </section>
+            {% if history %}
+            <section class="glass pad">
+                <h5>Points history</h5>
+                {% for t in history %}<div class="sum-row"><span>{{ t.reason }} <small class="text-3">· {{ t.created_at|date:"M j" }}</small></span><strong class="{% if t.points > 0 %}text-green{% else %}text-3{% endif %}">{{ t.points|stringformat:"+d" }}</strong></div>{% endfor %}
+            </section>
+            {% endif %}
+            <form method="post" class="glass pad">
+                {% csrf_token %}
+                <h5 class="mb-3">Your details</h5>
+                <div class="row g-3">
+                    <div class="col-md-6 field mb-0"><label>First name</label><input name="first_name" value="{{ user.first_name }}"></div>
+                    <div class="col-md-6 field mb-0"><label>Last name</label><input name="last_name" value="{{ user.last_name }}"></div>
+                    <div class="col-md-6 field mb-0"><label>Phone</label><input name="phone" value="{{ profile.phone }}" inputmode="tel"></div>
+                    <div class="col-md-6 field mb-0"><label>Town</label><input name="city" value="{{ profile.city }}"></div>
+                    <div class="col-12 field mb-0"><label>Delivery address</label><textarea name="address" rows="2">{{ profile.address }}</textarea></div>
+                    <div class="col-md-6 field mb-0"><label>Skin type</label>
+                        <select name="skin_type">{% for v in skin_types %}<option value="{{ v }}" {% if profile.skin_type == v %}selected{% endif %}>{{ v|default:"Not sure" }}</option>{% endfor %}</select></div>
+                    <div class="col-md-6 d-flex align-items-end"><label class="check"><input type="checkbox" name="marketing_opt_in" {% if profile.marketing_opt_in %}checked{% endif %}> Email me tips &amp; offers</label></div>
+                </div>
+                <button class="btn-glow mt-3" type="submit">Save details</button>
+            </form>
+            <form method="post" action="{% url 'accounts:change_password' %}" class="glass pad">
+                {% csrf_token %}
+                <h5 class="mb-3">Change password</h5>
+                <div class="row g-3">
+                    <div class="col-md-6 field mb-0"><label>Current password</label><input type="password" name="old_password" autocomplete="current-password" required></div>
+                    <div class="col-md-6 field mb-0"><label>New password</label><input type="password" name="new_password" autocomplete="new-password" minlength="8" required></div>
+                </div>
+                <button class="btn-ghost mt-3" type="submit">Update password</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

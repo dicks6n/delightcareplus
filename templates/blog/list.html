@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Wellness Journal — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl page-hero">
+    <span class="eyebrow">Wellness Journal</span>
+    <h1 class="display-serif">Learn from the experts</h1>
+    <p>Skincare science, supplement guides and tea rituals — written for Kenyan skin and weather.</p>
+    <div class="chip-row mt-3">
+        <a href="?" class="chip {% if not topic %}active{% endif %}">All</a>
+        {% for key, label in topics %}<a href="?topic={{ key }}" class="chip {% if topic == key %}active{% endif %}">{{ label }}</a>{% endfor %}
+    </div>
+</div>
+<div class="container-xl pb-5">
+    <div class="row g-3">
+        {% for post in page_obj %}<div class="col-md-6 col-lg-4">{% include 'blog/_card.html' %}</div>
+        {% empty %}<div class="col-12"><div class="glass empty-state"><div class="ic"><i class="fa-solid fa-pen-nib"></i></div><h3>Articles coming soon</h3><p>We're writing our first guides. Check back shortly!</p></div></div>{% endfor %}
+    </div>
+    {% include 'partials/pager.html' %}
+</div>
+{% endblock %}

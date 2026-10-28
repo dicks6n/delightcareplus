@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Wishlist — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl page-hero pb-2">
+    <h1 class="display-serif">Your wishlist ❤️</h1>
+    <p>{% if user.is_authenticated %}Saved to your account — see it on any device.{% else %}<a href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}">Log in</a> to keep your wishlist on all your devices.{% endif %}</p>
+</div>
+<div class="container-xl pb-5">
+    {% if products %}
+    <div class="p-grid" id="wishGrid">
+        {% for product in products %}
+        <div class="wish-col" data-id="{{ product.id }}">
+            {% include 'partials/product_card.html' %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="glass empty-state" id="wishEmpty" {% if products %}style="display:none"{% endif %}>
+        <div class="ic"><i class="fa-regular fa-heart"></i></div>
+        <h3>Nothing saved yet</h3>
+        <p>Tap the <i class="fa-regular fa-heart"></i> on any product to save it for later.</p>
+        <a href="{% url 'catalog:shop' %}" class="btn-glow">Discover products</a>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('dcp:wishlist', e => {
+    if (e.detail.added) return;
+    const col = document.querySelector(`.wish-col[data-id="${e.detail.id}"]`);
+    if (col) { col.style.transition = 'opacity .3s'; col.style.opacity = '0'; setTimeout(() => { col.remove(); if (!document.querySelector('.wish-col')) document.getElementById('wishEmpty').style.display = ''; }, 300); }
+});
+</script>
+{% endblock %}

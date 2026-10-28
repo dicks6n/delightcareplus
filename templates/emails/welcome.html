@@ -1,0 +1,7 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h2 style="margin:0 0 8px;">Welcome to Delight Care Plus, {{ user.first_name|default:user.username }}! 🎉</h2>
+<p style="color:#4b5563;line-height:1.6;">You now have access to premium supplements, skincare and teas from our <strong>France, Japan and USA collections</strong> — delivered across Kenya, paid easily with M-Pesa.</p>
+<p style="color:#4b5563;line-height:1.6;">Save your favourites to your wishlist, track orders and chat with us any time.</p>
+{% include "emails/_button.html" with url=site_url label="Start shopping" %}
+{% endblock %}

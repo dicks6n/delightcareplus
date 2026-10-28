@@ -1,0 +1,27 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{% if obj %}Edit{% else %}Add{% endif %} — {{ cfg.title }}{% endblock %}
+{% block content %}
+<div class="d-head"><div><a href="{% url 'dashboard:crud' kind %}" class="text-3" style="font-size:.82rem;"><i class="fa-solid fa-arrow-left"></i> {{ cfg.title }}</a>
+    <h1 class="mt-1">{% if obj %}{{ obj }}{% else %}Add {{ cfg.title|lower }}{% endif %}</h1></div></div>
+<form method="post" enctype="multipart/form-data" class="card-d" style="max-width:860px">
+    {% csrf_token %}
+    <div class="bd">
+        {% if form.non_field_errors %}<div class="flash-d error">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="row">
+            {% for f in form %}
+            {% if f.field.widget.input_type == 'checkbox' %}
+            <div class="col-md-6 mb-3"><label class="d-flex align-items-center gap-2" style="cursor:pointer">{{ f }} <span>{{ f.label }}</span></label>{% if f.help_text %}<small class="help">{{ f.help_text }}</small>{% endif %}</div>
+            {% else %}
+            <div class="{% if f.field.widget.attrs.rows %}col-12{% else %}col-md-6{% endif %}">{% include 'dashboard/_field.html' %}</div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% if kind == 'delivery' %}<div class="flash-d info"><i class="fa-solid fa-calculator"></i><span>Example: a 1.6 kg parcel to door = door fee + 1 × per-kg fee. Leave pickup stations empty if this zone has none.</span></div>{% endif %}
+        <div class="d-flex gap-2 mt-2">
+            <button class="btn-d primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+            <a href="{% url 'dashboard:crud' kind %}" class="btn-d">Cancel</a>
+            {% if obj %}<button class="btn-d danger ms-auto" type="submit" name="delete" value="1" onclick="return confirm('Delete this?')"><i class="fa-regular fa-trash-can"></i> Delete</button>{% endif %}
+        </div>
+    </div>
+</form>
+{% endblock %}

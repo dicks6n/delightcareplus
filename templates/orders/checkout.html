@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout — Delight Care Plus{% endblock %}
+
+{% block content %}
+<div class="container-xl page-hero pb-2">
+    <div class="steps">
+        <a class="st on" href="{% url 'cart:page' %}"><b><i class="fa-solid fa-check"></i></b> Bag</a><span class="ln"></span>
+        <span class="st on"><b>2</b> Delivery &amp; payment</span><span class="ln"></span>
+        <span class="st"><b>3</b> Done</span>
+    </div>
+    <h1 class="display-serif">Checkout</h1>
+    {% if not user.is_authenticated %}
+    <p class="text-2">Have an account? <a href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}">Log in</a> for faster checkout and Glow Points — or just continue as a guest.</p>
+    {% endif %}
+</div>
+
+<form method="post" class="container-xl pb-5" id="checkoutForm" novalidate>
+    {% csrf_token %}
+    {% if errors.stock %}<div class="flash error mb-3"><i class="fa-solid fa-circle-exclamation"></i><span>{{ errors.stock }}</span></div>{% endif %}
+    <div class="bag">
+        <div class="d-flex flex-column gap-3">
+
+            <!-- Contact -->
+            <section class="glass pad">
+                <h5 class="mb-3"><i class="fa-regular fa-user text-green me-2"></i>Your details</h5>
+                <div class="row g-3">
+                    <div class="col-md-6 field mb-0 {% if errors.full_name %}has-error{% endif %}">
+                        <label for="f_name">Full name</label>
+                        <input id="f_name" name="full_name" value="{{ details.full_name|default:'' }}" autocomplete="name" required>
+                        {% if errors.full_name %}<div class="err">{{ errors.full_name }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-6 field mb-0 {% if errors.phone %}has-error{% endif %}">
+                        <label for="f_phone">Phone (Safaricom/Airtel)</label>
+                        <input id="f_phone" name="phone" value="{{ details.phone|default:'' }}" inputmode="tel" autocomplete="tel" placeholder="0712 345 678" required>
+                        {% if errors.phone %}<div class="err">{{ errors.phone }}</div>{% endif %}
+                    </div>
+                    <div class="col-12 field mb-0 {% if errors.email %}has-error{% endif %}">
+                        <label for="f_email">Email {% if user.is_authenticated %}<span class="text-3">(optional)</span>{% else %}<span class="text-3">— for your receipt</span>{% endif %}</label>
+                        <input id="f_email" type="email" name="email" value="{{ details.email|default:'' }}" autocomplete="email" placeholder="you@email.com">
+                        {% if errors.email %}<div class="err">{{ errors.email }}</div>{% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Delivery -->
+            <section class="glass pad">
+                <h5 class="mb-3"><i class="fa-solid fa-truck-fast text-green me-2"></i>Delivery</h5>
+                <div class="field {% if errors.city %}has-error{% endif %}">
+                    <label for="f_city">Town / area</label>
+                    <select id="f_city" name="city" required>
+                        <option value="">Choose your town…</option>
+                        {% for zone, towns in zones %}
+                        <optgroup label="{{ zone.name }} · {{ zone.delivery_days }}">
+                            {% for t in towns %}<option value="{{ t }}" {% if t == details.city %}selected{% endif %}>{{ t }}</option>{% endfor %}
+                        </optgroup>
+                        {% endfor %}
+                    </select>
+                    {% if errors.city %}<div class="err">{{ errors.city }}</div>{% endif %}
+                    <div class="hint">Not listed? Choose “Other town” — we deliver anywhere in Kenya.</div>
+                </div>
+
+                <div class="choice-grid mb-3" id="methods">
+                    <label class="choice" id="pickupChoice">
+                        <input type="radio" name="delivery_method" value="pickup" {% if summary.delivery_method == 'pickup' %}checked{% endif %}>
+                        <div><strong>Pickup station</strong><small>Collect from a station near you. Cheapest.</small></div>
+                        <span class="price" data-fee="pickup"></span>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="delivery_method" value="home" {% if summary.delivery_method != 'pickup' %}checked{% endif %}>
+                        <div><strong>To my door</strong><small>Home or office — a rider calls before arriving.</small></div>
+                        <span class="price" data-fee="home"></span>
+                    </label>
+                </div>
+
+                <div class="field {% if errors.pickup_station %}has-error{% endif %}" id="stationField" style="display:none">
+                    <label for="f_station">Pickup station</label>
+                    <select id="f_station" name="pickup_station" data-selected="{{ details.pickup_station|default:'' }}"></select>
+                    {% if errors.pickup_station %}<div class="err">{{ errors.pickup_station }}</div>{% endif %}
+                </div>
+                <div class="field {% if errors.address %}has-error{% endif %}" id="addressField">
+                    <label for="f_address">Delivery address</label>
+                    <textarea id="f_address" name="address" rows="2" placeholder="Estate, street, building, house no. — and a landmark" autocomplete="street-address">{{ details.address|default:'' }}</textarea>
+                    {% if errors.address %}<div class="err">{{ errors.address }}</div>{% endif %}
+                </div>
+                <div class="field mb-0">
+                    <label for="f_notes">Notes for the rider <span class="text-3">(optional)</span></label>
+                    <input id="f_notes" name="notes" maxlength="300" value="{{ details.notes|default:'' }}" placeholder="e.g. Call when at the gate">
+                </div>
+                {% if user.is_authenticated %}
+                <label class="check mt-3"><input type="checkbox" name="save_details" value="1" checked> Save these details for next time</label>
+                {% endif %}
+            </section>
+
+            <!-- Payment -->
+            <section class="glass pad">
+                <h5 class="mb-3"><i class="fa-solid fa-wallet text-green me-2"></i>Payment</h5>
+                {% if errors.payment_method %}<div class="err mb-2">{{ errors.payment_method }}</div>{% endif %}
+                <div class="choice-grid">
+                    <label class="choice">
+                        <input type="radio" name="payment_method" value="mpesa" {% if selected_method == 'mpesa' %}checked{% endif %}>
+                        <div><strong><span class="pay-logo me-1">M-PESA</span> M-Pesa</strong><small>We send a PIN prompt to your phone. Fast &amp; secure.</small></div>
+                    </label>
+                    <label class="choice">
+                        <input type="radio" name="payment_method" value="airtel" {% if selected_method == 'airtel' %}checked{% endif %}>
+                        <div><strong><span class="pay-logo airtel me-1">AIRTEL</span> Airtel Money</strong><small>Send money, then enter the transaction ID.</small></div>
+                    </label>
+                    {% if pay_on_delivery %}
+                    <label class="choice">
+                        <input type="radio" name="payment_method" value="cod" {% if selected_method == 'cod' %}checked{% endif %}>
+                        <div><strong><span class="pay-logo cod me-1">COD</span> Pay on delivery</strong><small>Cash or M-Pesa when your parcel arrives.</small></div>
+                    </label>
+                    {% endif %}
+                </div>
+                <div class="field mt-3 mb-0" id="mpesaPhoneField">
+                    <label for="f_mpesa">M-Pesa number to charge <span class="text-3">(if different)</span></label>
+                    <input id="f_mpesa" name="mpesa_phone" inputmode="tel" placeholder="Same as your phone">
+                </div>
+            </section>
+        </div>
+
+        <!-- Summary -->
+        <aside class="glass glass-green summary">
+            <h4 class="mb-3">Your order</h4>
+            {% for line in summary.lines %}
+            <div class="mini-line">
+                <div class="q">{% if line.product.image %}<img src="{{ line.product.image.url }}" alt="">{% else %}<img src="{% static 'img/placeholder.png' %}" alt="">{% endif %}<span>{{ line.quantity }}</span></div>
+                <div class="flex-grow-1"><div class="text-white">{{ line.product.name|truncatechars:40 }}</div><small class="text-3">{{ line.variant.label }}</small></div>
+                <strong>KES {{ line.total|floatformat:0 }}</strong>
+            </div>
+            {% endfor %}
+            <div class="mt-3">
+                <div class="sum-row"><span>Items</span><strong>KES {{ summary.subtotal|floatformat:0 }}</strong></div>
+                {% if summary.discount %}<div class="sum-row green"><span>Discount{% if summary.coupon %} ({{ summary.coupon.code }}){% endif %}</span><strong>− KES {{ summary.discount|floatformat:0 }}</strong></div>{% endif %}
+                {% if summary.points_used %}<div class="sum-row green"><span>Glow Points</span><strong>− KES {{ summary.points_used }}</strong></div>{% endif %}
+                <div class="sum-row"><span>Delivery <small class="text-3" data-zone></small></span><strong data-delivery>{% if summary.free_delivery %}FREE{% elif summary.delivery_known %}KES {{ summary.delivery|floatformat:0 }}{% else %}—{% endif %}</strong></div>
+                <div class="sum-total"><span>Total to pay</span><strong data-total>KES {{ summary.total|floatformat:0 }}</strong></div>
+            </div>
+            <button type="submit" class="btn-glow btn-block mt-3" id="placeBtn"><i class="fa-solid fa-lock"></i> <span data-btn-label>Place order</span></button>
+            <p class="text-3 text-center mt-2 mb-0" style="font-size:.74rem;">By placing your order you agree to our <a href="{% url 'core:policy' 'terms' %}">terms</a>. Need help? <a href="https://wa.me/{{ shop.whatsapp_number }}" target="_blank" rel="noopener">WhatsApp us</a>.</p>
+            <a href="{% url 'cart:page' %}" class="see-all mt-3"><i class="fa-solid fa-arrow-left"></i> Edit bag</a>
+        </aside>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+    const { kes } = DCP;
+    const city = document.getElementById('f_city');
+    const station = document.getElementById('f_station');
+    const stationField = document.getElementById('stationField');
+    const addressField = document.getElementById('addressField');
+    const pickupChoice = document.getElementById('pickupChoice');
+    const methodInputs = document.querySelectorAll('input[name=delivery_method]');
+    const payInputs = document.querySelectorAll('input[name=payment_method]');
+
+    function method() { const m = document.querySelector('input[name=delivery_method]:checked'); return m ? m.value : 'home'; }
+
+    function quoteFor(m) {
+        return fetch(`/cart/delivery/?city=${encodeURIComponent(city.value)}&method=${m}`).then(r => r.json());
+    }
+
+    function refresh() {
+        const m = method();
+        stationField.style.display = m === 'pickup' ? '' : 'none';
+        addressField.style.display = m === 'pickup' ? 'none' : '';
+        if (!city.value) return;
+        // Show both prices on the cards, then the chosen one in the summary
+        Promise.all([quoteFor('pickup'), quoteFor('home')]).then(([p, h]) => {
+            const hasPickup = p.pickup_stations.length > 0;
+            pickupChoice.classList.toggle('disabled', !hasPickup);
+            pickupChoice.querySelector('input').disabled = !hasPickup;
+            document.querySelector('[data-fee=pickup]').textContent = hasPickup ? (p.free_delivery ? 'FREE' : kes(p.delivery)) : 'n/a';
+            document.querySelector('[data-fee=home]').textContent = h.free_delivery ? 'FREE' : kes(h.delivery);
+            if (!hasPickup && m === 'pickup') { document.querySelector('input[name=delivery_method][value=home]').checked = true; return refresh(); }
+            const sel = station.dataset.selected;
+            station.innerHTML = p.pickup_stations.map(s => `<option ${s === sel ? 'selected' : ''}>${DCP.esc(s)}</option>`).join('');
+            return quoteFor(method()).then(d => {
+                document.querySelector('[data-delivery]').textContent = d.free_delivery ? 'FREE' : kes(d.delivery);
+                document.querySelector('[data-zone]').textContent = d.delivery_days ? '· ' + d.delivery_days : '';
+                document.querySelector('[data-total]').textContent = kes(d.total);
+            });
+        });
+    }
+
+    function payLabel() {
+        const p = document.querySelector('input[name=payment_method]:checked');
+        const v = p ? p.value : 'mpesa';
+        document.getElementById('mpesaPhoneField').style.display = v === 'mpesa' ? '' : 'none';
+        document.querySelector('[data-btn-label]').textContent = v === 'mpesa' ? 'Pay with M-Pesa' : v === 'airtel' ? 'Continue to Airtel Money' : 'Place order — pay on delivery';
+    }
+
+    city.addEventListener('change', refresh);
+    methodInputs.forEach(i => i.addEventListener('change', refresh));
+    payInputs.forEach(i => i.addEventListener('change', payLabel));
+    refresh();
+    payLabel();
+
+    document.getElementById('checkoutForm').addEventListener('submit', () => {
+        const b = document.getElementById('placeBtn');
+        setTimeout(() => { b.disabled = true; b.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Placing your order…'; }, 0);
+    });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Contact us — Delight Care Plus{% endblock %}
+{% block content %}
+<div class="container-xl page-hero"><h1 class="display-serif">We'd love to hear from you</h1><p>The fastest way to reach us is the chat (bottom right) or WhatsApp.</p></div>
+<div class="container-xl pb-5">
+    <div class="row g-4">
+        <div class="col-lg-5 d-flex flex-column gap-3">
+            <a class="glass pad d-flex gap-3 align-items-center text-white" href="https://wa.me/{{ shop.whatsapp_number }}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp fs-2" style="color:#25d366"></i><div><strong>WhatsApp</strong><br><span class="text-3">+{{ shop.whatsapp_number }}</span></div></a>
+            <a class="glass pad d-flex gap-3 align-items-center text-white" href="tel:{{ shop.support_phone|cut:' ' }}"><i class="fa-solid fa-phone fs-3 text-green"></i><div><strong>Call us</strong><br><span class="text-3">{{ shop.support_phone }}</span></div></a>
+            <a class="glass pad d-flex gap-3 align-items-center text-white" href="mailto:{{ shop.support_email }}"><i class="fa-regular fa-envelope fs-3 text-green"></i><div><strong>Email</strong><br><span class="text-3">{{ shop.support_email }}</span></div></a>
+        </div>
+        <div class="col-lg-7">
+            <form method="post" class="glass glass-green pad-lg">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6 field mb-0"><label>Name</label><input name="name" required maxlength="100" value="{{ user.first_name|default:'' }}"></div>
+                    <div class="col-md-6 field mb-0"><label>Phone</label><input name="phone" inputmode="tel" maxlength="20"></div>
+                    <div class="col-12 field mb-0"><label>Email</label><input type="email" name="email" value="{{ user.email|default:'' }}"></div>
+                    <div class="col-12 field mb-0"><label>Subject</label><input name="subject" maxlength="150"></div>
+                    <div class="col-12 field mb-0"><label>Message</label><textarea name="message" rows="5" required maxlength="3000"></textarea></div>
+                </div>
+                <button class="btn-glow mt-3" type="submit"><i class="fa-solid fa-paper-plane"></i> Send message</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

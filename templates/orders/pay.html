@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Pay for {{ order.number }} — Delight Care Plus{% endblock %}
+
+{% block content %}
+<div class="container-xl page-hero pb-2">
+    <div class="steps">
+        <span class="st on"><b><i class="fa-solid fa-check"></i></b> Bag</span><span class="ln"></span>
+        <span class="st on"><b><i class="fa-solid fa-check"></i></b> Details</span><span class="ln"></span>
+        <span class="st on"><b>3</b> Payment</span>
+    </div>
+</div>
+
+<div class="container-xl pb-5" style="max-width: 760px;">
+    <div class="glass glass-green pad-lg">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+            <div><span class="eyebrow">Order {{ order.number }}</span><h2 class="mt-1 mb-0">KES {{ order.total|floatformat:0 }}</h2></div>
+            <span class="status-pill st-{{ order.status }}">{{ order.get_status_display }}</span>
+        </div>
+
+        {% if order.payment_method == 'mpesa' %}
+        <div class="pay-wait" id="payWait">
+            <div class="phone-anim"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <h3 id="payTitle">Check your phone</h3>
+            <p class="text-2" id="payMsg">
+                {% if order.mpesa_result_desc and not order.checkout_request_id %}{{ order.mpesa_result_desc }}
+                {% else %}We sent an M-Pesa prompt to <strong class="text-white">+{{ order.payment_phone }}</strong>. Enter your PIN to pay <strong class="text-white">KES {{ order.total|floatformat:0 }}</strong>.{% endif %}
+            </p>
+            <div class="d-flex justify-content-center gap-2 flex-wrap text-3" style="font-size:.82rem;">
+                <span><b class="text-white">1.</b> Unlock your phone</span>
+                <span><b class="text-white">2.</b> Enter M-Pesa PIN</span>
+                <span><b class="text-white">3.</b> This page updates automatically</span>
+            </div>
+        </div>
+
+        <details class="glass pad mt-3" {% if order.status == 'FAILED' or not order.checkout_request_id %}open{% endif %}>
+            <summary class="fw-semibold" style="cursor:pointer;">Didn't get the prompt? Resend it</summary>
+            <form method="post" action="{% url 'orders:pay_retry' order.number %}" class="d-flex gap-2 mt-3 flex-wrap">
+                {% csrf_token %}
+                <input class="input" name="phone" value="0{{ order.payment_phone|slice:'3:' }}" inputmode="tel" aria-label="M-Pesa number" style="max-width:240px;">
+                <button class="btn-glow" type="submit"><i class="fa-solid fa-rotate"></i> Send new prompt</button>
+            </form>
+            {% if shop.mpesa_paybill_note %}<p class="text-3 mt-3 mb-0" style="font-size:.82rem;">Or pay manually: {{ shop.mpesa_paybill_note }}</p>{% endif %}
+        </details>
+        {% endif %}
+
+        <details class="glass pad mt-3" {% if order.payment_method == 'airtel' %}open{% endif %}>
+            <summary class="fw-semibold" style="cursor:pointer;"><span class="pay-logo airtel me-1">AIRTEL</span> Pay with Airtel Money instead</summary>
+            <ol class="text-2 mt-3" style="line-height:1.9;">
+                <li>Dial <strong class="text-white">*334#</strong> → Send Money</li>
+                <li>Send <strong class="text-white">KES {{ order.total|floatformat:0 }}</strong> to <strong class="text-white">{{ airtel_number|default:"our Airtel number (ask in chat)" }}</strong></li>
+                <li>Enter the transaction ID from your SMS below</li>
+            </ol>
+            <form method="post" action="{% url 'orders:airtel' order.number %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row g-2">
+                    <div class="col-md-6 field"><label>Transaction ID</label><input name="reference" required minlength="6" maxlength="40" placeholder="e.g. MP240611.1234.A12345"></div>
+                    <div class="col-md-6 field"><label>Screenshot <span class="text-3">(optional)</span></label><input type="file" name="proof" accept="image/*"></div>
+                </div>
+                <button class="btn-glow" type="submit"><i class="fa-solid fa-paper-plane"></i> Submit payment</button>
+            </form>
+        </details>
+
+        <div class="d-flex justify-content-between mt-4 flex-wrap gap-2">
+            <a href="{% url 'orders:detail' order.number %}" class="see-all">View order <i class="fa-solid fa-arrow-right"></i></a>
+            <button class="link-btn" data-chat-open="Hi, I need help paying for order {{ order.number }}"><i class="fa-regular fa-comment"></i> Need help?</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if order.payment_method == 'mpesa' and order.checkout_request_id %}
+<script>
+(function () {
+    let tries = 0;
+    const url = "{% url 'orders:pay_status' order.number %}";
+    function check() {
+        tries++;
+        // Ask Safaricom directly every 3rd check; otherwise just read our DB (callback may have arrived)
+        fetch(url + (tries % 3 === 0 ? '?query=1' : '')).then(r => r.json()).then(d => {
+            if (d.status === 'paid') {
+                document.getElementById('payTitle').textContent = 'Payment received 🎉';
+                document.getElementById('payMsg').textContent = 'Taking you to your order…';
+                setTimeout(() => location.href = d.redirect, 1200);
+                return;
+            }
+            if (d.status === 'failed') {
+                document.getElementById('payTitle').textContent = 'Payment not completed';
+                document.getElementById('payMsg').textContent = d.message + ' — you can resend the prompt below.';
+                document.querySelector('details').open = true;
+                return;
+            }
+            if (tries < 40) setTimeout(check, 5000);
+            else document.getElementById('payMsg').textContent = 'Still waiting… If you already paid, it may take a minute. Otherwise resend the prompt below.';
+        }).catch(() => setTimeout(check, 8000));
+    }
+    setTimeout(check, 4000);
+})();
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Shop settings{% endblock %}
+{% block content %}
+<div class="d-head"><div><h1>Shop settings</h1><p>Changes apply to the whole shop immediately.</p></div></div>
+<form method="post" class="card-d" style="max-width:900px">
+    {% csrf_token %}
+    <div class="bd">
+        <div class="row">
+            {% for f in form %}
+            {% if f.field.widget.input_type == 'checkbox' %}
+            <div class="col-md-6 mb-3"><label class="d-flex align-items-center gap-2" style="cursor:pointer">{{ f }} <span>{{ f.label }}</span></label>{% if f.help_text %}<small class="help">{{ f.help_text }}</small>{% endif %}</div>
+            {% else %}<div class="col-md-6">{% include 'dashboard/_field.html' %}</div>{% endif %}
+            {% endfor %}
+        </div>
+        <button class="btn-d primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save settings</button>
+    </div>
+</form>
+<div class="card-d mt-3" style="max-width:900px"><div class="hd"><h3>Also in your control</h3></div><div class="bd d-flex gap-2 flex-wrap">
+    <a class="btn-d" href="{% url 'dashboard:crud' 'delivery' %}"><i class="fa-solid fa-truck-fast"></i> Delivery prices</a>
+    <a class="btn-d" href="{% url 'dashboard:crud' 'coupons' %}"><i class="fa-solid fa-ticket"></i> Coupons</a>
+    <a class="btn-d" href="{% url 'dashboard:crud' 'banners' %}"><i class="fa-solid fa-images"></i> Home banners</a>
+    <a class="btn-d" href="/django-admin/auth/user/"><i class="fa-solid fa-user-shield"></i> Staff accounts</a>
+</div></div>
+{% endblock %}

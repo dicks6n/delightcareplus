@@ -1,0 +1,25 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Reviews{% endblock %}
+{% block content %}
+<div class="d-head"><div><h1>Reviews</h1><p>Hide anything inappropriate. Reply to unhappy customers by chat or WhatsApp.</p></div></div>
+<nav class="tabs-d"><a href="?" class="{% if not filter %}on{% endif %}">All</a><a href="?filter=low" class="{% if filter == 'low' %}on{% endif %}">1–2 stars</a><a href="?filter=pending" class="{% if filter == 'pending' %}on{% endif %}">Hidden</a></nav>
+<div class="card-d"><div class="bd flush t-wrap"><table class="t">
+    <thead><tr><th>Product</th><th>Rating</th><th>Review</th><th>Customer</th><th>Date</th><th></th></tr></thead>
+    <tbody>
+    {% for r in page_obj %}
+    <tr>
+        <td><a href="{{ r.product.get_absolute_url }}" target="_blank">{{ r.product.name|truncatechars:34 }}</a></td>
+        <td><strong style="color:var(--d-amber)">{{ r.rating }}★</strong></td>
+        <td style="max-width:380px">{% if r.title %}<strong>{{ r.title }}</strong><br>{% endif %}<small>{{ r.comment|truncatechars:160 }}</small></td>
+        <td>{{ r.user.get_full_name|default:r.user.username }}{% if r.is_verified_buyer %}<br><span class="pill green">Verified</span>{% endif %}</td>
+        <td><small>{{ r.created_at|date:"M j" }}</small></td>
+        <td class="text-nowrap">
+            <form method="post" action="{% url 'dashboard:review_action' r.pk %}" class="d-inline">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+                {% if r.is_approved %}<button class="btn-d sm" name="action" value="hide">Hide</button>{% else %}<button class="btn-d sm primary" name="action" value="approve">Show</button>{% endif %}
+                <button class="btn-d sm danger" name="action" value="delete" onclick="return confirm('Delete this review?')">Delete</button></form>
+        </td>
+    </tr>
+    {% empty %}<tr><td colspan="6"><div class="empty-d"><i class="fa-regular fa-star"></i>No reviews yet.</div></td></tr>{% endfor %}
+    </tbody></table></div></div>
+{% include 'partials/pager.html' %}
+{% endblock %}

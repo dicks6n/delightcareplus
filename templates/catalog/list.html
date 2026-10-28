@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} — Delight Care Plus{% endblock %}
+{% block description %}{% if subtitle %}{{ subtitle|truncatechars:155 }}{% else %}Shop {{ title }} at Delight Care Plus. Genuine supplements, skincare and teas, delivered across Kenya.{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero" {% if brand %}style="background: radial-gradient(700px 300px at 20% 0%, {{ brand.accent_color }}33, transparent 70%);"{% endif %}>
+    <div class="container-xl">
+        {% include 'partials/crumbs.html' %}
+        {% if brand %}<div class="fs-1">{{ brand.flag }}</div>{% endif %}
+        <h1 class="display-serif">{{ title }}</h1>
+        {% if subtitle %}<p>{{ subtitle }}</p>{% endif %}
+        {% if brand and brand.story %}<p class="text-3" style="max-width:760px;">{{ brand.story|truncatewords:60 }}</p>{% endif %}
+
+        {% if subcategories %}
+        <div class="chip-row mt-3">
+            <a href="{{ department.get_absolute_url }}" class="chip {% if not current_category %}active{% endif %}">All {{ department.name|lower }}</a>
+            {% for c in subcategories %}
+            <a href="{{ c.get_absolute_url }}" class="chip {% if current_category and c.id == current_category.id %}active{% endif %}"><i class="{{ c.icon }}"></i> {{ c.name }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<div class="container-xl pb-5">
+    <div class="listing">
+        <!-- Filters -->
+        <form method="get" class="filters glass" id="filters">
+            {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
+            <input type="hidden" name="sort" value="{{ sort }}">
+
+            <h6>Brand</h6>
+            {% for b in all_brands %}
+            <label class="check"><input type="checkbox" name="brand" value="{{ b.slug }}" {% if b.slug in selected_brands %}checked{% endif %}> {{ b.flag }} {{ b.name }} <small>{{ b.n }}</small></label>
+            {% endfor %}
+
+            {% if all_concerns %}
+            <h6>Concern</h6>
+            {% for c in all_concerns %}
+            <label class="check"><input type="checkbox" name="concern" value="{{ c.slug }}" {% if c.slug in selected_concerns %}checked{% endif %}> {{ c.emoji }} {{ c.name }}</label>
+            {% endfor %}
+            {% endif %}
+
+            <h6>Type</h6>
+            {% for key, label in form_options %}
+            <label class="check"><input type="checkbox" name="form" value="{{ key }}" {% if key in selected_forms %}checked{% endif %}> {{ label }}</label>
+            {% endfor %}
+
+            <h6>Price (KES)</h6>
+            <div class="price-row">
+                <input class="input" type="number" name="min_price" min="0" step="100" placeholder="Min" value="{{ min_price }}" aria-label="Minimum price">
+                <span class="text-3">–</span>
+                <input class="input" type="number" name="max_price" min="0" step="100" placeholder="Max" value="{{ max_price }}" aria-label="Maximum price">
+            </div>
+
+            <h6>Good to know</h6>
+            <label class="check"><input type="checkbox" name="on_sale" value="1" {% if on_sale %}checked{% endif %}> 🏷️ On sale</label>
+            <label class="check"><input type="checkbox" name="in_stock" value="1" {% if in_stock %}checked{% endif %}> ✅ In stock</label>
+            <label class="check"><input type="checkbox" name="vegan" value="1" {% if flags.vegan %}checked{% endif %}> 🌱 Vegan</label>
+            <label class="check"><input type="checkbox" name="halal" value="1" {% if flags.halal %}checked{% endif %}> 🌙 Halal</label>
+            <label class="check"><input type="checkbox" name="cruelty_free" value="1" {% if flags.cruelty_free %}checked{% endif %}> 🐰 Cruelty-free</label>
+            <label class="check"><input type="checkbox" name="fragrance_free" value="1" {% if flags.fragrance_free %}checked{% endif %}> 🍃 Fragrance-free</label>
+
+            <button type="submit" class="btn-glow btn-block mt-3">Apply filters</button>
+            {% if filter_count %}<a href="{{ request.path }}{% if q %}?q={{ q|urlencode }}{% endif %}" class="btn-ghost btn-block mt-2">Clear all</a>{% endif %}
+        </form>
+
+        <!-- Results -->
+        <div>
+            <div class="toolbar">
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn-ghost btn-sm-pill filter-toggle" onclick="document.getElementById('filters').classList.toggle('open')">
+                        <i class="fa-solid fa-sliders"></i> Filters{% if filter_count %} ({{ filter_count }}){% endif %}
+                    </button>
+                    <span class="count">{{ total }} product{{ total|pluralize }}</span>
+                </div>
+                <form method="get" id="sortForm">
+                    {% for key, values in request.GET.lists %}{% if key != 'sort' and key != 'page' %}{% for v in values %}<input type="hidden" name="{{ key }}" value="{{ v }}">{% endfor %}{% endif %}{% endfor %}
+                    <select class="input" name="sort" aria-label="Sort" onchange="this.form.submit()">
+                        {% for key, label in sort_options %}<option value="{{ key }}" {% if key == sort %}selected{% endif %}>{{ label }}</option>{% endfor %}
+                    </select>
+                </form>
+            </div>
+
+            {% if products %}
+            <div class="p-grid">
+                {% for product in products %}{% include 'partials/product_card.html' %}{% endfor %}
+            </div>
+            {% include 'partials/pager.html' %}
+            {% else %}
+            <div class="glass empty-state">
+                <div class="ic"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <h3>Nothing matches yet</h3>
+                <p>Try fewer filters, a different word — or ask our experts in the chat.</p>
+                <div class="d-flex gap-2 justify-content-center flex-wrap">
+                    <a href="{% url 'catalog:shop' %}" class="btn-glow">Browse everything</a>
+                    <button type="button" class="btn-ghost" data-chat-open="Hi! I'm looking for {{ q|default:title }} — can you help?">Ask an expert</button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Apply filters as soon as a box is ticked (desktop)
+    document.querySelectorAll('#filters input[type=checkbox]').forEach(cb => cb.addEventListener('change', () => {
+        if (window.innerWidth >= 992) cb.form.submit();
+    }));
+</script>
+{% endblock %}
