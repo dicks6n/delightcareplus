@@ -1,0 +1,15 @@
+<script>
+(function () {
+    document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', () => {
+        navigator.clipboard && navigator.clipboard.writeText(b.dataset.copy).then(() => {
+            const i = b.querySelector('i'); i.className = 'fa-solid fa-check';
+            setTimeout(() => i.className = 'fa-solid fa-link', 1600);
+        });
+    }));
+    document.querySelectorAll('[data-share]').forEach(b => b.addEventListener('click', () => {
+        const url = "{{ share_url|escapejs }}", title = "{{ c.title|escapejs }}";
+        if (navigator.share) { navigator.share({ title, url }).catch(() => {}); }
+        else if (navigator.clipboard) { navigator.clipboard.writeText(url); b.innerHTML = '<i class="fa-solid fa-check"></i> Link copied'; }
+    }));
+})();
+</script>

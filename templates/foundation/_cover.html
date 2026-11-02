@@ -1,0 +1,7 @@
+<div class="fd-cover">
+    {% if c.cover %}<img src="{{ c.cover.url }}" alt="{{ c.title }}" loading="lazy">
+    {% else %}<div class="fallback" aria-hidden="true"><i class="{{ c.icon }}"></i></div>{% endif %}
+    <span class="fd-tag"><i class="{{ c.icon }}"></i> {{ c.get_category_display }}</span>
+    {% if c.is_sample %}<span class="fd-tag" style="top:auto;bottom:12px;background:rgba(242,201,76,.9);color:#1f2a1c;">Sample</span>{% endif %}
+    {% if c.is_verified %}<span class="fd-tag verified"><i class="fa-solid fa-circle-check"></i> Verified</span>{% endif %}
+</div>

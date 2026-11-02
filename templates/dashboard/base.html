@@ -56,6 +56,11 @@
             <a href="{% url 'dashboard:crud' 'posts' %}" class="{% if kind == 'posts' %}on{% endif %}"><i class="fa-solid fa-pen-nib"></i> Blog posts</a>
             <a href="{% url 'dashboard:crud' 'testimonials' %}" class="{% if kind == 'testimonials' %}on{% endif %}"><i class="fa-solid fa-quote-left"></i> Testimonials</a>
 
+            <h6>Foundation</h6>
+            <a href="{% url 'dashboard:foundation' %}" class="{% if u == 'foundation' or u == 'foundation_campaign' or u == 'foundation_add' %}on{% endif %}"><i class="fa-solid fa-hand-holding-heart"></i> Fundraisers</a>
+            <a href="{% url 'dashboard:foundation_donations' %}" class="{% if u == 'foundation_donations' or u == 'foundation_donation_add' %}on{% endif %}"><i class="fa-solid fa-circle-dollar-to-slot"></i> Donations</a>
+            <a href="{% url 'foundation:home' %}" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Foundation</a>
+
             <h6>Store</h6>
             <a href="{% url 'dashboard:crud' 'delivery' %}" class="{% if kind == 'delivery' %}on{% endif %}"><i class="fa-solid fa-truck-fast"></i> Delivery prices</a>
             <a href="{% url 'dashboard:settings' %}" class="{% if u == 'settings' %}on{% endif %}"><i class="fa-solid fa-sliders"></i> Shop settings</a>

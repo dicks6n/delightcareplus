@@ -1,0 +1,87 @@
+{% extends 'foundation/_base.html' %}
+{% load humanize %}
+{% block title %}Complete your donation — Delight Care Plus Foundation{% endblock %}
+{% block fd_content %}
+<div class="container-xl py-5" style="max-width: 760px;">
+    <div class="glass glass-green pad-lg">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+            <div><span class="eyebrow">Donation {{ d.reference }}</span><h2 class="mt-1 mb-0">KES {{ d.amount|intcomma }}</h2>
+                <small class="text-3">to <a href="{{ c.get_absolute_url }}">{{ c.title }}</a></small></div>
+            <span class="fd-status s-{{ d.status }}">{{ d.get_status_display }}</span>
+        </div>
+
+        {% if d.method == 'mpesa' %}
+        <div class="pay-wait" id="payWait">
+            <div class="phone-anim"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <h3 id="payTitle">{% if d.checkout_request_id %}Check your phone{% else %}We couldn't send the prompt{% endif %}</h3>
+            <p class="text-2" id="payMsg">
+                {% if d.result_desc and not d.checkout_request_id %}{{ d.result_desc }}
+                {% else %}We sent an M-Pesa prompt to <strong class="text-white">+{{ d.phone }}</strong>. Enter your PIN to give <strong class="text-white">KES {{ d.amount|intcomma }}</strong>.{% endif %}
+            </p>
+            <div class="d-flex justify-content-center gap-2 flex-wrap text-3" style="font-size:.82rem;">
+                <span><b class="text-white">1.</b> Unlock your phone</span>
+                <span><b class="text-white">2.</b> Enter M-Pesa PIN</span>
+                <span><b class="text-white">3.</b> This page updates automatically</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <details class="glass pad mt-3" id="retryBox" {% if d.method == 'airtel' or d.status == 'FAILED' or not d.checkout_request_id %}open{% endif %}>
+            <summary class="fw-semibold" style="cursor:pointer;"><span class="pay-logo me-1">M-PESA</span> {% if d.method == 'mpesa' %}Didn't get the prompt? Resend it{% else %}Pay with M-Pesa instead{% endif %}</summary>
+            <form method="post" action="{% url 'foundation:pay_retry' d.reference %}" class="d-flex gap-2 mt-3 flex-wrap">
+                {% csrf_token %}
+                <input class="input" name="phone" value="{% if d.phone|slice:':3' == '254' %}0{{ d.phone|slice:'3:' }}{% endif %}" placeholder="0712 345 678" inputmode="tel" aria-label="M-Pesa number" style="max-width:240px;">
+                <button class="btn-glow" type="submit"><i class="fa-solid fa-rotate"></i> Send M-Pesa prompt</button>
+            </form>
+        </details>
+
+        <details class="glass pad mt-3" {% if d.method == 'airtel' %}open{% endif %}>
+            <summary class="fw-semibold" style="cursor:pointer;"><span class="pay-logo airtel me-1">AIRTEL</span> Give with Airtel Money</summary>
+            <ol class="text-2 mt-3" style="line-height:1.9;">
+                <li>Dial <strong class="text-white">*334#</strong> → Send Money</li>
+                <li>Send <strong class="text-white">KES {{ d.amount|intcomma }}</strong> to <strong class="text-white">{{ airtel_number|default:"our Airtel number (ask in chat)" }}</strong></li>
+                <li>Enter the transaction ID from your SMS below</li>
+            </ol>
+            <form method="post" action="{% url 'foundation:airtel' d.reference %}" class="d-flex gap-2 flex-wrap">
+                {% csrf_token %}
+                <input class="input" name="reference" required minlength="6" maxlength="40" placeholder="Transaction ID" aria-label="Airtel transaction ID" style="max-width:280px;">
+                <button class="btn-glow" type="submit"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+            </form>
+        </details>
+
+        <div class="d-flex justify-content-between mt-4 flex-wrap gap-2">
+            <a href="{{ c.get_absolute_url }}" class="see-all"><i class="fa-solid fa-arrow-left"></i> Back to fundraiser</a>
+            <button class="link-btn" data-chat-open="Hi, I need help with my donation {{ d.reference }}"><i class="fa-regular fa-comment"></i> Need help?</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if d.method == 'mpesa' and d.checkout_request_id and d.status == 'PENDING' %}
+<script>
+(function () {
+    let tries = 0;
+    const url = "{% url 'foundation:pay_status' d.reference %}";
+    const title = document.getElementById('payTitle'), msg = document.getElementById('payMsg');
+    function check() {
+        tries++;
+        fetch(url + (tries % 3 === 0 ? '?query=1' : '')).then(r => r.json()).then(r => {
+            if (r.status === 'paid') {
+                title.textContent = 'Thank you! 💚'; msg.textContent = 'Your donation was received.';
+                setTimeout(() => location.href = r.redirect, 1200); return;
+            }
+            if (r.status === 'failed') {
+                title.textContent = 'Donation not completed';
+                msg.textContent = r.message + ' — you can resend the prompt below.';
+                document.getElementById('retryBox').open = true; return;
+            }
+            if (tries < 40) setTimeout(check, 5000);
+            else msg.textContent = 'Still waiting… If you already paid, it may take a minute. Otherwise resend the prompt below.';
+        }).catch(() => setTimeout(check, 8000));
+    }
+    setTimeout(check, 4000);
+})();
+</script>
+{% endif %}
+{% endblock %}

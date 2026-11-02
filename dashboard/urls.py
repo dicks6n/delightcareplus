@@ -1,5 +1,6 @@
 from django.urls import path
 
+from . import foundation_views as fd
 from . import marketing_views as mk
 from . import views
 
@@ -35,6 +36,16 @@ urlpatterns = [
 
     path("reviews/", views.review_list, name="reviews"),
     path("reviews/<int:pk>/", views.review_action, name="review_action"),
+
+    path("foundation/", fd.campaigns, name="foundation"),
+    path("foundation/add/", fd.campaign_edit, name="foundation_add"),
+    path("foundation/delete-samples/", fd.delete_samples, name="foundation_delete_samples"),
+    path("foundation/<int:pk>/", fd.campaign_edit, name="foundation_campaign"),
+    path("foundation/<int:pk>/status/", fd.campaign_status, name="foundation_status"),
+    path("foundation/updates/<int:pk>/delete/", fd.update_delete, name="foundation_update_delete"),
+    path("foundation/donations/", fd.donations, name="foundation_donations"),
+    path("foundation/donations/add/", fd.donation_add, name="foundation_donation_add"),
+    path("foundation/donations/<int:pk>/", fd.donation_action, name="foundation_donation_action"),
 
     path("marketing/", mk.marketing, name="marketing"),
     path("marketing/ad-studio/", mk.ad_studio, name="ad_studio"),

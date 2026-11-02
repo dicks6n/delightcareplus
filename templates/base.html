@@ -74,6 +74,7 @@
                         <li><a class="dropdown-item" href="{% url 'accounts:orders' %}"><i class="fa-solid fa-box"></i> My orders</a></li>
                         <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="fa-solid fa-user-gear"></i> My account</a></li>
                         <li><a class="dropdown-item" href="{% url 'catalog:wishlist' %}"><i class="fa-regular fa-heart"></i> Wishlist</a></li>
+                        <li><a class="dropdown-item" href="{% url 'foundation:mine' %}"><i class="fa-solid fa-hand-holding-heart"></i> My giving</a></li>
                         {% if user.is_staff %}
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{% url 'dashboard:overview' %}"><i class="fa-solid fa-gauge-high"></i> Seller Center</a></li>
@@ -170,6 +171,7 @@
             <a href="{% url 'catalog:routine' %}" class="nav-top"><i class="fa-solid fa-wand-magic-sparkles"></i> Routine Finder</a>
             <a href="{% url 'catalog:verify' %}" class="nav-top"><i class="fa-solid fa-shield-halved"></i> Verify Product</a>
             <a href="{% url 'blog:list' %}" class="nav-top"><i class="fa-solid fa-book-open"></i> Journal</a>
+            <a href="{% url 'foundation:home' %}" class="nav-top {% if request.resolver_match.app_name == 'foundation' %}active{% endif %}"><i class="fa-solid fa-hand-holding-heart" style="color:#e5483b"></i> Foundation</a>
         </div>
     </nav>
 </header>
@@ -204,6 +206,11 @@
             <a href="{% url 'catalog:compare' %}"><i class="fa-solid fa-code-compare"></i> Compare</a>
             <a href="{% url 'blog:list' %}"><i class="fa-solid fa-book-open"></i> Wellness Journal</a>
             <a href="{% url 'orders:track' %}"><i class="fa-solid fa-truck-fast"></i> Track an order</a>
+        </div>
+        <div class="drawer-section">
+            <h6>Foundation</h6>
+            <a href="{% url 'foundation:home' %}"><i class="fa-solid fa-hand-holding-heart"></i> Donate to a fundraiser</a>
+            <a href="{% url 'foundation:start' %}"><i class="fa-solid fa-plus"></i> Start a fundraiser</a>
         </div>
         <div class="drawer-section">
             <h6>Account</h6>
@@ -273,6 +280,7 @@
                     <li><a href="{% url 'core:faq' %}">FAQ</a></li>
                     <li><a href="{% url 'core:contact' %}">Contact us</a></li>
                     <li><a href="{% url 'catalog:verify' %}">Verify a product</a></li>
+                    <li><a href="{% url 'foundation:home' %}">Delight Care Plus Foundation</a></li>
                 </ul>
             </div>
             <div class="col-lg-4">

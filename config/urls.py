@@ -21,6 +21,7 @@ urlpatterns = [
     path("chat/", include("chat.urls")),
     path("blog/", include("blog.urls")),
     path("manage/", include("dashboard.urls")),
+    path("foundation/", include("foundation.urls")),
     path("", include("marketing.urls")),
     path("sitemap.xml", sitemap, {"sitemaps": SITEMAPS}, name="sitemap"),
     path("robots.txt", robots),   # staff dashboard (separate from Django admin)

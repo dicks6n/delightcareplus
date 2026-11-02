@@ -1,0 +1,30 @@
+{% extends 'foundation/_base.html' %}
+{% block title %}How it works — Delight Care Plus Foundation{% endblock %}
+{% block fd_content %}
+<div class="container-xl page-hero">
+    <span class="eyebrow">About the Foundation</span>
+    <h1 class="display-serif">Wellness for everyone, not just our customers.</h1>
+    <p>Delight Care Plus helps people across Kenya look after their health. The Foundation is how our community helps the people who can't afford care right now: a hospital bill, school fees, or a project that keeps a whole neighbourhood healthy.</p>
+</div>
+<div class="container-xl pb-5">
+    <div class="row g-4">
+        <div class="col-lg-4"><div class="glass pad-lg h-100"><i class="fa-solid fa-kit-medical text-green fs-2"></i><h4 class="mt-3">Health first</h4><p class="text-2 mb-0">Most fundraisers cover medical treatment, medicines and recovery, the area our team knows best.</p></div></div>
+        <div class="col-lg-4"><div class="glass pad-lg h-100"><i class="fa-solid fa-user-check text-green fs-2"></i><h4 class="mt-3">Reviewed by people</h4><p class="text-2 mb-0">Our team reads every fundraiser before it goes live and may ask the organiser for documents. Fundraisers marked <strong class="text-white">Verified</strong> have had their documents checked.</p></div></div>
+        <div class="col-lg-4"><div class="glass pad-lg h-100"><i class="fa-solid fa-mobile-screen-button text-green fs-2"></i><h4 class="mt-3">Easy to give</h4><p class="text-2 mb-0">Give with M-Pesa in a few seconds, or with Airtel Money. You get a receipt by email if you leave your address.</p></div></div>
+    </div>
+
+    <div class="section-head mt-5"><div><h2>Questions <span>people ask</span></h2></div></div>
+    <div class="glass pad">
+        <details class="py-2"><summary class="fw-semibold text-white" style="cursor:pointer;">Who can start a fundraiser?</summary><p class="text-2 mt-2 mb-0">Anyone with a Delight Care Plus account. You can raise money for yourself, a family member, a friend or a community group. The Foundation team reviews it before it goes live.</p></details>
+        <details class="py-2 border-top" style="border-color:var(--line)!important;"><summary class="fw-semibold text-white" style="cursor:pointer;">How does the money reach the beneficiary?</summary><p class="text-2 mt-2 mb-0">Donations are collected by the Foundation. The team then pays the hospital, school or supplier directly where possible, or the beneficiary after checking the details. Contact us if you'd like to know how a specific fundraiser was paid out.</p></details>
+        <details class="py-2 border-top" style="border-color:var(--line)!important;"><summary class="fw-semibold text-white" style="cursor:pointer;">Can I give without my name showing?</summary><p class="text-2 mt-2 mb-0">Yes. Tick "Don't show my name publicly" when you donate and you'll appear as "Anonymous".</p></details>
+        <details class="py-2 border-top" style="border-color:var(--line)!important;"><summary class="fw-semibold text-white" style="cursor:pointer;">What if a fundraiser goes over its goal?</summary><p class="text-2 mt-2 mb-0">It can keep taking donations until it is closed. Any extra goes to the same beneficiary's needs, or to another Foundation fundraiser if the organiser agrees.</p></details>
+        <details class="py-2 border-top" style="border-color:var(--line)!important;"><summary class="fw-semibold text-white" style="cursor:pointer;">My M-Pesa prompt didn't arrive</summary><p class="text-2 mt-2 mb-0">Check your number and that your phone is on, then press "Resend" on the payment page. If money left your account but the page didn't update, chat with us and share the M-Pesa code.</p></details>
+    </div>
+
+    <div class="fd-band mt-5">
+        <div><h2 class="display-serif">Ready to make a difference?</h2><p>Every shilling counts, and sharing a fundraiser helps as much as giving.</p></div>
+        <div class="d-flex gap-2 flex-wrap"><a href="{% url 'foundation:home' %}#fundraisers" class="btn-glow"><i class="fa-solid fa-heart"></i> Donate</a><a href="{% url 'foundation:start' %}" class="btn-ghost">Start a fundraiser</a></div>
+    </div>
+</div>
+{% endblock %}

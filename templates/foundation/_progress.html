@@ -1,0 +1,3 @@
+{% load humanize %}
+<div class="fd-raised"><strong>KES {{ c.raised|intcomma }} raised</strong><small>of KES {{ c.goal|intcomma }}</small></div>
+<div class="fd-progress{% if lg %} lg{% endif %}" role="progressbar" aria-label="Raised so far" aria-valuenow="{{ c.percent }}" aria-valuemin="0" aria-valuemax="100"><span style="width: {{ c.percent }}%"></span></div>

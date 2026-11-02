@@ -1,0 +1,17 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Record donation{% endblock %}
+{% block content %}
+<div class="d-head"><div><a href="{% url 'dashboard:foundation_donations' %}" class="text-3" style="font-size:.82rem;"><i class="fa-solid fa-arrow-left"></i> Donations</a>
+    <h1 class="mt-1">Record a donation</h1><p>For cash, bank transfers, cheques or M-Pesa sent straight to the PayBill. It's added to the fundraiser total straight away.</p></div></div>
+<form method="post" class="card-d" style="max-width:860px">
+    {% csrf_token %}
+    <div class="bd"><div class="row">
+        {% for f in form %}
+        {% if f.field.widget.input_type == 'checkbox' %}
+        <div class="col-md-6 mb-3"><label class="d-flex align-items-center gap-2" style="cursor:pointer">{{ f }} <span>{{ f.label }}</span></label></div>
+        {% else %}<div class="{% if f.name == 'message' %}col-12{% else %}col-md-6{% endif %}">{% include 'dashboard/_field.html' %}</div>{% endif %}
+        {% endfor %}
+    </div>
+    <button class="btn-d primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save donation</button></div>
+</form>
+{% endblock %}

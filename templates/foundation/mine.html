@@ -1,0 +1,43 @@
+{% extends 'foundation/_base.html' %}
+{% load humanize %}
+{% block title %}My giving — Delight Care Plus Foundation{% endblock %}
+{% block fd_content %}
+<div class="container-xl page-hero pb-3">
+    <span class="eyebrow">My giving</span>
+    <h1 class="display-serif">Your fundraisers &amp; donations</h1>
+</div>
+<div class="container-xl pb-5">
+    <div class="section-head mb-3"><div><h2 style="font-size:1.4rem;">My <span>fundraisers</span></h2></div><a href="{% url 'foundation:start' %}" class="btn-soft btn-sm-pill"><i class="fa-solid fa-plus"></i> Start another</a></div>
+    {% if campaigns %}
+    <div class="glass pad mb-5">
+        {% for c in campaigns %}
+        <div class="d-flex gap-3 align-items-center flex-wrap py-3 {% if not forloop.last %}border-bottom{% endif %}" style="border-color:var(--line)!important;">
+            <div class="flex-grow-1" style="min-width:220px;">
+                <a href="{{ c.get_absolute_url }}" class="text-white fw-semibold">{{ c.title }}</a>
+                <div class="text-3" style="font-size:.8rem;">Started {{ c.created_at|date:"j M Y" }}{% if c.status == 'REJECTED' and c.review_note %} · {{ c.review_note }}{% endif %}</div>
+            </div>
+            <div style="min-width:220px;flex:1;">{% include 'foundation/_progress.html' %}</div>
+            <span class="fd-status s-{{ c.status }}">{{ c.get_status_display }}</span>
+            <a href="{{ c.get_absolute_url }}#updates" class="btn-ghost btn-sm-pill"><i class="fa-solid fa-pen"></i> Post update</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="glass pad mb-5 text-2">You haven't started a fundraiser yet. <a href="{% url 'foundation:start' %}">Start one</a>.</div>
+    {% endif %}
+
+    <div class="section-head mb-3"><div><h2 style="font-size:1.4rem;">My <span>donations</span></h2></div></div>
+    {% if donations %}
+    <div class="glass pad">
+        {% for d in donations %}
+        <div class="d-flex gap-3 align-items-center flex-wrap py-2 {% if not forloop.last %}border-bottom{% endif %}" style="border-color:var(--line)!important;">
+            <div class="flex-grow-1"><a href="{{ d.campaign.get_absolute_url }}" class="text-white">{{ d.campaign.title }}</a><div class="text-3" style="font-size:.78rem;">{{ d.paid_at|date:"j M Y" }} · {{ d.reference }}{% if d.payment_reference %} · {{ d.payment_reference }}{% endif %}</div></div>
+            <strong class="text-white">KES {{ d.amount|intcomma }}</strong>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="glass pad text-2">No donations on this account yet. <a href="{% url 'foundation:home' %}">Find a fundraiser</a>.</div>
+    {% endif %}
+</div>
+{% endblock %}

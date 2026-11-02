@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "blog",
     "dashboard",
     "marketing",
+    "foundation",
 ]
 
 MIDDLEWARE = [
@@ -193,3 +194,16 @@ LOGGING = {
         "core": {"handlers": ["console"], "level": "INFO"},
     },
 }
+
+# ---------------------------------------------------------------------------
+# Delight Care Plus Foundation (fundraising at /foundation/)
+# ---------------------------------------------------------------------------
+# Leave the FOUNDATION_MPESA_* values empty to collect donations on the shop PayBill above.
+# If the Foundation has its own PayBill/Till, fill them in so donations never mix with sales.
+FOUNDATION_NAME = env("FOUNDATION_NAME", "Delight Care Plus Foundation")
+FOUNDATION_MPESA_SHORTCODE = env("FOUNDATION_MPESA_SHORTCODE", "")
+FOUNDATION_MPESA_PASSKEY = env("FOUNDATION_MPESA_PASSKEY", "")
+FOUNDATION_MPESA_PARTY_B = env("FOUNDATION_MPESA_PARTY_B", FOUNDATION_MPESA_SHORTCODE)
+FOUNDATION_MPESA_TRANSACTION_TYPE = env("FOUNDATION_MPESA_TRANSACTION_TYPE", "")
+FOUNDATION_MPESA_CALLBACK_URL = env("FOUNDATION_MPESA_CALLBACK_URL", f"{SITE_URL}/foundation/mpesa/callback/")
+FOUNDATION_MIN_DONATION = int(env("FOUNDATION_MIN_DONATION", "10"))

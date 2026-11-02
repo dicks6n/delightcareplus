@@ -8,6 +8,7 @@ from django.views.decorators.http import require_POST
 
 from blog.models import Post
 from catalog.models import Brand, Department, Product
+from foundation.models import Campaign
 
 from .models import Banner, ContactMessage, NewsletterSubscriber, Testimonial
 
@@ -35,6 +36,7 @@ def home(request):
         "recently_viewed": recently_viewed,
         "testimonials": Testimonial.objects.filter(is_active=True)[:6],
         "posts": Post.objects.filter(is_published=True)[:3],
+        "foundation_pick": Campaign.objects.filter(status="ACTIVE").order_by("-is_featured", "-created_at").first(),
     })
 
 

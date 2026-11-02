@@ -3,6 +3,7 @@
     <a href="{% url 'accounts:orders' %}" class="{% if active == 'orders' %}on{% endif %}"><i class="fa-solid fa-box"></i> My orders</a>
     <a href="{% url 'catalog:wishlist' %}"><i class="fa-regular fa-heart"></i> Wishlist</a>
     <a href="{% url 'accounts:profile' %}" class="{% if active == 'profile' %}on{% endif %}"><i class="fa-solid fa-user-gear"></i> Details &amp; points</a>
+    <a href="{% url 'foundation:mine' %}"><i class="fa-solid fa-hand-holding-heart"></i> My giving</a>
     <a href="{% url 'catalog:routine' %}"><i class="fa-solid fa-wand-magic-sparkles"></i> Routine Finder</a>
     <a href="{% url 'accounts:logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out</a>
 </nav>

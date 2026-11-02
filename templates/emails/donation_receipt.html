@@ -1,0 +1,14 @@
+{% extends "emails/base.html" %}
+{% load humanize %}
+{% block content %}
+<h2 style="margin:0 0 8px;">Thank you for your donation 💚</h2>
+<p style="color:#4b5563;line-height:1.6;">Hi {{ donation.name }}, we've received your gift of <strong>KES {{ donation.amount|intcomma }}</strong> to <strong>{{ campaign.title }}</strong> through the Delight Care Plus Foundation.</p>
+<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#f6f8f5;border-radius:12px;margin:16px 0;font-size:14px;color:#374151;">
+  <tr><td style="padding:12px 16px;">Donation reference</td><td style="padding:12px 16px;text-align:right;"><strong>{{ donation.reference }}</strong></td></tr>
+  {% if donation.payment_reference %}<tr><td style="padding:0 16px 12px;">{{ donation.get_method_display }} receipt</td><td style="padding:0 16px 12px;text-align:right;"><strong>{{ donation.payment_reference }}</strong></td></tr>{% endif %}
+  <tr><td style="padding:0 16px 12px;">Date</td><td style="padding:0 16px 12px;text-align:right;">{{ donation.paid_at|date:"j M Y, H:i" }}</td></tr>
+  <tr><td style="padding:0 16px 12px;">Raised so far</td><td style="padding:0 16px 12px;text-align:right;">KES {{ campaign.raised|intcomma }} of KES {{ campaign.goal|intcomma }}</td></tr>
+</table>
+<p style="color:#4b5563;line-height:1.6;">Sharing the fundraiser with friends on WhatsApp is one of the best ways to help it reach its goal.</p>
+{% with path=campaign.get_absolute_url %}{% include "emails/_button.html" with url=site_url|add:path label="See the fundraiser" %}{% endwith %}
+{% endblock %}

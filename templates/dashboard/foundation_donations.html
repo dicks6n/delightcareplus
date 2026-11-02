@@ -1,0 +1,47 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}Foundation donations{% endblock %}
+{% block content %}
+<div class="d-head">
+    <div><h1>Donations</h1><p>M-Pesa donations confirm automatically. Airtel Money ones need you to check your statement and press Confirm.</p></div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="?{{ querystring }}&export=csv" class="btn-d"><i class="fa-solid fa-file-csv"></i> Export CSV</a>
+        <a href="{% url 'dashboard:foundation_donation_add' %}" class="btn-d primary"><i class="fa-solid fa-plus"></i> Record cash / bank donation</a>
+    </div>
+</div>
+<nav class="tabs-d">{% for key, label, n in tabs %}<a href="?status={{ key }}" class="{% if status == key %}on{% endif %}">{{ label }}<span>{{ n }}</span></a>{% endfor %}</nav>
+<form class="filters-d" method="get"><input type="hidden" name="status" value="{{ status }}">
+    <input class="inp" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Reference, name, phone, M-Pesa / Airtel code">
+    <select class="inp" name="campaign"><option value="">All fundraisers</option>{% for c in campaigns %}<option value="{{ c.id }}" {% if request.GET.campaign == c.id|stringformat:'s' %}selected{% endif %}>{{ c.title|truncatechars:50 }}</option>{% endfor %}</select>
+    <button class="btn-d" type="submit"><i class="fa-solid fa-filter"></i> Filter</button>
+    <span class="ms-auto text-3" style="font-size:.84rem;">Received in this view: <strong class="text-white">KES {{ total|intcomma }}</strong></span>
+</form>
+<div class="card-d"><div class="bd flush t-wrap">
+<table class="t">
+    <thead><tr><th>Reference</th><th>Donor</th><th>Fundraiser</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th><th></th></tr></thead>
+    <tbody>
+    {% for d in page_obj %}
+    <tr>
+        <td><strong>{{ d.reference }}</strong></td>
+        <td>{{ d.name|truncatechars:24 }}{% if d.is_anonymous %} <small class="text-3">(anonymous)</small>{% endif %}<br><small class="text-3">{% if d.phone %}+{{ d.phone|cut:'+' }}{% endif %}{% if d.email %} · {{ d.email }}{% endif %}</small></td>
+        <td><a href="{% url 'dashboard:foundation_campaign' d.campaign_id %}">{{ d.campaign.title|truncatechars:34 }}</a></td>
+        <td class="pri">KES {{ d.amount|intcomma }}</td>
+        <td>{{ d.get_method_display }}{% if d.payment_reference %}<br><small class="text-3">{{ d.payment_reference }}</small>{% endif %}</td>
+        <td><span class="pill {% if d.status == 'PAID' %}green{% elif d.status == 'VERIFY' or d.status == 'PENDING' %}amber{% else %}red{% endif %}">{{ d.get_status_display }}</span>{% if d.result_desc and d.status == 'FAILED' %}<br><small class="text-3">{{ d.result_desc|truncatechars:40 }}</small>{% endif %}</td>
+        <td><small>{{ d.created_at|date:"M j, H:i" }}</small></td>
+        <td class="text-end" style="white-space:nowrap;">
+            <form method="post" action="{% url 'dashboard:foundation_donation_action' d.pk %}" class="d-inline">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+            {% if d.status == 'VERIFY' or d.status == 'PENDING' or d.status == 'FAILED' %}
+                <button class="btn-d sm primary" name="action" value="confirm" onclick="return confirm('Confirm you received KES {{ d.amount }} for {{ d.reference }}?')"><i class="fa-solid fa-check"></i> Confirm</button>
+                {% if d.status != 'FAILED' %}<button class="btn-d sm" name="action" value="reject" title="Not received"><i class="fa-solid fa-xmark"></i></button>{% endif %}
+            {% elif d.status == 'PAID' %}
+                <button class="btn-d sm danger" name="action" value="refund" onclick="return confirm('Mark {{ d.reference }} as refunded? It will be removed from the total.')" title="Mark refunded"><i class="fa-solid fa-rotate-left"></i></button>
+            {% endif %}
+            </form>
+        </td>
+    </tr>
+    {% empty %}<tr><td colspan="8"><div class="empty-d"><i class="fa-solid fa-circle-dollar-to-slot"></i>No donations here.</div></td></tr>{% endfor %}
+    </tbody>
+</table></div></div>
+{% include 'partials/pager.html' %}
+{% endblock %}

@@ -1,0 +1,9 @@
+<a href="{{ c.get_absolute_url }}" class="fd-card">
+    {% include 'foundation/_cover.html' %}
+    <div class="bd">
+        <div class="meta">{% if c.location %}<span><i class="fa-solid fa-location-dot"></i> {{ c.location }}</span>{% endif %}<span><i class="fa-regular fa-heart"></i> {{ c.donor_count }} donation{{ c.donor_count|pluralize }}</span>{% if c.days_left is not None and c.status == 'ACTIVE' %}<span><i class="fa-regular fa-clock"></i> {{ c.days_left }} day{{ c.days_left|pluralize }} left</span>{% endif %}</div>
+        <h3>{{ c.title }}</h3>
+        <p>{{ c.summary }}</p>
+        <div class="foot">{% include 'foundation/_progress.html' %}</div>
+    </div>
+</a>

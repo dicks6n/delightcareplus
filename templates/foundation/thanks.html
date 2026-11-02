@@ -1,0 +1,31 @@
+{% extends 'foundation/_base.html' %}
+{% load humanize %}
+{% block title %}Thank you — Delight Care Plus Foundation{% endblock %}
+{% block fd_content %}
+<div class="container-xl py-5" style="max-width: 720px;">
+    <div class="glass glass-green pad-lg text-center">
+        <div class="fd-thanks-icon"><i class="fa-solid fa-heart"></i></div>
+        {% if d.is_paid %}
+        <h1 class="display-serif" style="font-size:clamp(1.8rem,4vw,2.6rem);">Thank you, {{ d.name.split.0|default:"friend" }}!</h1>
+        <p class="text-2">Your donation of <strong class="text-white">KES {{ d.amount|intcomma }}</strong> to <strong class="text-white">{{ c.title }}</strong> was received{% if d.payment_reference %} (M-Pesa ref {{ d.payment_reference }}){% endif %}.{% if d.email %} A receipt is on its way to {{ d.email }}.{% endif %}</p>
+        {% else %}
+        <h1 class="display-serif" style="font-size:clamp(1.8rem,4vw,2.6rem);">Thank you for your kindness!</h1>
+        <p class="text-2">We've received your Airtel Money details for <strong class="text-white">KES {{ d.amount|intcomma }}</strong> (ref {{ d.payment_reference }}). Our team will confirm it shortly and it will then show on the fundraiser.</p>
+        {% endif %}
+
+        <div class="glass pad text-start my-4">
+            {% include 'foundation/_progress.html' %}
+            <small class="text-3 d-block mt-2">{{ c.donor_count }} donation{{ c.donor_count|pluralize }} so far · {{ c.percent }}% of the goal</small>
+        </div>
+
+        <h5 class="mb-2">Help {{ c.beneficiary|truncatechars:30 }} even more — share the fundraiser</h5>
+        <p class="text-3" style="font-size:.85rem;">Fundraisers shared on WhatsApp get many more donations.</p>
+        <div class="d-flex justify-content-center mb-4">{% include 'foundation/_share.html' %}</div>
+        <div class="d-flex justify-content-center gap-2 flex-wrap">
+            <a href="{{ c.get_absolute_url }}" class="btn-ghost"><i class="fa-solid fa-arrow-left"></i> Back to fundraiser</a>
+            <a href="{% url 'catalog:shop' %}" class="btn-soft"><i class="fa-solid fa-bag-shopping"></i> Visit the Delight Care Plus shop</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}{% include 'foundation/_share_js.html' %}{% endblock %}

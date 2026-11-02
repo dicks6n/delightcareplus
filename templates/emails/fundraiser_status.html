@@ -1,0 +1,11 @@
+{% extends "emails/base.html" %}
+{% block content %}
+{% if campaign.status == 'ACTIVE' %}
+<h2 style="margin:0 0 8px;">Your fundraiser is live 🎉</h2>
+<p style="color:#4b5563;line-height:1.6;">Good news! <strong>{{ campaign.title }}</strong> was approved by the Delight Care Plus Foundation and can now take donations. Share the link with family and friends, especially on WhatsApp, to get the first donations coming in.</p>
+{% with path=campaign.get_absolute_url %}{% include "emails/_button.html" with url=site_url|add:path label="Open your fundraiser" %}{% endwith %}
+{% else %}
+<h2 style="margin:0 0 8px;">About your fundraiser</h2>
+<p style="color:#4b5563;line-height:1.6;">Thank you for submitting <strong>{{ campaign.title }}</strong>. We weren't able to approve it this time{% if campaign.review_note %}: {{ campaign.review_note }}{% endif %}. Reply to this email or WhatsApp us if you'd like to talk about it.</p>
+{% endif %}
+{% endblock %}

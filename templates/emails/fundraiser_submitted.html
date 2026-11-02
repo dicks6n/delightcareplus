@@ -1,0 +1,8 @@
+{% extends "emails/base.html" %}
+{% load humanize %}
+{% block content %}
+<h2 style="margin:0 0 8px;">New fundraiser to review</h2>
+<p style="color:#4b5563;line-height:1.6;"><strong>{{ campaign.title }}</strong><br>For {{ campaign.beneficiary }}{% if campaign.location %}, {{ campaign.location }}{% endif %} · Goal KES {{ campaign.goal|intcomma }}<br>Organiser: {{ campaign.organiser_name }} · +{{ campaign.organiser_phone }}</p>
+<p style="color:#4b5563;line-height:1.6;">{{ campaign.summary }}</p>
+{% url 'dashboard:foundation_campaign' campaign.pk as path %}{% include "emails/_button.html" with url=site_url|add:path label="Review it" %}
+{% endblock %}

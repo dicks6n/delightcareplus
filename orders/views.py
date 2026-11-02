@@ -298,6 +298,10 @@ def mpesa_callback(request):
 
     order = Order.objects.filter(checkout_request_id=cb.get("CheckoutRequestID")).first()
     if not order:
+        # A Foundation donation whose callback was sent to the shop URL (e.g. a shared MPESA_CALLBACK_URL)
+        from foundation.services import handle_callback
+        if handle_callback(cb):
+            return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
         logger.warning("M-Pesa callback for unknown request %s", cb.get("CheckoutRequestID"))
         return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
     if order.is_paid:

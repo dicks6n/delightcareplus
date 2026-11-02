@@ -1,0 +1,6 @@
+<div class="fd-share">
+    <a href="https://wa.me/?text={{ c.title|urlencode }}%20{{ share_url|urlencode }}" target="_blank" rel="noopener" aria-label="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u={{ share_url|urlencode }}" target="_blank" rel="noopener" aria-label="Share on Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+    <a href="https://twitter.com/intent/tweet?text={{ c.title|urlencode }}&url={{ share_url|urlencode }}" target="_blank" rel="noopener" aria-label="Share on X"><i class="fa-brands fa-x-twitter"></i></a>
+    <button type="button" data-copy="{{ share_url }}" aria-label="Copy link"><i class="fa-solid fa-link"></i></button>
+</div>

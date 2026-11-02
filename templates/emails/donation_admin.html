@@ -1,0 +1,7 @@
+{% extends "emails/base.html" %}
+{% load humanize %}
+{% block content %}
+<h2 style="margin:0 0 8px;">Airtel Money donation to confirm</h2>
+<p style="color:#4b5563;line-height:1.6;">{{ donation.name }} ({{ donation.phone|default:"no phone" }}) says they sent <strong>KES {{ donation.amount|intcomma }}</strong> to <strong>{{ campaign.title }}</strong>.<br>Transaction ID: <strong>{{ donation.payment_reference }}</strong> · Donation {{ donation.reference }}</p>
+{% url 'dashboard:foundation_donations' as path %}{% include "emails/_button.html" with url=site_url|add:path|add:"?status=VERIFY" label="Confirm in Seller Center" %}
+{% endblock %}

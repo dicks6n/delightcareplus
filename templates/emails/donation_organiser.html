@@ -1,0 +1,8 @@
+{% extends "emails/base.html" %}
+{% load humanize %}
+{% block content %}
+<h2 style="margin:0 0 8px;">You received a donation 🎉</h2>
+<p style="color:#4b5563;line-height:1.6;"><strong>{{ donation.public_name }}</strong> gave <strong>KES {{ donation.amount|intcomma }}</strong> to <strong>{{ campaign.title }}</strong>.{% if donation.message %}<br><em>"{{ donation.message }}"</em>{% endif %}</p>
+<p style="color:#4b5563;line-height:1.6;">Total raised: <strong>KES {{ campaign.raised|intcomma }}</strong> of KES {{ campaign.goal|intcomma }} from {{ campaign.donor_count }} donation{{ campaign.donor_count|pluralize }}. Posting an update keeps donors involved.</p>
+{% with path=campaign.get_absolute_url %}{% include "emails/_button.html" with url=site_url|add:path label="Post an update" %}{% endwith %}
+{% endblock %}

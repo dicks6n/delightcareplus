@@ -1,0 +1,53 @@
+{% extends 'foundation/_base.html' %}
+{% block title %}Start a fundraiser — Delight Care Plus Foundation{% endblock %}
+{% block fd_content %}
+<div class="container-xl page-hero pb-3">
+    <span class="eyebrow">Start a fundraiser</span>
+    <h1 class="display-serif">Tell us who you're raising money for.</h1>
+    <p>The Foundation team reviews every fundraiser before it goes live, usually within 2 working days. We may call you to check the details or ask for documents such as a hospital or school invoice.</p>
+</div>
+<div class="container-xl pb-5">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <form method="post" enctype="multipart/form-data" class="glass pad-lg fd-form" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}<div class="flash error mb-3"><i class="fa-solid fa-circle-exclamation"></i><span>{{ form.non_field_errors.0 }}</span></div>{% endif %}
+                <div class="row g-3">
+                    {% for f in form %}
+                    {% if f.name == 'agree' %}
+                    <div class="col-12"><label class="check">{{ f }} {{ f.label }}</label>{{ f.errors }}</div>
+                    {% else %}
+                    <div class="{% if f.name in 'title summary story cover video_url' %}col-12{% else %}col-md-6{% endif %}">
+                        <div class="field mb-0 {% if f.errors %}has-error{% endif %}">
+                            <label for="{{ f.id_for_label }}">{{ f.label }}{% if not f.field.required %} <span class="text-3">(optional)</span>{% endif %}</label>
+                            {{ f }}
+                            {% if f.help_text %}<div class="hint">{{ f.help_text }}</div>{% endif %}
+                            {{ f.errors }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <button class="btn-glow mt-4" type="submit"><i class="fa-solid fa-paper-plane"></i> Send for review</button>
+            </form>
+        </div>
+        <div class="col-lg-4">
+            <div class="glass pad">
+                <h5><i class="fa-solid fa-lightbulb text-green me-1"></i> Tips for a strong fundraiser</h5>
+                <ul class="text-2 mb-0" style="font-size:.88rem;line-height:1.8;padding-left:18px;">
+                    <li>Use a clear title, e.g. <em>"Help Amina get her kidney transplant"</em>.</li>
+                    <li>Explain who needs help, what happened and exactly what the money pays for.</li>
+                    <li>Set a realistic goal that matches the bill or budget.</li>
+                    <li>Add a bright photo (landscape works best).</li>
+                    <li>Post updates often, so donors can see the difference they're making.</li>
+                </ul>
+            </div>
+            <div class="glass pad mt-3">
+                <h6 class="mb-1">Questions?</h6>
+                <p class="text-2 mb-2" style="font-size:.86rem;">Chat with us or WhatsApp {{ shop.support_phone }}.</p>
+                <a href="https://wa.me/{{ shop.whatsapp_number }}?text={{ 'Hello, I want to start a Foundation fundraiser'|urlencode }}" target="_blank" rel="noopener" class="btn-soft btn-sm-pill"><i class="fa-brands fa-whatsapp"></i> WhatsApp us</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

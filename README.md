@@ -222,6 +222,37 @@ cd ~/delightcareplus && workon <your-virtualenv> && python manage.py send_refill
 
 Emails need the `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` settings in `.env`; for Gmail, use an App Password.
 
+## 8. Delight Care Plus Foundation (fundraising)
+
+A GoFundMe-style fundraising section at **/foundation/**. It uses the shop's look, header, footer, accounts and M-Pesa setup, and appears in the main menu, the footer, the home page and the account menu.
+
+**What visitors can do**
+- Browse fundraisers by cause (medical, education, community and more), search, and sort.
+- Open a fundraiser to read the story, see a progress bar, read updates and words of support, and share it on WhatsApp, Facebook or X.
+- Donate any amount (preset buttons or their own) with **M-Pesa STK push** or **Airtel Money**, and choose to give anonymously. They get an email receipt.
+- Logged-in members can **start a fundraiser**. It waits for the Foundation team's review before it goes live. Organisers can post updates, and they're emailed when a donation arrives. **My giving** lists their fundraisers and donations.
+
+**Seller Center → Foundation**
+- **Fundraisers:** totals, review queue, approve or decline (the organiser is emailed), feature, mark as verified, close, and edit.
+- **Donations:** confirm Airtel Money donations, mark refunds, record cash or bank donations, and export to CSV.
+
+**Setup**
+
+```bash
+python manage.py migrate
+python manage.py setup_foundation   # optional: 6 sample fundraisers so you can see the design
+```
+
+Remove the samples with **Remove samples** on the Fundraisers page before launch. Sample fundraisers are labelled "Sample" on the site.
+
+**M-Pesa for donations**
+- By default donations go to the shop PayBill. If the Foundation has its own PayBill, set `FOUNDATION_MPESA_SHORTCODE` and `FOUNDATION_MPESA_PASSKEY` in `.env` so donations and sales stay separate.
+- Set `FOUNDATION_MPESA_CALLBACK_URL` to `https://YOUR-DOMAIN/foundation/mpesa/callback/`. It uses the same `MPESA_CALLBACK_TOKEN`. If a donation callback reaches the shop's callback URL instead, it is still recorded.
+
+**Before launch:** review the wording on the "How it works" page (`templates/foundation/about.html`), especially how money is paid out to beneficiaries. Make it match how your Foundation really works, including any legal registration.
+
+Run the tests with `python manage.py test foundation`.
+
 ## Project layout
 
 ```
@@ -235,6 +266,7 @@ chat/        live chat + staff inbox
 blog/        journal posts
 dashboard/   Seller Center (/manage/)
 marketing/   ad tracking, product feeds, tracked links, Ad Studio, refer-a-friend, email campaigns, bag reminders
+foundation/  Delight Care Plus Foundation: fundraisers, donations (M-Pesa/Airtel), updates
 templates/   all pages and emails
 static/      css, js, logo
 ```

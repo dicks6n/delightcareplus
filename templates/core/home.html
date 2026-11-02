@@ -241,6 +241,35 @@
 </section>
 {% endif %}
 
+<!-- ================= FOUNDATION ================= -->
+{% if foundation_pick %}
+<section class="section-sm">
+    <div class="container-xl">
+        <div class="glass glass-green pad-lg" data-reveal>
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-5">
+                    <span class="eyebrow" style="color:#ffb4ab;"><i class="fa-solid fa-hand-holding-heart"></i> Delight Care Plus Foundation</span>
+                    <h2 class="display-serif mt-2 mb-2" style="font-size:clamp(1.4rem,2.6vw,2rem);">Care that reaches beyond the bottle.</h2>
+                    <p class="text-2 mb-3">Our Foundation raises money for medical bills, school fees and community projects across Kenya. Give any amount with M-Pesa.</p>
+                    <a href="{% url 'foundation:home' %}" class="see-all">See all fundraisers <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="col-lg-7">
+                    <a href="{{ foundation_pick.get_absolute_url }}" class="fd-card" style="flex-direction:row;flex-wrap:wrap;">
+                        <div style="flex:1 1 220px;min-width:0;">{% include 'foundation/_cover.html' with c=foundation_pick %}</div>
+                        <div class="bd" style="flex:1 1 260px;">
+                            <h3>{{ foundation_pick.title }}</h3>
+                            <p>{{ foundation_pick.summary }}</p>
+                            <div class="foot">{% include 'foundation/_progress.html' with c=foundation_pick %}
+                                <span class="btn-glow btn-sm-pill mt-3"><i class="fa-solid fa-heart"></i> Donate</span></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
 <!-- ================= TESTIMONIALS ================= -->
 {% if testimonials %}
 <section class="section">
@@ -281,6 +310,7 @@
 {% endblock %}
 
 {% block head %}
+<link href="{% static 'css/foundation.css' %}?v=1" rel="stylesheet">
 <script>
     // Hide animated parts until Motion is ready, so they don't flash before animating in.
     // If Motion never loads, they're shown again after 2.5s (see motion-home.js / the fallback below).

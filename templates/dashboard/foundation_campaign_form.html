@@ -1,0 +1,58 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}{% if obj %}{{ obj.title }}{% else %}New fundraiser{% endif %}{% endblock %}
+{% block content %}
+<div class="d-head">
+    <div><a href="{% url 'dashboard:foundation' %}" class="text-3" style="font-size:.82rem;"><i class="fa-solid fa-arrow-left"></i> Fundraisers</a>
+        <h1 class="mt-1">{% if obj %}{{ obj.title }}{% else %}New fundraiser{% endif %}</h1>
+        {% if obj %}<p>KES {{ obj.raised|intcomma }} of {{ obj.goal|intcomma }} · {{ obj.donor_count }} donation{{ obj.donor_count|pluralize }}{% if obj.organiser %} · account: {{ obj.organiser.email|default:obj.organiser.username }}{% endif %}</p>{% endif %}</div>
+    {% if obj %}<div class="d-flex gap-2 flex-wrap">
+        {% if obj.status == 'PENDING' %}
+        <form method="post" action="{% url 'dashboard:foundation_status' obj.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{% url 'dashboard:foundation_campaign' obj.pk %}"><button class="btn-d primary" name="status" value="ACTIVE"><i class="fa-solid fa-check"></i> Approve &amp; publish</button></form>
+        {% elif obj.status == 'ACTIVE' %}
+        <form method="post" action="{% url 'dashboard:foundation_status' obj.pk %}" data-confirm="Close this fundraiser? It will stop taking donations.">{% csrf_token %}<input type="hidden" name="next" value="{% url 'dashboard:foundation_campaign' obj.pk %}"><button class="btn-d" name="status" value="CLOSED"><i class="fa-solid fa-flag-checkered"></i> Close</button></form>
+        {% endif %}
+        <a href="{% url 'dashboard:foundation_donation_add' %}?campaign={{ obj.pk }}" class="btn-d"><i class="fa-solid fa-plus"></i> Record donation</a>
+        <a href="{{ obj.get_absolute_url }}" target="_blank" class="btn-d"><i class="fa-solid fa-arrow-up-right-from-square"></i> View page</a>
+    </div>{% endif %}
+</div>
+
+<div class="row g-3">
+<div class="col-xl-8">
+<form method="post" enctype="multipart/form-data" class="card-d">
+    {% csrf_token %}
+    <div class="bd">
+        {% if form.non_field_errors %}<div class="flash-d error">{{ form.non_field_errors }}</div>{% endif %}
+        {% if obj.status == 'PENDING' %}<div class="flash-d info"><i class="fa-solid fa-user-check"></i><span>Submitted by a member. Check the story and goal, call the organiser if needed, then set the status to <strong>Live</strong> (or <strong>Not approved</strong> with a reason in the review note). The organiser is emailed either way.</span></div>{% endif %}
+        <div class="row">
+            {% for f in form %}
+            {% if f.field.widget.input_type == 'checkbox' %}
+            <div class="col-md-6 mb-3"><label class="d-flex align-items-center gap-2" style="cursor:pointer">{{ f }} <span>{{ f.label }}</span></label>{% if f.help_text %}<small class="help">{{ f.help_text }}</small>{% endif %}</div>
+            {% else %}
+            <div class="{% if f.name in 'title story summary cover' %}col-12{% else %}col-md-6{% endif %}">{% include 'dashboard/_field.html' %}</div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="d-flex gap-2 mt-2">
+            <button class="btn-d primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+            <a href="{% url 'dashboard:foundation' %}" class="btn-d">Cancel</a>
+            {% if obj %}<button class="btn-d danger ms-auto" type="submit" name="delete" value="1" onclick="return confirm('Delete this fundraiser? This cannot be undone.')"><i class="fa-regular fa-trash-can"></i> Delete</button>{% endif %}
+        </div>
+    </div>
+</form>
+</div>
+{% if obj %}
+<div class="col-xl-4">
+    <div class="card-d mb-3"><div class="hd"><h3>Latest donations</h3><a href="{% url 'dashboard:foundation_donations' %}?campaign={{ obj.pk }}" style="font-size:.8rem;">All</a></div>
+        <div class="bd flush">
+        <table class="t">{% for d in donations %}<tr><td><strong>{{ d.name|truncatechars:20 }}</strong><br><small class="text-3">{{ d.created_at|date:"M j, H:i" }} · {{ d.get_method_display }}</small></td><td class="pri text-end">KES {{ d.amount|intcomma }}<br><span class="pill st-{% if d.status == 'PAID' %}DELIVERED{% elif d.status == 'VERIFY' %}PENDING{% else %}CANCELLED{% endif %}">{{ d.get_status_display }}</span></td></tr>
+        {% empty %}<tr><td><div class="empty-d">No donations yet.</div></td></tr>{% endfor %}</table></div></div>
+    <div class="card-d"><div class="hd"><h3>Updates</h3><a href="{{ obj.get_absolute_url }}#updates" target="_blank" style="font-size:.8rem;">Post one</a></div>
+        <div class="bd">{% for u in updates %}<div class="mb-3"><div class="d-flex justify-content-between gap-2"><strong class="text-white">{{ u.title }}</strong>
+            <form method="post" action="{% url 'dashboard:foundation_update_delete' u.pk %}" data-confirm="Remove this update?">{% csrf_token %}<button class="btn-d sm danger" aria-label="Remove update"><i class="fa-regular fa-trash-can"></i></button></form></div>
+            <small class="text-3">{{ u.created_at|date:"M j, Y" }}</small><p class="text-2 mb-0" style="font-size:.85rem;white-space:pre-line">{{ u.body|truncatechars:240 }}</p></div>
+        {% empty %}<small class="text-3">No updates yet. The organiser (or any staff member) can post them from the fundraiser page.</small>{% endfor %}</div></div>
+</div>
+{% endif %}
+</div>
+{% endblock %}
