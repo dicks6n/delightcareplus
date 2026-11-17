@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static marketing %}
 
 {% block content %}
 
@@ -281,6 +281,8 @@
 {% endblock %}
 
 {% block head %}
+{# Tells Google the shop's name, logo, contact details and site search (can appear under the search result) #}
+{% jsonld store_data %}
 <script>
     // Hide animated parts until Motion is ready, so they don't flash before animating in.
     // If Motion never loads, they're shown again after 2.5s (see motion-home.js / the fallback below).

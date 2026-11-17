@@ -3,6 +3,7 @@ import json
 
 from django import template
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -42,3 +43,10 @@ def track_pending(context):
         return ""
     events = request.session.pop("track_events", [])
     return format_html("".join(str(_tag(e)) for e in events)) if events else ""
+
+
+@register.simple_tag
+def jsonld(data):
+    """Structured data for search engines, safe to place inside a <script> tag."""
+    text = json.dumps(data, ensure_ascii=False).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+    return format_html('<script type="application/ld+json">{}</script>', mark_safe(text))

@@ -9,7 +9,7 @@ from django.views.decorators.http import require_POST
 from blog.models import Post
 from catalog.models import Brand, Department, Product
 
-from .models import Banner, ContactMessage, NewsletterSubscriber, Testimonial
+from .models import Banner, ContactMessage, NewsletterSubscriber, SiteSettings, Testimonial
 
 
 def home(request):
@@ -23,6 +23,7 @@ def home(request):
                  .prefetch_related("images")[:9]]
 
     return render(request, "core/home.html", {
+        "store_data": _store_data(request),
         "banners": Banner.objects.filter(is_active=True).exclude(image=""),
         "hero_pool": hero_pool,
         "departments": Department.objects.filter(is_active=True).prefetch_related("categories"),
@@ -36,6 +37,36 @@ def home(request):
         "testimonials": Testimonial.objects.filter(is_active=True)[:6],
         "posts": Post.objects.filter(is_published=True)[:3],
     })
+
+
+def _store_data(request):
+    """schema.org data for Google: the shop, its logo and contact details, and the site search box."""
+    from django.templatetags.static import static
+    shop = SiteSettings.load()
+    base = request.build_absolute_uri("/").rstrip("/")
+    store = {
+        "@type": "OnlineStore", "@id": f"{base}/#store", "name": "Delight Care Plus", "url": f"{base}/",
+        "logo": base + static("img/logo-mark-dark.png"), "image": base + static("img/og-image.png"),
+        "description": ("Online health and beauty shop in Kenya for supplements, skincare and wellness teas. "
+                        "Pay with M-Pesa, delivery countrywide."),
+        "areaServed": {"@type": "Country", "name": "Kenya"}, "currenciesAccepted": "KES",
+        "paymentAccepted": "M-Pesa, Airtel Money, Cash on delivery",
+        "sameAs": [u for u in (shop.instagram_url, shop.tiktok_url, shop.facebook_url) if u],
+    }
+    if shop.support_email:
+        store["email"] = shop.support_email
+    if shop.support_phone:
+        store["telephone"] = shop.support_phone
+        store["contactPoint"] = {"@type": "ContactPoint", "telephone": shop.support_phone, "contactType": "customer service",
+                                 "areaServed": "KE", "availableLanguage": ["English", "Swahili"]}
+    website = {
+        "@type": "WebSite", "@id": f"{base}/#website", "name": "Delight Care Plus", "url": f"{base}/",
+        "publisher": {"@id": f"{base}/#store"},
+        "potentialAction": {"@type": "SearchAction",
+                            "target": {"@type": "EntryPoint", "urlTemplate": f"{base}/shop/?q={{search_term_string}}"},
+                            "query-input": "required name=search_term_string"},
+    }
+    return {"@context": "https://schema.org", "@graph": [store, website]}
 
 
 def about(request):
